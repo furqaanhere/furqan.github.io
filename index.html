@@ -207,17 +207,50 @@ document.getElementById("contact").innerHTML=
 `Email: <a href="mailto:${data.contact}">${data.contact}</a>`;
 
 // PROJECTS (UNLIMITED)
-let html="";
-data.projects.forEach(p=>{
-html+=`
+let html = "";
+
+data.projects.forEach(p => {
+
+html += `
 <div class="card">
-<img src="${p.image}" alt="">
-<h3>${p.title}</h3>
-<p>${p.description}</p>
+
+  <img src="${p.image}" alt="${p.title}">
+
+  <div class="card-content">
+
+    <h3>${p.title}</h3>
+    <p>${p.short || p.description}</p>
+
+    <div class="tags">
+      ${(p.tech || []).map(t => `<span class="tag">${t}</span>`).join("")}
+    </div>
+
+    <div class="buttons">
+      ${p.github ? `<a href="${p.github}" target="_blank">GitHub</a>` : ""}
+      ${p.demo ? `<a href="${p.demo}" target="_blank">Demo</a>` : ""}
+    </div>
+
+  </div>
+
 </div>
 `;
+
 });
-document.getElementById("projects").innerHTML=html;
+
+document.getElementById("projects").innerHTML = html;
+   const cards = document.querySelectorAll(".card");
+
+function reveal(){
+  cards.forEach(c=>{
+    const top = c.getBoundingClientRect().top;
+    if(top < window.innerHeight - 80){
+      c.classList.add("show");
+    }
+  });
+}
+
+window.addEventListener("scroll", reveal);
+reveal(); 
 
 // ANIMATION ON SCROLL
 const cards=document.querySelectorAll(".card");
