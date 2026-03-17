@@ -253,21 +253,6 @@ window.addEventListener("scroll", reveal);
 reveal(); 
 
 // ANIMATION ON SCROLL
-const cards=document.querySelectorAll(".card");
-
-function reveal(){
-cards.forEach(c=>{
-const top=c.getBoundingClientRect().top;
-if(top<window.innerHeight-50){
-c.classList.add("show");
-}
-});
-}
-window.addEventListener("scroll",reveal);
-reveal();
-
-});
-
 /* TYPING EFFECT */
 const words=["AI systems","real-world solutions","innovative tech"];
 let i=0,j=0,del=false;
