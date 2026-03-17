@@ -1,41 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>Admin</title>
-
-  <!-- Netlify Identity -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-</head>
-
-<body>
-
 <script>
-  if (window.netlifyIdentity) {
+fetch("content.json")
+  .then(res => res.json())
+  .then(data => {
 
-    // Initialize
-    window.netlifyIdentity.on("init", user => {
-      // If no user → open login
-      if (!user) {
-        window.netlifyIdentity.open();
-      }
+    document.getElementById("name").innerText = data.name;
+    document.getElementById("about").innerText = data.about;
+    document.getElementById("contact").innerText = data.contact;
+
+    let projectHTML = "";
+    data.projects.forEach(p => {
+      projectHTML += `<div>
+        <h3>${p.title}</h3>
+        <p>${p.description}</p>
+      </div>`;
     });
 
-    // Handle login
-    window.netlifyIdentity.on("login", () => {
-      document.location.href = "/admin/";
-    });
+    document.getElementById("projects").innerHTML = projectHTML;
 
-    // 🔥 IMPORTANT: handle invite/recovery tokens
-    if (window.location.hash.includes("invite_token") || window.location.hash.includes("recovery_token")) {
-      window.netlifyIdentity.open();
-    }
-
-  }
+  });
 </script>
-
-<!-- Decap CMS -->
-<script src="https://unpkg.com/decap-cms@latest/dist/decap-cms.js"></script>
-
-</body>
-</html>
