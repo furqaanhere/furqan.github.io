@@ -1,6 +1,15 @@
 {
-  "title": "Furqan 🚀",
-  "description": "Data Science Student | Innovator | Founder of Tiwzz",
-  "buttonText": "View Projects",
-  "footer": "© 2026 Furqan"
+  "name": "Furqan",
+  "about": "I am a Data Science student and innovator.",
+  "projects": [
+    {
+      "title": "Apple Grading System",
+      "description": "AI-based grading system"
+    },
+    {
+      "title": "Tiwzz",
+      "description": "Food delivery startup"
+    }
+  ],
+  "contact": "furqan8191@gmail.com"
 }
