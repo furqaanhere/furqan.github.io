@@ -3,25 +3,38 @@
   "tagline": "Data Science | Innovator | Startup Builder",
 
   "about": {
-    "intro": "I am Furqan Ahmad Bhat from Baramulla, pursuing a Bachelor's in Data Science and Physics. I focus on building intelligent systems that solve real-world problems.",
-    "approach": "I approach problems from a systems perspective — understanding input, processing, and output — and designing scalable, efficient solutions.",
-    "focus": "My work integrates Machine Learning, IoT, and real-world deployment, ensuring that solutions are not just theoretical but practical and impactful."
+    "intro": "I am Furqan Ahmad Bhat from Baramulla, currently pursuing a Bachelor's in Data Science and Physics. I focus on building intelligent systems that solve real-world problems rather than just theoretical models.",
+
+    "approach": "I approach problems from a systems perspective — understanding input, processing, and output — and then designing scalable and efficient solutions using data-driven methods.",
+
+    "focus": "My core interest lies in integrating Machine Learning, IoT, and real-world deployment to build systems that are practical, impactful, and scalable."
   },
+
+  "skills": [
+    "Python",
+    "Machine Learning",
+    "Computer Vision",
+    "IoT",
+    "Data Science",
+    "System Design"
+  ],
 
   "projects": [
     {
       "title": "Apple Grading System (AGS)",
-      "short": "AI-based automated apple grading using computer vision",
-      "description": "A complete automation system designed to classify apples based on quality using Convolutional Neural Networks (CNN). It replaces manual grading with accurate, fast, and scalable AI-based sorting.",
+      "short": "AI-based automated apple grading system",
 
-      "problem": "Manual grading of apples is inconsistent, slow, and requires heavy labor, leading to inefficiency and loss in quality control.",
-      "solution": "Developed an AI-based grading system using image processing and CNN models to classify apples based on color, texture, and defects.",
+      "description": "An end-to-end intelligent system that uses computer vision and CNN models to classify apples based on quality, color, and defects.",
+
+      "problem": "Manual grading of apples is inconsistent, slow, and labor-intensive, leading to inefficiency and inaccurate classification.",
+
+      "solution": "Developed a CNN-based system that analyzes apple images and classifies them into quality categories automatically.",
+
+      "system": "Image Capture → Preprocessing → CNN Model → Classification → Sorting",
+
+      "impact": "Improves accuracy, reduces human effort, and enables scalable automation in agriculture.",
 
       "tech": ["Python", "OpenCV", "TensorFlow", "CNN"],
-      "system": "Image Capture → Preprocessing → CNN Model → Classification → Sorting Mechanism",
-
-      "impact": "Improves grading accuracy, reduces human effort, and enables scalable automation in agriculture.",
-      
       "image": "images/apple.jpg",
       "github": "",
       "demo": ""
@@ -30,16 +43,18 @@
     {
       "title": "Tiwzz (Startup)",
       "short": "Hyperlocal food delivery platform",
-      "description": "A startup focused on connecting small rural restaurants with nearby customers through a hyperlocal delivery system within a 10–15 km radius.",
 
-      "problem": "Rural restaurants struggle with visibility and customer reach, leading to low daily income.",
-      "solution": "Created a localized delivery platform that connects nearby customers with small restaurants, increasing accessibility and sales.",
+      "description": "A startup initiative focused on connecting rural restaurants with nearby customers through a hyperlocal delivery system.",
 
-      "tech": ["Mobile App", "Local Network System"],
+      "problem": "Small rural restaurants lack visibility and struggle to reach customers, resulting in low daily income.",
+
+      "solution": "Built a system that connects customers with nearby restaurants within a 10–15 km radius, improving accessibility.",
+
       "system": "Restaurant Onboarding → Order Placement → Delivery → Payment",
 
-      "impact": "Boosts income of small businesses and strengthens the local economy.",
-      
+      "impact": "Increases income of small businesses and strengthens the local economy.",
+
+      "tech": ["App System", "Local Delivery Model"],
       "image": "images/tiwzz.jpg",
       "github": "",
       "demo": ""
@@ -48,16 +63,18 @@
     {
       "title": "IoT Health Monitoring Device",
       "short": "Predictive health alert system",
-      "description": "An IoT-based system designed for partially paralyzed patients to predict urination timing and alert caregivers in advance.",
+
+      "description": "An IoT-based system designed to help partially paralyzed patients by predicting urination timing and alerting caregivers in advance.",
 
       "problem": "Patients depend heavily on caregivers for basic needs, affecting independence and dignity.",
-      "solution": "Built a predictive system using sensor data to anticipate urination events and notify caregivers beforehand.",
+
+      "solution": "Created a predictive system using sensor data to identify patterns and trigger alerts before events occur.",
+
+      "system": "Sensor Data → Pattern Detection → Prediction → Alert",
+
+      "impact": "Improves patient dignity, reduces caregiver workload, and enhances overall care efficiency.",
 
       "tech": ["IoT Sensors", "Data Analysis", "Prediction Model"],
-      "system": "Sensor Data → Pattern Detection → Prediction → Alert System",
-
-      "impact": "Improves patient dignity, reduces caregiver workload, and enhances quality of care.",
-      
       "image": "images/iot.jpg",
       "github": "",
       "demo": ""
