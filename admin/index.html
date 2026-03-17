@@ -1,21 +1,8 @@
-<script>
-fetch("content.json")
-  .then(res => res.json())
-  .then(data => {
-
-    document.getElementById("name").innerText = data.name;
-    document.getElementById("about").innerText = data.about;
-    document.getElementById("contact").innerText = data.contact;
-
-    let projectHTML = "";
-    data.projects.forEach(p => {
-      projectHTML += `<div>
-        <h3>${p.title}</h3>
-        <p>${p.description}</p>
-      </div>`;
-    });
-
-    document.getElementById("projects").innerHTML = projectHTML;
-
-  });
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <script src="https://unpkg.com/decap-cms@latest/dist/decap-cms.js"></script>
+</head>
+<body></body>
+</html>
