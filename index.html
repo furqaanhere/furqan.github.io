@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>Furqan Portfolio</title>
 
 <style>
@@ -12,6 +13,7 @@ body{
     font-family: Arial;
     background:#020617;
     color:white;
+    touch-action: manipulation;
 }
 
 /* BACKGROUND */
@@ -39,9 +41,7 @@ header{
     backdrop-filter:blur(15px);
 }
 
-header h1{
-    color:#38bdf8;
-}
+header h1{color:#38bdf8;}
 
 /* HERO */
 .hero{
@@ -50,21 +50,17 @@ header h1{
     justify-content:center;
     align-items:center;
     flex-direction:column;
-    text-align:center;
 }
 
 /* SECTION */
-section{
-    padding:60px 20px;
-}
+section{padding:60px 20px;}
 
-/* GLASS DETAILS */
+/* GLASS */
 details{
   background:rgba(15,23,42,0.25);
   padding:15px;
   border-radius:10px;
   backdrop-filter:blur(15px);
-  border:1px solid rgba(56,189,248,0.2);
 }
 
 /* PROJECTS */
@@ -74,26 +70,23 @@ details{
   gap:25px;
 }
 
+/* 🔥 3D CARD */
 .card{
   border-radius:16px;
   background:rgba(15,23,42,0.25);
   backdrop-filter:blur(20px);
   border:1px solid rgba(56,189,248,0.2);
   overflow:hidden;
-  transition:0.4s;
-  transform:translateY(40px);
+  transition:transform 0.2s ease;
+  transform-style:preserve-3d;
+  perspective:1000px;
   opacity:0;
-  cursor:pointer;
+  transform:translateY(40px);
 }
 
 .card.show{
-  transform:translateY(0);
   opacity:1;
-}
-
-.card:hover{
-  transform:translateY(-10px) scale(1.02);
-  box-shadow:0 10px 40px rgba(56,189,248,0.3);
+  transform:translateY(0);
 }
 
 .card img{
@@ -109,7 +102,6 @@ details{
   padding:4px 8px;
   margin:3px;
   border-radius:6px;
-  display:inline-block;
 }
 
 /* SKILLS */
@@ -132,8 +124,6 @@ details{
   position:fixed;
   width:100%;
   height:100%;
-  top:0;
-  left:0;
   background:rgba(0,0,0,0.8);
   justify-content:center;
   align-items:center;
@@ -143,7 +133,6 @@ details{
 #modalContent{
   background:rgba(15,23,42,0.3);
   backdrop-filter:blur(20px);
-  border:1px solid rgba(56,189,248,0.2);
   padding:20px;
   border-radius:10px;
   max-width:500px;
@@ -165,7 +154,6 @@ details{
 <h2>I build <span id="typing"></span></h2>
 </section>
 
-<!-- ABOUT -->
 <section>
 <h2>About</h2>
 <details>
@@ -174,19 +162,16 @@ details{
 </details>
 </section>
 
-<!-- SKILLS -->
 <section>
 <h2>Skills</h2>
 <div id="skills" class="skills"></div>
 </section>
 
-<!-- PROJECTS -->
 <section>
 <h2>Projects</h2>
 <div id="projects" class="projects"></div>
 </section>
 
-<!-- CONTACT -->
 <section>
 <h2>Contact</h2>
 <p id="contact"></p>
@@ -197,12 +182,10 @@ details{
 <div id="modalContent">
 <h2 id="modalTitle"></h2>
 <p id="modalDesc"></p>
-
 <p><b>Problem:</b> <span id="modalProblem"></span></p>
 <p><b>Solution:</b> <span id="modalSolution"></span></p>
 <p><b>System:</b> <span id="modalSystem"></span></p>
 <p><b>Impact:</b> <span id="modalImpact"></span></p>
-
 <div id="modalTech"></div>
 <br>
 <button onclick="closeModal()">Close</button>
@@ -219,14 +202,12 @@ fetch("content.json")
 document.getElementById("name").innerText=data.name;
 document.getElementById("tagline").innerText=data.tagline;
 
-// ABOUT
 document.getElementById("about").innerHTML=`
 <p>${data.about.intro}</p>
 <p>${data.about.approach}</p>
 <p>${data.about.focus}</p>
 `;
 
-// CONTACT
 document.getElementById("contact").innerHTML=
 `Email: <a href="mailto:${data.contact.email}">${data.contact.email}</a><br>
 <a href="${data.contact.linkedin}" target="_blank">LinkedIn</a>`;
@@ -254,7 +235,7 @@ html+=`
 });
 document.getElementById("projects").innerHTML=html;
 
-// ANIMATION
+// SCROLL ANIMATION
 function reveal(){
 document.querySelectorAll(".card").forEach(c=>{
 if(c.getBoundingClientRect().top<window.innerHeight-120){
@@ -265,35 +246,61 @@ c.classList.add("show");
 window.addEventListener("scroll",reveal);
 reveal();
 
+// 🔥 3D TILT EFFECT
+document.querySelectorAll(".card").forEach(card=>{
+card.addEventListener("mousemove",e=>{
+let rect=card.getBoundingClientRect();
+let x=e.clientX-rect.left;
+let y=e.clientY-rect.top;
+
+let rotateX=-(y-rect.height/2)/10;
+let rotateY=(x-rect.width/2)/10;
+
+card.style.transform=`rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+});
+
+card.addEventListener("mouseleave",()=>{
+card.style.transform="rotateX(0) rotateY(0)";
+});
+});
+
 });
 
 // MODAL
+let modalOpen=false;
 function openModal(p){
-document.getElementById("modal").style.display="flex";
+if(modalOpen){closeModal();return;}
+modalOpen=true;
 
+document.getElementById("modal").style.display="flex";
 document.getElementById("modalTitle").innerText=p.title;
 document.getElementById("modalDesc").innerText=p.description||"";
 document.getElementById("modalProblem").innerText=p.problem||"";
 document.getElementById("modalSolution").innerText=p.solution||"";
 document.getElementById("modalSystem").innerText=p.system||"";
 document.getElementById("modalImpact").innerText=p.impact||"";
-
 document.getElementById("modalTech").innerHTML=
 (p.tech||[]).map(t=>`<span class="tag">${t}</span>`).join("");
 }
 
 function closeModal(){
+modalOpen=false;
 document.getElementById("modal").style.display="none";
 }
 
-// PARTICLES
+// CLICK OUTSIDE
+document.getElementById("modal").addEventListener("click",e=>{
+if(e.target.id==="modal") closeModal();
+});
+
+// PARTICLES (OPTIMIZED)
 const canvas=document.getElementById("particleCanvas");
 const ctx=canvas.getContext("2d");
 canvas.width=innerWidth;
 canvas.height=innerHeight;
 
 let particles=[];
-for(let i=0;i<60;i++){
+for(let i=0;i<35;i++){
 particles.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
@@ -316,16 +323,16 @@ ctx.fill();
 });
 
 for(let i=0;i<particles.length;i++){
-for(let j=i+1;j<particles.length;j++){
-let dx=particles[i].x-particles[j].x;
-let dy=particles[i].y-particles[j].y;
+for(let j=i+1;j<i+4;j++){
+let dx=particles[i].x-particles[j]?.x;
+let dy=particles[i].y-particles[j]?.y;
 let dist=Math.sqrt(dx*dx+dy*dy);
 
-if(dist<120){
+if(dist<100){
 ctx.beginPath();
 ctx.moveTo(particles[i].x,particles[i].y);
 ctx.lineTo(particles[j].x,particles[j].y);
-ctx.strokeStyle="rgba(56,189,248,0.2)";
+ctx.strokeStyle="rgba(56,189,248,0.1)";
 ctx.stroke();
 }
 }
@@ -334,12 +341,6 @@ ctx.stroke();
 requestAnimationFrame(animate);
 }
 animate();
-
-// TOUCH EFFECT
-document.addEventListener("touchstart",()=>{
-document.body.style.filter="brightness(1.2)";
-setTimeout(()=>document.body.style.filter="brightness(1)",200);
-});
 
 // TYPING
 const words=["AI systems","real-world solutions","innovative tech"];
