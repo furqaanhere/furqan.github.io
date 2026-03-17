@@ -3,196 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Furqan Ahmad Bhat</title>
+<title>Furqan Portfolio</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
     font-family: Arial;
+    background:#020617;
     color:white;
-    overflow-x:hidden;
 }
 
 /* BACKGROUND */
 .background{
     position:fixed;
-    width:120%;
-    height:120%;
-    top:-10%;
-    left:-10%;
-    background:
-        linear-gradient(rgba(2,6,23,0.55), rgba(2,6,23,0.7)),
-        url("photo.jpg");
-    background-size: cover;
-    background-position: center;
-    z-index:-3;
-    transform: scale(1.05);
-    transition: transform 0.3s ease-out, filter 0.3s ease-out;
-}
-
-/* PARTICLES */
-#particleCanvas{
-    position:fixed;
     width:100%;
     height:100%;
+    background:url("photo.jpg") center/cover no-repeat;
     z-index:-2;
+    filter:brightness(0.6);
 }
 
 /* HEADER */
 header{
-    display:flex;
-    justify-content:space-between;
-    padding:15px 25px;
-    position:fixed;
-    width:100%;
+    padding:20px;
+    text-align:center;
     background:rgba(0,0,0,0.4);
     backdrop-filter:blur(10px);
 }
 
-header h2{
+header h1{
     color:#38bdf8;
 }
 
 /* HERO */
 .hero{
-    height:80vh;
+    height:70vh;
     display:flex;
+    flex-direction:column;
     justify-content:center;
     align-items:center;
-    flex-direction:column;
+    text-align:center;
 }
 
-.highlight{
-    background:linear-gradient(90deg,#38bdf8,#00f2ff,#38bdf8);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+.hero h2{
+    font-size:2rem;
 }
 
-section{padding:60px 20px;}
-
-details{
-    background: rgba(30,41,59,0.35);
-    padding:15px;
-    margin:12px 0;
-    border-radius:10px;
-    backdrop-filter: blur(10px);
+/* SECTIONS */
+section{
+    padding:60px 20px;
 }
 
-summary{color:#38bdf8;}
+/* PROJECT GRID */
+.projects{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
 
+/* CARD */
+.card{
+    background:rgba(30,41,59,0.4);
+    border-radius:12px;
+    overflow:hidden;
+    backdrop-filter:blur(10px);
+    transform:translateY(40px);
+    opacity:0;
+    transition:0.5s;
+}
+
+.card.show{
+    transform:translateY(0);
+    opacity:1;
+}
+
+.card img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+.card h3{
+    padding:10px;
+    color:#38bdf8;
+}
+
+.card p{
+    padding:0 10px 15px;
+}
+
+/* CONTACT */
+.contact{
+    text-align:center;
+}
+
+/* FOOTER */
+footer{
+    text-align:center;
+    padding:20px;
+    opacity:0.7;
+}
 </style>
 </head>
 
 <body>
 
 <div class="background"></div>
-<canvas id="particleCanvas"></canvas>
 
 <header>
-<h2 id="name"></h2>
+<h1 id="name"></h1>
+<p id="tagline"></p>
 </header>
 
 <section class="hero">
-<h1>I build <span class="highlight" id="typing"></span></h1>
-<p id="tagline"></p>
+<h2>I build <span id="typing"></span></h2>
 </section>
 
 <!-- ABOUT -->
 <section>
-<h2>About Me</h2>
-
-<details>
-<summary>Introduction</summary>
-<p id="about_intro"></p>
-<p id="about_approach"></p>
-</details>
-
-<details>
-<summary>Core Strength</summary>
-<p id="about_strength"></p>
-</details>
-
+<h2>About</h2>
+<p id="about"></p>
 </section>
 
 <!-- PROJECTS -->
 <section>
 <h2>Projects</h2>
-
-<details>
-<summary>Apple Grading System (AGS)</summary>
-<p id="p1_problem"></p>
-<p id="p1_solution"></p>
-<p id="p1_system"></p>
-<p id="p1_model"></p>
-<p id="p1_impact"></p>
-</details>
-
-<details>
-<summary>Tiwzz Startup</summary>
-<p id="p2_problem"></p>
-<p id="p2_solution"></p>
-<p id="p2_system"></p>
-<p id="p2_impact"></p>
-</details>
-
-<details>
-<summary>IoT Health Monitoring Device</summary>
-<p id="p3_problem"></p>
-<p id="p3_solution"></p>
-<p id="p3_system"></p>
-<p id="p3_impact"></p>
-</details>
-
+<div id="projects" class="projects"></div>
 </section>
 
 <!-- CONTACT -->
-<section>
+<section class="contact">
 <h2>Contact</h2>
-<p id="contact_email"></p>
+<p id="contact"></p>
 </section>
 
-<footer>© 2026 Furqan Ahmad Bhat</footer>
+<footer>© 2026 Furqan</footer>
 
 <script>
 
-/* LOAD DATA */
+/* LOAD CMS DATA */
 fetch("content.json")
-.then(res => res.json())
-.then(data => {
+.then(res=>res.json())
+.then(data=>{
 
-document.getElementById("name").innerText = data.name;
-document.getElementById("tagline").innerText = data.tagline;
-
-// ABOUT
-document.getElementById("about_intro").innerText = data.about.intro;
-document.getElementById("about_approach").innerText = data.about.approach;
-document.getElementById("about_strength").innerText = data.about.strength;
-
-// PROJECT 1
-document.getElementById("p1_problem").innerText = "Problem: " + data.projects[0].problem;
-document.getElementById("p1_solution").innerText = "Solution: " + data.projects[0].solution;
-document.getElementById("p1_system").innerText = "System: " + data.projects[0].system;
-document.getElementById("p1_model").innerText = "Model: " + data.projects[0].model;
-document.getElementById("p1_impact").innerText = "Impact: " + data.projects[0].impact;
-
-// PROJECT 2
-document.getElementById("p2_problem").innerText = "Problem: " + data.projects[1].problem;
-document.getElementById("p2_solution").innerText = "Solution: " + data.projects[1].solution;
-document.getElementById("p2_system").innerText = "System: " + data.projects[1].system;
-document.getElementById("p2_impact").innerText = "Impact: " + data.projects[1].impact;
-
-// PROJECT 3
-document.getElementById("p3_problem").innerText = "Problem: " + data.projects[2].problem;
-document.getElementById("p3_solution").innerText = "Solution: " + data.projects[2].solution;
-document.getElementById("p3_system").innerText = "System: " + data.projects[2].system;
-document.getElementById("p3_impact").innerText = "Impact: " + data.projects[2].impact;
-
-// CONTACT
-document.getElementById("contact_email").innerHTML =
+// BASIC INFO
+document.getElementById("name").innerText=data.name;
+document.getElementById("tagline").innerText=data.tagline;
+document.getElementById("about").innerText=data.about;
+document.getElementById("contact").innerHTML=
 `Email: <a href="mailto:${data.contact}">${data.contact}</a>`;
 
+// PROJECTS (UNLIMITED)
+let html="";
+data.projects.forEach(p=>{
+html+=`
+<div class="card">
+<img src="${p.image}" alt="">
+<h3>${p.title}</h3>
+<p>${p.description}</p>
+</div>
+`;
 });
+document.getElementById("projects").innerHTML=html;
+
+// ANIMATION ON SCROLL
+const cards=document.querySelectorAll(".card");
+
+function reveal(){
+cards.forEach(c=>{
+const top=c.getBoundingClientRect().top;
+if(top<window.innerHeight-50){
+c.classList.add("show");
+}
+});
+}
+window.addEventListener("scroll",reveal);
+reveal();
+
+});
+
+/* TYPING EFFECT */
+const words=["AI systems","real-world solutions","innovative tech"];
+let i=0,j=0,del=false;
+
+function type(){
+let el=document.getElementById("typing");
+let word=words[i];
+
+if(!del){
+el.textContent=word.substring(0,j++);
+if(j>word.length){del=true;setTimeout(type,1000);return;}
+}else{
+el.textContent=word.substring(0,j--);
+if(j===0){del=false;i=(i+1)%words.length;}
+}
+setTimeout(type,del?40:80);
+}
+type();
 
 </script>
 
