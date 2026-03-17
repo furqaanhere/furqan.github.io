@@ -6,22 +6,36 @@
 
   <!-- Netlify Identity -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-
-  <!-- Decap CMS -->
-  <script src="https://unpkg.com/decap-cms@latest/dist/decap-cms.js"></script>
 </head>
 
 <body>
 
 <script>
   if (window.netlifyIdentity) {
+
+    // Initialize
     window.netlifyIdentity.on("init", user => {
+      // If no user → open login
       if (!user) {
-        window.netlifyIdentity.open(); // FORCE LOGIN POPUP
+        window.netlifyIdentity.open();
       }
     });
+
+    // Handle login
+    window.netlifyIdentity.on("login", () => {
+      document.location.href = "/admin/";
+    });
+
+    // 🔥 IMPORTANT: handle invite/recovery tokens
+    if (window.location.hash.includes("invite_token") || window.location.hash.includes("recovery_token")) {
+      window.netlifyIdentity.open();
+    }
+
   }
 </script>
+
+<!-- Decap CMS -->
+<script src="https://unpkg.com/decap-cms@latest/dist/decap-cms.js"></script>
 
 </body>
 </html>
