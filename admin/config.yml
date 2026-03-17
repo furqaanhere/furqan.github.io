@@ -1,17 +1,22 @@
 backend:
-  name: test-repo
+  name: github
+  repo: furqaanhere/furqaanhere.github.io
+  branch: main
 
 media_folder: "images"
 public_folder: "/images"
 
 collections:
-  - name: "test"
-    label: "Test"
+  - name: "site"
+    label: "Website Content"
     files:
       - file: "content.json"
-        label: "Test File"
-        name: "test"
+        label: "Homepage"
+        name: "home"
         fields:
           - label: "Title"
             name: "title"
             widget: "string"
+          - label: "Description"
+            name: "description"
+            widget: "text"
