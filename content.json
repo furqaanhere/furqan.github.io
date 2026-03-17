@@ -1,34 +1,71 @@
 {
   "name": "Furqan Ahmad Bhat",
-  "tagline": "Data Science & Physics | Innovator | Startup Builder",
+  "tagline": "Data Science | Innovator | Startup Builder",
 
   "about": {
-    "intro": "I am Furqan Ahmad Bhat from Baramulla, pursuing a Bachelor's in Data Science and Physics.",
-    "approach": "I approach problems from a systems perspective and design scalable solutions.",
-    "strength": "My strength lies in integrating Machine Learning, IoT and real-world systems."
+    "intro": "I am Furqan Ahmad Bhat from Baramulla, pursuing a Bachelor's in Data Science and Physics. I focus on building intelligent systems that solve real-world problems.",
+    "approach": "I approach problems from a systems perspective — understanding input, processing, and output — and designing scalable, efficient solutions.",
+    "focus": "My work integrates Machine Learning, IoT, and real-world deployment, ensuring that solutions are not just theoretical but practical and impactful."
   },
 
   "projects": [
     {
-      "problem": "Manual grading is inconsistent and slow",
-      "solution": "AI based grading system using CNN",
-      "system": "Image → CNN → Sorting",
-      "model": "Convolution layers detect patterns",
-      "impact": "Improves efficiency"
+      "title": "Apple Grading System (AGS)",
+      "short": "AI-based automated apple grading using computer vision",
+      "description": "A complete automation system designed to classify apples based on quality using Convolutional Neural Networks (CNN). It replaces manual grading with accurate, fast, and scalable AI-based sorting.",
+
+      "problem": "Manual grading of apples is inconsistent, slow, and requires heavy labor, leading to inefficiency and loss in quality control.",
+      "solution": "Developed an AI-based grading system using image processing and CNN models to classify apples based on color, texture, and defects.",
+
+      "tech": ["Python", "OpenCV", "TensorFlow", "CNN"],
+      "system": "Image Capture → Preprocessing → CNN Model → Classification → Sorting Mechanism",
+
+      "impact": "Improves grading accuracy, reduces human effort, and enables scalable automation in agriculture.",
+      
+      "image": "images/apple.jpg",
+      "github": "",
+      "demo": ""
     },
+
     {
-      "problem": "Restaurants lack reach",
-      "solution": "Tiwzz hyperlocal delivery",
-      "system": "Order → Delivery",
-      "impact": "Boosts local economy"
+      "title": "Tiwzz (Startup)",
+      "short": "Hyperlocal food delivery platform",
+      "description": "A startup focused on connecting small rural restaurants with nearby customers through a hyperlocal delivery system within a 10–15 km radius.",
+
+      "problem": "Rural restaurants struggle with visibility and customer reach, leading to low daily income.",
+      "solution": "Created a localized delivery platform that connects nearby customers with small restaurants, increasing accessibility and sales.",
+
+      "tech": ["Mobile App", "Local Network System"],
+      "system": "Restaurant Onboarding → Order Placement → Delivery → Payment",
+
+      "impact": "Boosts income of small businesses and strengthens the local economy.",
+      
+      "image": "images/tiwzz.jpg",
+      "github": "",
+      "demo": ""
     },
+
     {
-      "problem": "Patients depend on caregivers",
-      "solution": "Predictive alert system",
-      "system": "Sensor → Prediction",
-      "impact": "Improves dignity"
+      "title": "IoT Health Monitoring Device",
+      "short": "Predictive health alert system",
+      "description": "An IoT-based system designed for partially paralyzed patients to predict urination timing and alert caregivers in advance.",
+
+      "problem": "Patients depend heavily on caregivers for basic needs, affecting independence and dignity.",
+      "solution": "Built a predictive system using sensor data to anticipate urination events and notify caregivers beforehand.",
+
+      "tech": ["IoT Sensors", "Data Analysis", "Prediction Model"],
+      "system": "Sensor Data → Pattern Detection → Prediction → Alert System",
+
+      "impact": "Improves patient dignity, reduces caregiver workload, and enhances quality of care.",
+      
+      "image": "images/iot.jpg",
+      "github": "",
+      "demo": ""
     }
   ],
 
-  "contact": "furqan8191@gmail.com"
+  "contact": {
+    "email": "furqan8191@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/furqan-bhat-577192269"
+  }
 }
