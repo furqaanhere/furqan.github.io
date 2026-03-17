@@ -1,12 +1,17 @@
 backend:
-  name: test-repo
+  name: github
+  repo: furqaanhere/furqaanhere.github.io
+
+media_folder: "images"
+public_folder: "/images"
 
 collections:
-  - name: "test"
-    label: "Test Content"
+  - name: "site"
+    label: "Website Content"
     files:
       - file: "content.json"
         label: "Homepage"
         name: "home"
         fields:
           - { label: "Title", name: "title", widget: "string" }
+          - { label: "Description", name: "description", widget: "text" }
