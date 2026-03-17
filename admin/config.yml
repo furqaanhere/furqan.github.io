@@ -1,0 +1,17 @@
+backend:
+  name: test-repo
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "test"
+    label: "Test"
+    files:
+      - file: "content.json"
+        label: "Test File"
+        name: "test"
+        fields:
+          - label: "Title"
+            name: "title"
+            widget: "string"
