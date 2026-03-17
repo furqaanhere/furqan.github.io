@@ -35,7 +35,7 @@
       "impact": "Improves accuracy, reduces human effort, and enables scalable automation in agriculture.",
 
       "tech": ["Python", "OpenCV", "TensorFlow", "CNN"],
-      "image": "images/apple.jpg",
+      "image": "apple.jpg",
       "github": "",
       "demo": ""
     },
@@ -55,7 +55,7 @@
       "impact": "Increases income of small businesses and strengthens the local economy.",
 
       "tech": ["App System", "Local Delivery Model"],
-      "image": "images/tiwzz.jpg",
+      "image": "tiwzz.jpg",
       "github": "",
       "demo": ""
     },
@@ -75,7 +75,7 @@
       "impact": "Improves patient dignity, reduces caregiver workload, and enhances overall care efficiency.",
 
       "tech": ["IoT Sensors", "Data Analysis", "Prediction Model"],
-      "image": "images/iot.jpg",
+      "image": "IoT.jpg",
       "github": "",
       "demo": ""
     }
