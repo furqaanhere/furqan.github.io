@@ -5,6 +5,9 @@ backend:
 media_folder: "images"
 public_folder: "/images"
 
+media_library:
+  name: "uploadcare"
+
 collections:
   - name: "site"
     label: "Website Content"
@@ -13,5 +16,9 @@ collections:
         label: "Homepage"
         name: "home"
         fields:
-          - { label: "Title", name: "title", widget: "string" }
-          - { label: "Description", name: "description", widget: "text" }
+          - label: "Title"
+            name: "title"
+            widget: "string"
+          - label: "Description"
+            name: "description"
+            widget: "text"
