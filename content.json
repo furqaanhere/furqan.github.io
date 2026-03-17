@@ -1,15 +1,34 @@
 {
-  "name": "Furqan",
-  "about": "I am a Data Science student and innovator.",
+  "name": "Furqan Ahmad Bhat",
+  "tagline": "Data Science & Physics | Innovator | Startup Builder",
+
+  "about": {
+    "intro": "I am Furqan Ahmad Bhat from Baramulla, pursuing a Bachelor's in Data Science and Physics.",
+    "approach": "I approach problems from a systems perspective and design scalable solutions.",
+    "strength": "My strength lies in integrating Machine Learning, IoT and real-world systems."
+  },
+
   "projects": [
     {
-      "title": "Apple Grading System",
-      "description": "AI-based grading system"
+      "problem": "Manual grading is inconsistent and slow",
+      "solution": "AI based grading system using CNN",
+      "system": "Image → CNN → Sorting",
+      "model": "Convolution layers detect patterns",
+      "impact": "Improves efficiency"
     },
     {
-      "title": "Tiwzz",
-      "description": "Food delivery startup"
+      "problem": "Restaurants lack reach",
+      "solution": "Tiwzz hyperlocal delivery",
+      "system": "Order → Delivery",
+      "impact": "Boosts local economy"
+    },
+    {
+      "problem": "Patients depend on caregivers",
+      "solution": "Predictive alert system",
+      "system": "Sensor → Prediction",
+      "impact": "Improves dignity"
     }
   ],
+
   "contact": "furqan8191@gmail.com"
 }
