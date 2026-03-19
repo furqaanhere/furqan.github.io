@@ -200,7 +200,7 @@ img:hover{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, doc, getDoc } 
+import { getFirestore, doc, onSnapshot } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -212,16 +212,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* LOAD DATA */
-async function load(){
-
-let snap = await getDoc(doc(db,"portfolio","data"));
+/* 🔥 AUTO SYNC */
+onSnapshot(doc(db,"portfolio","data"), (snap)=>{
 
 if(!snap.exists()) return;
 
 let d = snap.data();
 
 /* PROFILE */
+document.getElementById("name").innerText = d.name || "Furqan Ahmad Bhat";
 document.getElementById("tagline").innerText = d.tagline || "";
 document.getElementById("about").innerText = d.about?.intro || "";
 
@@ -244,7 +243,6 @@ function renderTags(id, arr){
   });
 }
 
-/* LOAD TAGS */
 renderTags("skills", d.skills);
 renderTags("tools", d.tools);
 renderTags("strengths", d.strengths);
@@ -267,9 +265,7 @@ div.innerHTML=`
 projDiv.appendChild(div);
 });
 
-}
-
-load();
+});
 
 </script>
 
