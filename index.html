@@ -7,101 +7,23 @@
 <title>Furqan Portfolio</title>
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;}
 
-/* 🔥 MODAL UPGRADE */
-
-#modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.82);
-  justify-content:center;
-  align-items:center;
-  z-index:1000;
-  padding:20px;
-}
-
-#modalContent{
-  width:min(700px, 100%);
-  max-height:90vh;
-  overflow-y:auto;
-  background:rgba(15,23,42,0.35);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  border:1px solid rgba(56,189,248,0.2);
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 10px 40px rgba(0,0,0,0.35);
-}
-
-#modalImage{
-  width:100%;
-  height:240px;
-  object-fit:cover;
-  border-radius:12px;
-  margin-bottom:15px;
-}
-
-#modalTitle{
-  color:#38bdf8;
-  margin-bottom:10px;
-}
-
-#modalShort{
-  opacity:0.9;
-  margin-bottom:10px;
-}
-
-#modalDesc{
-  margin-bottom:14px;
-  line-height:1.6;
-}
-
-.modal-tags{
-  margin-top:12px;
-  margin-bottom:16px;
-}
-
-.modal-buttons{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:10px;
-  margin-bottom:12px;
-}
-
-.modal-buttons a,
-.close-btn{
-  display:inline-block;
-  padding:8px 14px;
-  border-radius:8px;
-  background:#38bdf8;
-  color:#000;
-  text-decoration:none;
-  border:none;
-  cursor:pointer;
-  font-size:14px;
-}
-
-.modal-buttons a:hover,
-.close-btn:hover{
-  background:#0ea5e9;
-}
 body{
-    font-family: Arial;
-    background:#020617;
-    color:white;
-    touch-action: manipulation;
+  font-family: Arial;
+  background:#020617;
+  color:white;
+  touch-action: manipulation;
 }
 
 /* BACKGROUND */
 .background{
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:url("photo.jpg") center/cover no-repeat;
-    z-index:-3;
-    filter:brightness(0.6);
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:url("photo.jpg") center/cover no-repeat;
+  z-index:-3;
+  filter:brightness(0.6);
 }
 
 #particleCanvas{
@@ -113,21 +35,20 @@ body{
 
 /* HEADER */
 header{
-    padding:20px;
-    text-align:center;
-    background:rgba(0,0,0,0.3);
-    backdrop-filter:blur(15px);
+  padding:20px;
+  text-align:center;
+  background:rgba(0,0,0,0.3);
+  backdrop-filter:blur(15px);
 }
-
 header h1{color:#38bdf8;}
 
 /* HERO */
 .hero{
-    height:70vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
+  height:70vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
 }
 
 /* SECTION */
@@ -148,16 +69,15 @@ details{
   gap:25px;
 }
 
-/* 🔥 3D CARD */
+/* CARD */
 .card{
   border-radius:16px;
   background:rgba(15,23,42,0.25);
   backdrop-filter:blur(20px);
   border:1px solid rgba(56,189,248,0.2);
   overflow:hidden;
-  transition:transform 0.2s ease;
+  transition:0.2s;
   transform-style:preserve-3d;
-  perspective:1000px;
   opacity:0;
   transform:translateY(40px);
 }
@@ -200,20 +120,55 @@ details{
 #modal{
   display:none;
   position:fixed;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.8);
+  inset:0;
+  background:rgba(0,0,0,0.82);
   justify-content:center;
   align-items:center;
   z-index:1000;
+  padding:20px;
+  opacity:0;
+  transition:0.3s ease;
+}
+
+#modal.active{
+  opacity:1;
 }
 
 #modalContent{
-  background:rgba(15,23,42,0.3);
+  width:min(700px,100%);
+  max-height:90vh;
+  overflow-y:auto;
+  background:rgba(15,23,42,0.35);
   backdrop-filter:blur(20px);
+  border-radius:18px;
   padding:20px;
-  border-radius:10px;
-  max-width:500px;
+  transform:scale(0.8);
+  opacity:0;
+  transition:0.3s ease;
+}
+
+#modal.active #modalContent{
+  transform:scale(1);
+  opacity:1;
+}
+
+#modalImage{
+  width:100%;
+  height:240px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+.modal-buttons a, .close-btn{
+  padding:8px 14px;
+  border-radius:8px;
+  background:#38bdf8;
+  color:#000;
+  text-decoration:none;
+  border:none;
+  cursor:pointer;
+  margin:5px;
 }
 </style>
 </head>
@@ -256,12 +211,9 @@ details{
 </section>
 
 <!-- MODAL -->
-
 <div id="modal">
   <div id="modalContent">
-
-    <img id="modalImage" src="" alt="">
-
+    <img id="modalImage">
     <h2 id="modalTitle"></h2>
     <p id="modalShort"></p>
     <p id="modalDesc"></p>
@@ -271,7 +223,7 @@ details{
     <p><b>System:</b> <span id="modalSystem"></span></p>
     <p><b>Impact:</b> <span id="modalImpact"></span></p>
 
-    <div id="modalTech" class="modal-tags"></div>
+    <div id="modalTech"></div>
 
     <div class="modal-buttons">
       <a id="modalGithub" target="_blank">GitHub</a>
@@ -279,15 +231,13 @@ details{
     </div>
 
     <button class="close-btn" onclick="closeModal()">Close</button>
-
   </div>
 </div>
+
 <script>
 
 // LOAD DATA
-fetch("content.json")
-.then(res=>res.json())
-.then(data=>{
+fetch("content.json").then(res=>res.json()).then(data=>{
 
 document.getElementById("name").innerText=data.name;
 document.getElementById("tagline").innerText=data.tagline;
@@ -303,27 +253,21 @@ document.getElementById("contact").innerHTML=
 <a href="${data.contact.linkedin}" target="_blank">LinkedIn</a>`;
 
 // SKILLS
-let skillHTML="";
-data.skills.forEach(s=>{
-skillHTML+=`<span class="skill">${s}</span>`;
-});
-document.getElementById("skills").innerHTML=skillHTML;
+document.getElementById("skills").innerHTML =
+data.skills.map(s=>`<span class="skill">${s}</span>`).join("");
 
 // PROJECTS
-let html="";
-data.projects.forEach(p=>{
-html+=`
+document.getElementById("projects").innerHTML =
+data.projects.map(p=>`
 <div class="card" onclick='openModal(${JSON.stringify(p)})'>
 <img src="${p.image}" onerror="this.src='photo.jpg'">
 <div class="card-content">
 <h3>${p.title}</h3>
 <p>${p.short}</p>
-<div>${(p.tech||[]).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+${(p.tech||[]).map(t=>`<span class="tag">${t}</span>`).join("")}
 </div>
 </div>
-`;
-});
-document.getElementById("projects").innerHTML=html;
+`).join("");
 
 // SCROLL ANIMATION
 function reveal(){
@@ -336,168 +280,98 @@ c.classList.add("show");
 window.addEventListener("scroll",reveal);
 reveal();
 
-// 🔥 3D TILT EFFECT
+// 3D EFFECT
 document.querySelectorAll(".card").forEach(card=>{
 card.addEventListener("mousemove",e=>{
-let rect=card.getBoundingClientRect();
-let x=e.clientX-rect.left;
-let y=e.clientY-rect.top;
-
-let rotateX=-(y-rect.height/2)/10;
-let rotateY=(x-rect.width/2)/10;
-
-card.style.transform=`rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+let r=card.getBoundingClientRect();
+let x=e.clientX-r.left;
+let y=e.clientY-r.top;
+card.style.transform=`rotateX(${-(y-r.height/2)/10}deg) rotateY(${(x-r.width/2)/10}deg)`;
 });
-
-card.addEventListener("mouseleave",()=>{
-card.style.transform="rotateX(0) rotateY(0)";
-});
+card.addEventListener("mouseleave",()=>card.style.transform="rotate(0)");
 });
 
 });
 
 // MODAL
-let modalOpen=false;
-
-let modalOpen=false;
-// 🔥 NEW MODAL SYSTEM
-
 function openModal(p){
+const modal=document.getElementById("modal");
+modal.style.display="flex";
+setTimeout(()=>modal.classList.add("active"),10);
 
-  const modal = document.getElementById("modal");
-modal.style.display = "flex";
+modalImage.src=p.image||"photo.jpg";
+modalTitle.innerText=p.title||"";
+modalShort.innerText=p.short||"";
+modalDesc.innerText=p.description||"";
+modalProblem.innerText=p.problem||"";
+modalSolution.innerText=p.solution||"";
+modalSystem.innerText=p.system||"";
+modalImpact.innerText=p.impact||"";
 
-setTimeout(()=>{
-  modal.classList.add("active");
-},10);
+modalTech.innerHTML=(p.tech||[]).map(t=>`<span class="tag">${t}</span>`).join("");
 
-  // IMAGE
-  const img = document.getElementById("modalImage");
-  img.src = p.image || "photo.jpg";
-  img.onerror = () => img.src = "photo.jpg";
+modalGithub.style.display=p.github?"inline-block":"none";
+modalGithub.href=p.github||"#";
 
-  // TEXT
-  document.getElementById("modalTitle").innerText = p.title || "";
-  document.getElementById("modalShort").innerText = p.short || "";
-  document.getElementById("modalDesc").innerText = p.description || "";
-
-  document.getElementById("modalProblem").innerText = p.problem || "";
-  document.getElementById("modalSolution").innerText = p.solution || "";
-  document.getElementById("modalSystem").innerText = p.system || "";
-  document.getElementById("modalImpact").innerText = p.impact || "";
-
-  // TECH TAGS
-  document.getElementById("modalTech").innerHTML =
-    (p.tech || []).map(t => `<span class="tag">${t}</span>`).join("");
-
-  // BUTTONS
-  const github = document.getElementById("modalGithub");
-  const demo = document.getElementById("modalDemo");
-
-  if(p.github){
-    github.href = p.github;
-    github.style.display = "inline-block";
-  } else {
-    github.style.display = "none";
-  }
-
-  if(p.demo){
-    demo.href = p.demo;
-    demo.style.display = "inline-block";
-  } else {
-    demo.style.display = "none";
-  }
+modalDemo.style.display=p.demo?"inline-block":"none";
+modalDemo.href=p.demo||"#";
 }
 
 function closeModal(){
-  const modal = document.getElementById("modal");
-
-  modal.classList.remove("active");
-
-  setTimeout(()=>{
-    modal.style.display = "none";
-  },300);
+const modal=document.getElementById("modal");
+modal.classList.remove("active");
+setTimeout(()=>modal.style.display="none",300);
 }
 
-// CLOSE ON OUTSIDE CLICK
-document.getElementById("modal").addEventListener("click",(e)=>{
-  if(e.target.id==="modal"){
-    closeModal();
-  }
-});
-// CLICK OUTSIDE
-document.getElementById("modal").addEventListener("click",e=>{
+document.getElementById("modal").onclick=e=>{
 if(e.target.id==="modal") closeModal();
-});
+};
 
-// PARTICLES (OPTIMIZED)
-const canvas=document.getElementById("particleCanvas");
-const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
+// PARTICLES
+const c=document.getElementById("particleCanvas");
+const ctx=c.getContext("2d");
+c.width=innerWidth;c.height=innerHeight;
 
-let particles=[];
+let p=[];
 for(let i=0;i<35;i++){
-particles.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-vx:(Math.random()-0.5),
-vy:(Math.random()-0.5)
-});
+p.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-0.5),vy:(Math.random()-0.5)});
 }
 
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
+function draw(){
+ctx.clearRect(0,0,c.width,c.height);
 
-particles.forEach(p=>{
-p.x+=p.vx;
-p.y+=p.vy;
-
-ctx.beginPath();
-ctx.arc(p.x,p.y,2,0,Math.PI*2);
-ctx.fillStyle="#38bdf8";
-ctx.fill();
+p.forEach(a=>{
+a.x+=a.vx;a.y+=a.vy;
+ctx.beginPath();ctx.arc(a.x,a.y,2,0,6.28);ctx.fillStyle="#38bdf8";ctx.fill();
 });
 
-for(let i=0;i<particles.length;i++){
+for(let i=0;i<p.length;i++){
 for(let j=i+1;j<i+4;j++){
-let dx=particles[i].x-particles[j]?.x;
-let dy=particles[i].y-particles[j]?.y;
-let dist=Math.sqrt(dx*dx+dy*dy);
-
-if(dist<100){
-ctx.beginPath();
-ctx.moveTo(particles[i].x,particles[i].y);
-ctx.lineTo(particles[j].x,particles[j].y);
+let dx=p[i].x-p[j]?.x;
+let dy=p[i].y-p[j]?.y;
+if(Math.sqrt(dx*dx+dy*dy)<100){
+ctx.beginPath();ctx.moveTo(p[i].x,p[i].y);
+ctx.lineTo(p[j].x,p[j].y);
 ctx.strokeStyle="rgba(56,189,248,0.1)";
 ctx.stroke();
 }
 }
 }
 
-requestAnimationFrame(animate);
+requestAnimationFrame(draw);
 }
-animate();
+draw();
 
 // TYPING
 const words=["AI systems","real-world solutions","innovative tech"];
-let i=0,j=0,del=false;
-
-function type(){
-let el=document.getElementById("typing");
-let word=words[i];
-
-if(!del){
-el.textContent=word.substring(0,j++);
-if(j>word.length){del=true;setTimeout(type,1000);return;}
-}else{
-el.textContent=word.substring(0,j--);
-if(j===0){del=false;i=(i+1)%words.length;}
-}
-setTimeout(type,del?40:80);
-}
-type();
-
+let i=0,j=0,d=false;
+(function t(){
+let w=words[i];
+typing.textContent=d?w.substring(0,j--):w.substring(0,j++);
+if(j===w.length+1){d=true;setTimeout(t,1000);return;}
+if(j===0){d=false;i=(i+1)%words.length;}
+setTimeout(t,d?40:80);
+})();
 </script>
 
 </body>
