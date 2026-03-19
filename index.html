@@ -9,91 +9,103 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-  font-family:'Segoe UI',sans-serif;
+  font-family:Arial;
   color:white;
+  background:#020617;
   overflow-x:hidden;
 }
 
-/* 🔥 PHOTO BACKGROUND */
-.bg{
+/* BACKGROUND IMAGE */
+.background{
   position:fixed;
-  top:0;
-  left:0;
   width:100%;
   height:100%;
-
-  background:
-    linear-gradient(rgba(2,6,23,0.7), rgba(2,6,23,0.9)),
-    url("photo.jpg");
-
-  background-size:cover;
-  background-position:center;
-
-  z-index:-5;
+  background:url("photo.jpg") center/cover no-repeat;
+  z-index:-3;
+  filter:brightness(0.6);
 }
 
-/* GLASS UI */
-.glass{
-  background:rgba(15,23,42,0.35);
-  backdrop-filter:blur(18px);
-  border-radius:16px;
+/* PARTICLES */
+#canvas{
+  position:fixed;
+  width:100%;
+  height:100%;
+  z-index:-2;
+}
+
+/* HEADER */
+header{
+  text-align:center;
   padding:20px;
-  margin:20px;
-  border:1px solid rgba(255,255,255,0.08);
+  background:rgba(0,0,0,0.3);
+  backdrop-filter:blur(10px);
 }
+
+header h1{color:#38bdf8;}
 
 /* HERO */
 .hero{
   height:70vh;
   display:flex;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
+  flex-direction:column;
 }
 
-/* GRID */
-.grid{
+/* SECTION */
+section{padding:60px 20px;}
+
+/* GLASS */
+.glass{
+  background:rgba(15,23,42,0.3);
+  backdrop-filter:blur(20px);
+  border-radius:12px;
+  padding:15px;
+}
+
+/* SKILLS */
+.skills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+}
+
+.skill{
+  background:rgba(56,189,248,0.2);
+  padding:6px 12px;
+  border-radius:8px;
+}
+
+/* PROJECTS */
+.projects{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
   gap:20px;
 }
 
-/* CARD */
 .card{
-  border-radius:16px;
+  background:rgba(15,23,42,0.3);
+  backdrop-filter:blur(20px);
+  border-radius:12px;
   overflow:hidden;
-  cursor:pointer;
   transition:0.3s;
+  transform-style:preserve-3d;
+  cursor:pointer;
 }
-.card:hover{transform:translateY(-10px);}
+
 .card img{
   width:100%;
   height:200px;
   object-fit:cover;
 }
-.card-content{padding:15px;}
+
+.card-content{padding:10px;}
 
 .tag{
-  background:rgba(255,255,255,0.1);
+  background:rgba(56,189,248,0.2);
   padding:4px 8px;
-  margin:2px;
-  border-radius:6px;
-}
-
-/* SKILLS */
-.skill{
-  display:inline-block;
-  padding:8px 12px;
-  margin:5px;
-  background:rgba(255,255,255,0.05);
-  border-radius:8px;
-}
-
-/* ACHIEVEMENTS */
-.ach{
-  margin:6px 0;
-  padding:8px;
-  background:rgba(255,255,255,0.05);
+  margin:3px;
   border-radius:6px;
 }
 
@@ -102,36 +114,26 @@ body{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.85);
+  background:rgba(0,0,0,0.8);
   justify-content:center;
   align-items:center;
 }
+
 #modalContent{
-  width:90%;
-  max-width:600px;
   background:#020617;
   padding:20px;
-  border-radius:12px;
+  border-radius:10px;
+  max-width:500px;
 }
-
-button{
-  padding:8px 12px;
-  background:#0ea5e9;
-  border:none;
-  border-radius:6px;
-  margin-top:10px;
-}
-
-a{color:#38bdf8;text-decoration:none;}
 </style>
 </head>
 
 <body>
 
-<!-- 🔥 BACKGROUND -->
-<div class="bg"></div>
+<div class="background"></div>
+<canvas id="canvas"></canvas>
 
-<header style="text-align:center;padding:20px;">
+<header>
 <h1 id="name"></h1>
 <p id="tagline"></p>
 </header>
@@ -140,108 +142,111 @@ a{color:#38bdf8;text-decoration:none;}
 <h2>I build <span id="typing"></span></h2>
 </section>
 
-<div class="grid">
-
-<div class="glass">
+<section>
 <h2>About</h2>
-<div id="about"></div>
-</div>
+<div id="about" class="glass"></div>
+</section>
 
-<div class="glass">
+<section>
 <h2>Skills</h2>
-<div id="skills"></div>
-</div>
+<div id="skills" class="skills"></div>
+</section>
 
-<div class="glass">
-<h2>Achievements</h2>
-<div id="achievements"></div>
-</div>
-
-<div class="glass">
-<h2>Resume</h2>
-<div id="resume"></div>
-</div>
-
-<div class="glass" style="grid-column:span 2;">
+<section>
 <h2>Projects</h2>
-<div id="projects" class="grid"></div>
-</div>
+<div id="projects" class="projects"></div>
+</section>
 
-<div class="glass">
+<section>
 <h2>Contact</h2>
-<div id="contact"></div>
-</div>
-
-</div>
+<p id="contact"></p>
+</section>
 
 <!-- MODAL -->
 <div id="modal">
 <div id="modalContent">
-<img id="modalImage" style="width:100%;height:200px;">
-<h2 id="modalTitle"></h2>
+<h3 id="modalTitle"></h3>
 <p id="modalDesc"></p>
 <button onclick="closeModal()">Close</button>
 </div>
 </div>
 
-<script>
+<!-- 🔥 FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC_i8vOeQZMdhaKLd32IbwKjUsTlm56Zpc",
+  authDomain: "furqaan-portfolio.firebaseapp.com",
+  projectId: "furqaan-portfolio",
+  storageBucket: "furqaan-portfolio.firebasestorage.app",
+  messagingSenderId: "1004771356492",
+  appId: "1:1004771356492:web:262c4927357bed2ce0e9e9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 /* LOAD DATA */
-let local = localStorage.getItem("data");
+async function loadData(){
 
-if(local){
-  loadData(JSON.parse(local));
-}else{
-  fetch("content.json")
-  .then(r=>r.json())
-  .then(loadData);
+let data;
+
+// 🔥 Try Firebase first
+try{
+const ref = doc(db,"portfolio","data");
+const snap = await getDoc(ref);
+if(snap.exists()) data = snap.data();
+}catch(e){}
+
+// fallback JSON
+if(!data){
+const res = await fetch("content.json");
+data = await res.json();
 }
 
-function loadData(data){
+render(data);
+}
 
-name.innerText=data.name;
-tagline.innerText=data.tagline;
+function render(data){
 
-// ABOUT
-about.innerHTML=`<p>${data.about?.intro || ""}</p>`;
+document.getElementById("name").innerText=data.name;
+document.getElementById("tagline").innerText=data.tagline;
 
-// CONTACT
-contact.innerHTML=`
-<p>Email: ${data.contact?.email || ""}</p>
-<a href="${data.contact?.linkedin || "#"}" target="_blank">LinkedIn</a>
-`;
+document.getElementById("about").innerHTML=
+`${data.about.intro}<br>${data.about.approach}<br>${data.about.focus}`;
 
-// SKILLS
-skills.innerHTML=(data.skills||[]).map(s=>
-`<span class="skill">${s}</span>`).join("");
+document.getElementById("contact").innerHTML=
+`Email: ${data.contact.email}<br>
+<a href="${data.contact.linkedin}" target="_blank">LinkedIn</a>`;
 
-// ACHIEVEMENTS
-achievements.innerHTML=(data.achievements||[]).map(a=>
-`<div class="ach">🏆 ${a}</div>`).join("");
+// skills
+document.getElementById("skills").innerHTML=
+data.skills.map(s=>`<span class="skill">${s}</span>`).join("");
 
-// RESUME
-resume.innerHTML=data.resume
-? `<a href="${data.resume}" target="_blank"><button>View Resume</button></a>`
-: `<p>No resume added</p>`;
-
-// PROJECTS
-projects.innerHTML=(data.projects||[]).map(p=>`
+// projects
+document.getElementById("projects").innerHTML=
+data.projects.map(p=>`
 <div class="card" onclick='openModal(${JSON.stringify(p)})'>
-<img src="${p.image}" onerror="this.src='photo.jpg'">
+<img src="${p.image}">
 <div class="card-content">
 <h3>${p.title}</h3>
 <p>${p.short}</p>
-${(p.tech||[]).map(t=>`<span class="tag">${t}</span>`).join("")}
 </div>
-</div>
-`).join("");
+</div>`).join("");
 
 }
 
-/* MODAL */
+loadData();
+</script>
+
+<!-- UI JS -->
+<script>
+
+// MODAL
 function openModal(p){
 modal.style.display="flex";
-modalImage.src=p.image;
 modalTitle.innerText=p.title;
 modalDesc.innerText=p.description;
 }
@@ -249,17 +254,41 @@ function closeModal(){
 modal.style.display="none";
 }
 
-/* TYPING */
-const words=["AI systems","future tech","innovative solutions"];
-let i=0,j=0,d=false;
+// PARTICLES
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
 
-(function t(){
+let p=[];
+for(let i=0;i<40;i++){
+p.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight});
+}
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+p.forEach(pt=>{
+ctx.beginPath();
+ctx.arc(pt.x,pt.y,2,0,6.28);
+ctx.fillStyle="#38bdf8";
+ctx.fill();
+});
+requestAnimationFrame(draw);
+}
+draw();
+
+// TYPING
+let words=["AI systems","real-world solutions","innovative tech"];
+let i=0,j=0,d=false;
+function type(){
+let el=document.getElementById("typing");
 let w=words[i];
-typing.textContent=d?w.substring(0,j--):w.substring(0,j++);
-if(j===w.length+1){d=true;setTimeout(t,1000);return;}
-if(j===0){d=false;i=(i+1)%words.length;}
-setTimeout(t,d?40:80);
-})();
+el.innerText=w.substring(0,j);
+if(!d){j++; if(j>w.length){d=true;setTimeout(type,800);return;}}
+else{j--; if(j==0){d=false;i=(i+1)%words.length;}}
+setTimeout(type,d?40:80);
+}
+type();
 
 </script>
 
