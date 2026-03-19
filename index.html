@@ -178,20 +178,32 @@ details{
 </section>
 
 <!-- MODAL -->
-<div id="modal">
-<div id="modalContent">
-<h2 id="modalTitle"></h2>
-<p id="modalDesc"></p>
-<p><b>Problem:</b> <span id="modalProblem"></span></p>
-<p><b>Solution:</b> <span id="modalSolution"></span></p>
-<p><b>System:</b> <span id="modalSystem"></span></p>
-<p><b>Impact:</b> <span id="modalImpact"></span></p>
-<div id="modalTech"></div>
-<br>
-<button onclick="closeModal()">Close</button>
-</div>
-</div>
 
+<div id="modal">
+  <div id="modalContent">
+
+    <img id="modalImage" src="" alt="">
+
+    <h2 id="modalTitle"></h2>
+    <p id="modalShort"></p>
+    <p id="modalDesc"></p>
+
+    <p><b>Problem:</b> <span id="modalProblem"></span></p>
+    <p><b>Solution:</b> <span id="modalSolution"></span></p>
+    <p><b>System:</b> <span id="modalSystem"></span></p>
+    <p><b>Impact:</b> <span id="modalImpact"></span></p>
+
+    <div id="modalTech" class="modal-tags"></div>
+
+    <div class="modal-buttons">
+      <a id="modalGithub" target="_blank">GitHub</a>
+      <a id="modalDemo" target="_blank">Demo</a>
+    </div>
+
+    <button class="close-btn" onclick="closeModal()">Close</button>
+
+  </div>
+</div>
 <script>
 
 // LOAD DATA
