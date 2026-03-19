@@ -3,178 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Furqan Tech Portfolio</title>
+
+<title>Furqan AI Portfolio</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-  font-family: 'Courier New', monospace;
+  font-family: 'Segoe UI', sans-serif;
   background:#020617;
-  color:#e2e8f0;
+  color:white;
   overflow-x:hidden;
 }
 
-/* GRID BACKGROUND */
+/* 🌈 ANIMATED BACKGROUND */
 body::before{
   content:"";
   position:fixed;
-  width:100%;
-  height:100%;
-  background-image:
-    linear-gradient(rgba(56,189,248,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56,189,248,0.05) 1px, transparent 1px);
-  background-size:40px 40px;
+  width:200%;
+  height:200%;
+  background:radial-gradient(circle at 20% 30%, #0ea5e9, transparent 40%),
+             radial-gradient(circle at 80% 70%, #6366f1, transparent 40%);
+  animation:bgMove 12s infinite linear;
   z-index:-3;
+  opacity:0.2;
 }
 
-/* SCAN LINE */
-body::after{
-  content:"";
-  position:fixed;
-  width:100%;
-  height:2px;
-  background:rgba(56,189,248,0.3);
-  animation:scan 4s linear infinite;
-  z-index:-2;
+@keyframes bgMove{
+  0%{transform:translate(0,0);}
+  50%{transform:translate(-10%, -10%);}
+  100%{transform:translate(0,0);}
 }
-@keyframes scan{
-  0%{top:0;}
-  100%{top:100%;}
+
+/* 🧊 GLASS */
+.glass{
+  background:rgba(15,23,42,0.4);
+  backdrop-filter:blur(20px);
+  border-radius:16px;
+  padding:25px;
+  border:1px solid rgba(255,255,255,0.1);
+  transition:0.3s;
 }
 
 /* HEADER */
 header{
   text-align:center;
   padding:20px;
-  background:rgba(0,0,0,0.4);
-  backdrop-filter:blur(10px);
-}
-
-header h1{
-  color:#38bdf8;
-  text-shadow:0 0 10px #38bdf8;
 }
 
 /* HERO */
 .hero{
-  height:70vh;
+  height:80vh;
   display:flex;
+  flex-direction:column;
   justify-content:center;
   align-items:center;
-  flex-direction:column;
-  text-align:center;
-}
-
-.hero h2{
-  font-size:2rem;
-  text-shadow:0 0 8px #38bdf8;
 }
 
 /* SECTIONS */
 section{
-  padding:60px 20px;
+  padding:80px 20px;
+  opacity:0;
+  transform:translateY(50px);
+  transition:0.8s;
 }
-
-/* GLASS PANEL */
-.glass{
-  background:rgba(15,23,42,0.4);
-  border:1px solid rgba(56,189,248,0.2);
-  backdrop-filter:blur(10px);
-  border-radius:12px;
-  padding:20px;
+section.show{
+  opacity:1;
+  transform:translateY(0);
 }
 
 /* SKILLS */
 .skills{
   display:flex;
   flex-wrap:wrap;
-  gap:10px;
+  gap:12px;
   justify-content:center;
 }
-
 .skill{
-  padding:6px 12px;
-  border:1px solid #38bdf8;
-  border-radius:8px;
-  box-shadow:0 0 5px #38bdf8;
+  padding:8px 16px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.05);
+  transition:0.3s;
+}
+.skill:hover{
+  transform:translateY(-5px);
 }
 
 /* PROJECTS */
 .projects{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:20px;
+  gap:25px;
 }
 
 .card{
-  border:1px solid rgba(56,189,248,0.2);
-  border-radius:12px;
+  border-radius:16px;
   overflow:hidden;
-  background:rgba(15,23,42,0.4);
   transition:0.3s;
   cursor:pointer;
+  transform-style:preserve-3d;
 }
 
 .card:hover{
-  transform:translateY(-5px);
-  box-shadow:0 0 20px #38bdf8;
+  transform:translateY(-10px) scale(1.03);
 }
 
 .card img{
   width:100%;
-  height:180px;
+  height:200px;
   object-fit:cover;
 }
 
 .card-content{padding:15px;}
 
 .tag{
-  border:1px solid #38bdf8;
-  padding:3px 6px;
-  margin:2px;
+  background:rgba(255,255,255,0.1);
+  padding:5px 8px;
   border-radius:6px;
 }
-
-/* LINKS */
-a{color:#38bdf8;text-decoration:none;}
-a:hover{text-shadow:0 0 5px #38bdf8;}
 
 /* MODAL */
 #modal{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.9);
+  background:rgba(0,0,0,0.85);
   justify-content:center;
   align-items:center;
 }
 
 #modalContent{
+  width:90%;
+  max-width:600px;
   background:#020617;
   padding:20px;
-  border:1px solid #38bdf8;
-  border-radius:10px;
+  border-radius:12px;
 }
 
+/* BUTTON */
 button{
-  margin-top:10px;
-  padding:8px;
-  background:#38bdf8;
+  padding:10px 16px;
   border:none;
+  border-radius:8px;
+  background:#0ea5e9;
   cursor:pointer;
+  transition:0.3s;
+}
+button:hover{
+  transform:scale(1.05);
 }
 
-/* TYPING CURSOR */
-#typing::after{
-  content:"|";
-  animation:blink 1s infinite;
-}
-@keyframes blink{
-  0%,100%{opacity:1;}
-  50%{opacity:0;}
-}
-
+/* LINKS */
+a{color:#0ea5e9;text-decoration:none;}
 </style>
 </head>
 
@@ -185,7 +165,7 @@ button{
 <p id="tagline"></p>
 </header>
 
-<section class="hero">
+<section class="hero show">
 <h2>I build <span id="typing"></span></h2>
 </section>
 
@@ -220,6 +200,7 @@ button{
 
 <script>
 
+// LOAD
 document.addEventListener("DOMContentLoaded",()=>{
 
 fetch("content.json")
@@ -253,6 +234,16 @@ ${p.tech.map(t=>`<span class="tag">${t}</span>`).join("")}
 </div>
 `).join("");
 
+// REVEAL
+const sections=document.querySelectorAll("section");
+window.addEventListener("scroll",()=>{
+sections.forEach(s=>{
+if(s.getBoundingClientRect().top<window.innerHeight-100){
+s.classList.add("show");
+}
+});
+});
+
 });
 
 });
@@ -269,18 +260,16 @@ modal.style.display="none";
 }
 
 // TYPING
-const words=["AI systems","smart solutions","future tech"];
+const words=["AI systems","future tech","smart solutions"];
 let i=0,j=0,d=false;
 
-function type(){
+(function t(){
 let w=words[i];
 typing.textContent=d?w.substring(0,j--):w.substring(0,j++);
-if(j===w.length+1){d=true;setTimeout(type,1000);return;}
+if(j===w.length+1){d=true;setTimeout(t,1000);return;}
 if(j===0){d=false;i=(i+1)%words.length;}
-setTimeout(type,d?40:80);
-}
-type();
-
+setTimeout(t,d?40:80);
+})();
 </script>
 
 </body>
