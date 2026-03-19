@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel</title>
+<title>Admin Premium</title>
 
 <style>
 body{
@@ -11,44 +9,64 @@ body{
   font-family:Arial;
   background:#020617;
   color:white;
+  display:flex;
 }
 
-.container{
-  max-width:900px;
-  margin:auto;
+/* SIDEBAR */
+.sidebar{
+  width:220px;
+  background:#020617;
+  border-right:1px solid rgba(56,189,248,0.2);
+  height:100vh;
   padding:20px;
 }
 
+.sidebar h2{
+  color:#38bdf8;
+}
+
+.nav button{
+  width:100%;
+  margin:10px 0;
+  padding:10px;
+  background:none;
+  border:1px solid rgba(56,189,248,0.2);
+  color:white;
+  cursor:pointer;
+  border-radius:6px;
+}
+
+.nav button.active{
+  background:#38bdf8;
+  color:black;
+}
+
+/* MAIN */
+.main{
+  flex:1;
+  padding:20px;
+  overflow:auto;
+}
+
+/* CARD */
 .card{
-  background:rgba(15,23,42,0.6);
+  background:rgba(15,23,42,0.5);
+  backdrop-filter:blur(10px);
   padding:20px;
   border-radius:12px;
   margin-bottom:20px;
-  border:1px solid rgba(56,189,248,0.2);
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-}
-
-input, textarea{
+/* INPUT */
+input,textarea{
   width:100%;
-  margin:8px 0;
   padding:10px;
-  border-radius:6px;
-  border:none;
-}
-
-button{
-  padding:10px;
+  margin:10px 0;
   border:none;
   border-radius:6px;
-  background:#38bdf8;
-  cursor:pointer;
 }
 
+/* TAGS */
 .skill{
   display:inline-block;
   background:#38bdf8;
@@ -66,67 +84,76 @@ button{
   border-radius:6px;
   cursor:pointer;
 }
+
+/* BUTTON */
+button.save{
+  background:#38bdf8;
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar">
+<h2>⚡ Admin</h2>
 
-<h1>🚀 Admin Panel</h1>
+<div class="nav">
+<button onclick="showTab('profile')" class="active">Profile</button>
+<button onclick="showTab('skills')">Skills</button>
+<button onclick="showTab('projects')">Projects</button>
+</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
 
 <!-- LOGIN -->
-<div class="card" id="loginBox">
-<h2>Login</h2>
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
+<div id="loginBox" class="card">
+<h3>Login</h3>
+<input id="email">
+<input id="password" type="password">
 <button onclick="login()">Login</button>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" style="display:none;">
-
-<div class="grid">
-
+<!-- PROFILE -->
+<div id="profile" class="tab" style="display:none;">
 <div class="card">
-<h3>Title</h3>
+<h3>Profile</h3>
 <input id="tagline">
-</div>
-
-<div class="card">
-<h3>Bio</h3>
 <textarea id="about"></textarea>
 </div>
-
 </div>
 
 <!-- SKILLS -->
+<div id="skillsTab" class="tab" style="display:none;">
 <div class="card">
-<h3>Skills (click to remove)</h3>
+<h3>Skills</h3>
 <div id="skills"></div>
-<input id="newSkill" placeholder="Add skill">
-<button onclick="addSkill()">+ Add Skill</button>
-</div>
+<input id="newSkill">
+<button onclick="addSkill()">+ Add</button>
 
-<!-- ACHIEVEMENTS -->
-<div class="card">
-<h3>Achievements (click to remove)</h3>
+<h3>Achievements</h3>
 <div id="achievements"></div>
-<input id="newAch" placeholder="Add achievement">
+<input id="newAch">
 <button onclick="addAch()">+ Add</button>
+</div>
 </div>
 
 <!-- PROJECTS -->
+<div id="projectsTab" class="tab" style="display:none;">
 <div class="card">
 <h3>Projects</h3>
 <div id="projects"></div>
 <button onclick="addProject()">+ Add Project</button>
 </div>
-
-<button onclick="saveData()">💾 Save All</button>
-<button onclick="logout()">Logout</button>
-
 </div>
+
+<button class="save" onclick="saveData()">💾 Save</button>
 
 </div>
 
@@ -153,75 +180,77 @@ window.login = async function(){
   try{
     await signInWithEmailAndPassword(auth,email.value.trim(),password.value.trim());
     loginBox.style.display="none";
-    dashboard.style.display="block";
+    showTab('profile');
     loadData();
   }catch(e){
     alert(e.message);
   }
 }
 
-/* LOGOUT */
-window.logout = ()=>location.reload();
+/* NAV */
+window.showTab = function(tab){
 
-/* ADD SKILL */
-window.addSkill = function(value){
-  let val = value || newSkill.value;
-  if(!val) return;
+document.querySelectorAll(".tab").forEach(t=>t.style.display="none");
 
-  let el = document.createElement("span");
-  el.className = "skill";
-  el.innerText = val;
+if(tab==="profile") document.getElementById("profile").style.display="block";
+if(tab==="skills") document.getElementById("skillsTab").style.display="block";
+if(tab==="projects") document.getElementById("projectsTab").style.display="block";
 
-  el.onclick = ()=>el.remove();
-
-  skills.appendChild(el);
-  newSkill.value="";
 }
 
-/* ADD ACHIEVEMENT */
-window.addAch = function(value){
-  let val = value || newAch.value;
-  if(!val) return;
+/* SKILL */
+window.addSkill = function(v){
+let val=v||newSkill.value;
+if(!val)return;
 
-  let el = document.createElement("div");
-  el.className = "ach";
-  el.innerText = val;
+let s=document.createElement("span");
+s.className="skill";
+s.innerText=val;
+s.onclick=()=>s.remove();
 
-  el.onclick = ()=>el.remove();
-
-  achievements.appendChild(el);
-  newAch.value="";
+skills.appendChild(s);
+newSkill.value="";
 }
 
-/* ADD PROJECT */
+/* ACH */
+window.addAch = function(v){
+let val=v||newAch.value;
+if(!val)return;
+
+let d=document.createElement("div");
+d.className="ach";
+d.innerText=val;
+d.onclick=()=>d.remove();
+
+achievements.appendChild(d);
+newAch.value="";
+}
+
+/* PROJECT */
 window.addProject = function(){
-  let div = document.createElement("div");
-  div.className = "card";
+let div=document.createElement("div");
+div.className="card";
 
-  div.innerHTML = `
-  <input placeholder="Title">
-  <input placeholder="Short">
-  <input placeholder="Image name (apple.jpg)">
-  <textarea placeholder="Description"></textarea>
-  <button onclick="this.parentElement.remove()">❌ Remove</button>
-  `;
+div.innerHTML=`
+<input placeholder="Title">
+<input placeholder="Short">
+<input placeholder="Image">
+<textarea placeholder="Description"></textarea>
+<button onclick="this.parentElement.remove()">❌</button>
+`;
 
-  projects.appendChild(div);
+projects.appendChild(div);
 }
 
-/* SAVE DATA */
+/* SAVE */
 window.saveData = async function(){
 
-let skillsArr = [...document.querySelectorAll("#skills .skill")]
-.map(s => s.innerText);
+let skillsArr=[...document.querySelectorAll(".skill")].map(s=>s.innerText);
+let achArr=[...document.querySelectorAll(".ach")].map(a=>a.innerText);
 
-let achArr = [...document.querySelectorAll("#achievements .ach")]
-.map(a => a.innerText);
-
-let projArr = [];
-
+let projArr=[];
 document.querySelectorAll("#projects .card").forEach(c=>{
-let i = c.querySelectorAll("input,textarea");
+let i=c.querySelectorAll("input,textarea");
 
 projArr.push({
 title:i[0].value,
@@ -231,50 +260,40 @@ description:i[3].value
 });
 });
 
-let data = {
+await setDoc(doc(db,"portfolio","data"),{
 tagline:tagline.value,
 about:{intro:about.value},
 skills:skillsArr,
 achievements:achArr,
 projects:projArr
-};
-
-await setDoc(doc(db,"portfolio","data"),data);
-
-alert("Saved successfully 🚀");
-}
-
-/* LOAD DATA */
-async function loadData(){
-
-let snap = await getDoc(doc(db,"portfolio","data"));
-
-if(snap.exists()){
-
-let d = snap.data();
-
-tagline.value = d.tagline || "";
-about.value = d.about?.intro || "";
-
-skills.innerHTML="";
-(d.skills || []).forEach(s=>addSkill(s));
-
-achievements.innerHTML="";
-(d.achievements || []).forEach(a=>addAch(a));
-
-projects.innerHTML="";
-(d.projects || []).forEach(p=>{
-addProject();
-let last = projects.lastChild.querySelectorAll("input,textarea");
-
-last[0].value = p.title;
-last[1].value = p.short;
-last[2].value = p.image;
-last[3].value = p.description;
 });
 
+alert("Saved 🚀");
 }
 
+/* LOAD */
+async function loadData(){
+let snap=await getDoc(doc(db,"portfolio","data"));
+
+if(snap.exists()){
+let d=snap.data();
+
+tagline.value=d.tagline||"";
+about.value=d.about?.intro||"";
+
+(d.skills||[]).forEach(s=>addSkill(s));
+(d.achievements||[]).forEach(a=>addAch(a));
+
+(d.projects||[]).forEach(p=>{
+addProject();
+let last=projects.lastChild.querySelectorAll("input,textarea");
+
+last[0].value=p.title;
+last[1].value=p.short;
+last[2].value=p.image;
+last[3].value=p.description;
+});
+}
 }
 
 </script>
