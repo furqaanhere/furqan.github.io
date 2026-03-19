@@ -7,8 +7,86 @@
 <title>Furqan Portfolio</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
 
+/* 🔥 MODAL UPGRADE */
+
+#modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.82);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+  padding:20px;
+}
+
+#modalContent{
+  width:min(700px, 100%);
+  max-height:90vh;
+  overflow-y:auto;
+  background:rgba(15,23,42,0.35);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(56,189,248,0.2);
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.35);
+}
+
+#modalImage{
+  width:100%;
+  height:240px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+#modalTitle{
+  color:#38bdf8;
+  margin-bottom:10px;
+}
+
+#modalShort{
+  opacity:0.9;
+  margin-bottom:10px;
+}
+
+#modalDesc{
+  margin-bottom:14px;
+  line-height:1.6;
+}
+
+.modal-tags{
+  margin-top:12px;
+  margin-bottom:16px;
+}
+
+.modal-buttons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+  margin-bottom:12px;
+}
+
+.modal-buttons a,
+.close-btn{
+  display:inline-block;
+  padding:8px 14px;
+  border-radius:8px;
+  background:#38bdf8;
+  color:#000;
+  text-decoration:none;
+  border:none;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.modal-buttons a:hover,
+.close-btn:hover{
+  background:#0ea5e9;
+}
 body{
     font-family: Arial;
     background:#020617;
