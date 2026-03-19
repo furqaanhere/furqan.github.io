@@ -3,11 +3,9 @@
   "tagline": "Data Science | Innovator | Startup Builder",
 
   "about": {
-    "intro": "I am Furqan Ahmad Bhat from Baramulla, currently pursuing a Bachelor's in Data Science and Physics. I focus on building intelligent systems that solve real-world problems rather than just theoretical models.",
-
-    "approach": "I approach problems from a systems perspective — understanding input, processing, and output — and then designing scalable and efficient solutions using data-driven methods.",
-
-    "focus": "My core interest lies in integrating Machine Learning, IoT, and real-world deployment to build systems that are practical, impactful, and scalable."
+    "intro": "I am Furqan Ahmad Bhat from Baramulla, pursuing a Bachelor's in Data Science and Physics.",
+    "approach": "I build real-world intelligent systems using AI, IoT, and data-driven approaches.",
+    "focus": "My focus is on solving practical problems with scalable systems."
   },
 
   "skills": [
@@ -15,74 +13,41 @@
     "Machine Learning",
     "Computer Vision",
     "IoT",
-    "Data Science",
-    "System Design"
+    "Data Science"
   ],
 
   "projects": [
     {
-      "title": "Apple Grading System (AGS)",
-      "short": "AI-based automated apple grading system",
+      "title": "Apple Grading System",
+      "short": "AI-based fruit grading",
+      "description": "A CNN-based system to classify apples based on quality.",
 
-      "description": "An end-to-end intelligent system that uses computer vision and CNN models to classify apples based on quality, color, and defects.",
+      "problem": "Manual grading is slow and inconsistent.",
+      "solution": "Automated classification using computer vision.",
+      "system": "Image → CNN → Sorting",
+      "impact": "Improves efficiency and accuracy in agriculture.",
 
-      "problem": "Manual grading of apples is inconsistent, slow, and labor-intensive, leading to inefficiency and inaccurate classification.",
-
-      "solution": "Developed a CNN-based system that analyzes apple images and classifies them into quality categories automatically.",
-
-      "system": "Image Capture → Preprocessing → CNN Model → Classification → Sorting",
-
-      "impact": "Improves accuracy, reduces human effort, and enables scalable automation in agriculture.",
-
-      "tech": ["Python", "OpenCV", "TensorFlow", "CNN"],
-      "image": "apple.jpg",
-      "github": "",
-      "demo": ""
+      "tech": ["Python", "CNN", "OpenCV"],
+      "image": "images/apple.jpg"
     },
 
     {
-      "title": "Tiwzz (Startup)",
-      "short": "Hyperlocal food delivery platform",
+      "title": "Tiwzz",
+      "short": "Hyperlocal delivery startup",
+      "description": "A platform connecting rural restaurants to customers.",
 
-      "description": "A startup initiative focused on connecting rural restaurants with nearby customers through a hyperlocal delivery system.",
+      "problem": "Rural restaurants lack customer reach.",
+      "solution": "Hyperlocal delivery system within 10–15 km.",
+      "system": "Order → Delivery → Payment",
+      "impact": "Boosts local economy and accessibility.",
 
-      "problem": "Small rural restaurants lack visibility and struggle to reach customers, resulting in low daily income.",
-
-      "solution": "Built a system that connects customers with nearby restaurants within a 10–15 km radius, improving accessibility.",
-
-      "system": "Restaurant Onboarding → Order Placement → Delivery → Payment",
-
-      "impact": "Increases income of small businesses and strengthens the local economy.",
-
-      "tech": ["App System", "Local Delivery Model"],
-      "image": "tiwzz.jpg",
-      "github": "",
-      "demo": ""
+      "tech": ["Startup", "Logistics"],
+      "image": "images/tiwzz.jpg"
     },
 
     {
-      "title": "IoT Health Monitoring Device",
-      "short": "Predictive health alert system",
+      "title": "IoT Health Device",
+      "short": "Smart patient alert system",
+      "description": "Predicts urination timing using sensor data.",
 
-      "description": "An IoT-based system designed to help partially paralyzed patients by predicting urination timing and alerting caregivers in advance.",
-
-      "problem": "Patients depend heavily on caregivers for basic needs, affecting independence and dignity.",
-
-      "solution": "Created a predictive system using sensor data to identify patterns and trigger alerts before events occur.",
-
-      "system": "Sensor Data → Pattern Detection → Prediction → Alert",
-
-      "impact": "Improves patient dignity, reduces caregiver workload, and enhances overall care efficiency.",
-
-      "tech": ["IoT Sensors", "Data Analysis", "Prediction Model"],
-      "image": "IoT.jpg",
-      "github": "",
-      "demo": ""
-    }
-  ],
-
-  "contact": {
-    "email": "furqan8191@gmail.com",
-    "linkedin": "https://www.linkedin.com/in/furqan-bhat-577192269"
-  }
-}
+      "problem": "Patients depend heavily on caregivers
