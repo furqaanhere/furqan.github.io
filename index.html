@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Furqan AI Portfolio</title>
+<title>Furqan AI System</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -16,7 +15,7 @@ body{
   overflow-x:hidden;
 }
 
-/* 🌈 ANIMATED BACKGROUND */
+/* 🌌 BACKGROUND */
 body::before{
   content:"";
   position:fixed;
@@ -24,14 +23,13 @@ body::before{
   height:200%;
   background:radial-gradient(circle at 20% 30%, #0ea5e9, transparent 40%),
              radial-gradient(circle at 80% 70%, #6366f1, transparent 40%);
-  animation:bgMove 12s infinite linear;
-  z-index:-3;
+  animation:bg 15s infinite linear;
   opacity:0.2;
+  z-index:-3;
 }
-
-@keyframes bgMove{
+@keyframes bg{
   0%{transform:translate(0,0);}
-  50%{transform:translate(-10%, -10%);}
+  50%{transform:translate(-10%,-10%);}
   100%{transform:translate(0,0);}
 }
 
@@ -40,9 +38,9 @@ body::before{
   background:rgba(15,23,42,0.4);
   backdrop-filter:blur(20px);
   border-radius:16px;
-  padding:25px;
+  padding:20px;
   border:1px solid rgba(255,255,255,0.1);
-  transition:0.3s;
+  margin:20px;
 }
 
 /* HEADER */
@@ -51,61 +49,47 @@ header{
   padding:20px;
 }
 
-/* HERO */
-.hero{
-  height:80vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
+/* SYSTEM BAR */
+.system{
+  text-align:center;
+  font-size:14px;
+  color:#38bdf8;
+  margin-bottom:10px;
 }
 
-/* SECTIONS */
-section{
-  padding:80px 20px;
-  opacity:0;
-  transform:translateY(50px);
-  transition:0.8s;
+/* HERO */
+.hero{
+  height:70vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
 }
-section.show{
-  opacity:1;
-  transform:translateY(0);
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
 }
 
 /* SKILLS */
-.skills{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  justify-content:center;
-}
 .skill{
-  padding:8px 16px;
-  border-radius:10px;
+  padding:8px 12px;
   background:rgba(255,255,255,0.05);
-  transition:0.3s;
-}
-.skill:hover{
-  transform:translateY(-5px);
+  border-radius:8px;
 }
 
-/* PROJECTS */
-.projects{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:25px;
-}
-
+/* PROJECT CARD */
 .card{
   border-radius:16px;
   overflow:hidden;
-  transition:0.3s;
   cursor:pointer;
-  transform-style:preserve-3d;
+  transition:0.3s;
 }
 
 .card:hover{
-  transform:translateY(-10px) scale(1.03);
+  transform:translateY(-10px);
 }
 
 .card img{
@@ -118,8 +102,9 @@ section.show{
 
 .tag{
   background:rgba(255,255,255,0.1);
-  padding:5px 8px;
+  padding:4px 8px;
   border-radius:6px;
+  margin:2px;
 }
 
 /* MODAL */
@@ -140,17 +125,12 @@ section.show{
   border-radius:12px;
 }
 
-/* BUTTON */
 button{
-  padding:10px 16px;
+  padding:8px 12px;
   border:none;
-  border-radius:8px;
   background:#0ea5e9;
-  cursor:pointer;
-  transition:0.3s;
-}
-button:hover{
-  transform:scale(1.05);
+  border-radius:6px;
+  margin-top:10px;
 }
 
 /* LINKS */
@@ -161,33 +141,38 @@ a{color:#0ea5e9;text-decoration:none;}
 <body>
 
 <header>
+<div class="system">● SYSTEM ONLINE | AI MODULE ACTIVE</div>
 <h1 id="name"></h1>
 <p id="tagline"></p>
 </header>
 
-<section class="hero show">
+<section class="hero">
 <h2>I build <span id="typing"></span></h2>
 </section>
 
-<section class="glass">
+<div class="grid">
+
+<div class="glass">
 <h2>About</h2>
 <div id="about"></div>
-</section>
+</div>
 
-<section>
+<div class="glass">
 <h2>Skills</h2>
-<div id="skills" class="skills"></div>
-</section>
+<div id="skills"></div>
+</div>
 
-<section>
+<div class="glass" style="grid-column:span 2;">
 <h2>Projects</h2>
-<div id="projects" class="projects"></div>
-</section>
+<div id="projects" class="grid"></div>
+</div>
 
-<section>
+<div class="glass">
 <h2>Contact</h2>
 <div id="contact"></div>
-</section>
+</div>
+
+</div>
 
 <div id="modal">
 <div id="modalContent">
@@ -200,7 +185,7 @@ a{color:#0ea5e9;text-decoration:none;}
 
 <script>
 
-// LOAD
+// LOAD DATA
 document.addEventListener("DOMContentLoaded",()=>{
 
 fetch("content.json")
@@ -221,7 +206,7 @@ contact.innerHTML=`
 <p><a href="${data.contact.linkedin}" target="_blank">LinkedIn</a></p>
 `;
 
-skills.innerHTML=data.skills.map(s=>`<span class="skill">${s}</span>`).join("");
+skills.innerHTML=data.skills.map(s=>`<div class="skill">${s}</div>`).join("");
 
 projects.innerHTML=data.projects.map((p,i)=>`
 <div class="card" onclick='openModal(${JSON.stringify(p)})'>
@@ -233,16 +218,6 @@ ${p.tech.map(t=>`<span class="tag">${t}</span>`).join("")}
 </div>
 </div>
 `).join("");
-
-// REVEAL
-const sections=document.querySelectorAll("section");
-window.addEventListener("scroll",()=>{
-sections.forEach(s=>{
-if(s.getBoundingClientRect().top<window.innerHeight-100){
-s.classList.add("show");
-}
-});
-});
 
 });
 
@@ -260,7 +235,7 @@ modal.style.display="none";
 }
 
 // TYPING
-const words=["AI systems","future tech","smart solutions"];
+const words=["AI systems","future tech","intelligent solutions"];
 let i=0,j=0,d=false;
 
 (function t(){
