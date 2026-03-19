@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
+<title>Admin Panel</title>
 
 <style>
 body{
@@ -76,14 +76,11 @@ button:hover{
 
 <div class="card">
 <h2>Projects</h2>
-
 <div id="projects"></div>
-
 <button onclick="addProject()">+ Add Project</button>
 </div>
 
 <button onclick="saveData()">💾 Save All</button>
-
 <button onclick="logout()">Logout</button>
 
 </div>
@@ -101,6 +98,7 @@ from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
+/* CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyC_i8vOeQZMdhaKLd32IbwKjUsTlm56Zpc",
   authDomain: "furqaan-portfolio.firebaseapp.com",
@@ -111,21 +109,27 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const db = getFirestore();
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 /* LOGIN */
 window.login = async function(){
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
+  const email = document.getElementById("email").value.trim();
+  const pass = document.getElementById("password").value.trim();
 
   try{
-    await signInWithEmailAndPassword(auth,email,pass);
+    const user = await signInWithEmailAndPassword(auth,email,pass);
+
+    console.log("Login success:", user.user.email);
+
     document.getElementById("loginBox").style.display="none";
     document.getElementById("dashboard").style.display="block";
+
     loadData();
-  }catch(e){
-    alert("Login Failed ❌");
+
+  }catch(error){
+    console.log(error.code);
+    alert(error.message); // shows real reason
   }
 }
 
@@ -137,10 +141,11 @@ window.logout = function(){
 
 /* ADD PROJECT */
 window.addProject = function(){
+
   const div = document.createElement("div");
   div.className="card";
 
-  div.innerHTML=`
+  div.innerHTML = `
   <input placeholder="Title">
   <input placeholder="Short">
   <input placeholder="Image (apple.jpg)">
@@ -187,24 +192,27 @@ async function loadData(){
 const snap = await getDoc(doc(db,"portfolio","data"));
 
 if(snap.exists()){
+
 const data = snap.data();
 
-document.getElementById("name").value=data.name || "";
-document.getElementById("tagline").value=data.tagline || "";
-document.getElementById("about").value=data.about?.intro || "";
+document.getElementById("name").value = data.name || "";
+document.getElementById("tagline").value = data.tagline || "";
+document.getElementById("about").value = data.about?.intro || "";
 
 document.getElementById("projects").innerHTML="";
 
 (data.projects||[]).forEach(p=>{
+
 addProject();
 
-let last=document.querySelector("#projects .card:last-child");
-let inputs=last.querySelectorAll("input,textarea");
+let last = document.querySelector("#projects .card:last-child");
+let inputs = last.querySelectorAll("input,textarea");
 
-inputs[0].value=p.title || "";
-inputs[1].value=p.short || "";
-inputs[2].value=p.image || "";
-inputs[3].value=p.description || "";
+inputs[0].value = p.title || "";
+inputs[1].value = p.short || "";
+inputs[2].value = p.image || "";
+inputs[3].value = p.description || "";
+
 });
 
 }
