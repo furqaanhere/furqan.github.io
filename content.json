@@ -20,34 +20,18 @@
     {
       "title": "Apple Grading System",
       "short": "AI-based fruit grading",
-      "description": "A CNN-based system to classify apples based on quality.",
-
-      "problem": "Manual grading is slow and inconsistent.",
-      "solution": "Automated classification using computer vision.",
+      "description": "CNN-based system to classify apples.",
+      "problem": "Manual grading is inconsistent.",
+      "solution": "Automated using AI.",
       "system": "Image → CNN → Sorting",
-      "impact": "Improves efficiency and accuracy in agriculture.",
-
-      "tech": ["Python", "CNN", "OpenCV"],
+      "impact": "Improves efficiency.",
+      "tech": ["Python", "CNN"],
       "image": "images/apple.jpg"
-    },
+    }
+  ],
 
-    {
-      "title": "Tiwzz",
-      "short": "Hyperlocal delivery startup",
-      "description": "A platform connecting rural restaurants to customers.",
-
-      "problem": "Rural restaurants lack customer reach.",
-      "solution": "Hyperlocal delivery system within 10–15 km.",
-      "system": "Order → Delivery → Payment",
-      "impact": "Boosts local economy and accessibility.",
-
-      "tech": ["Startup", "Logistics"],
-      "image": "images/tiwzz.jpg"
-    },
-
-    {
-      "title": "IoT Health Device",
-      "short": "Smart patient alert system",
-      "description": "Predicts urination timing using sensor data.",
-
-      "problem": "Patients depend heavily on caregivers
+  "contact": {
+    "email": "furqan8191@gmail.com",
+    "linkedin": "https://linkedin.com"
+  }
+}
