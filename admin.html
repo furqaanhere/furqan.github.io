@@ -1,123 +1,214 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Admin Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
 
 <style>
 body{
+  margin:0;
   font-family:Arial;
   background:#020617;
   color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
 }
 
-/* BOX */
-.box{
-  background:rgba(15,23,42,0.7);
-  padding:25px;
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+.card{
+  background:rgba(15,23,42,0.6);
+  padding:20px;
   border-radius:12px;
-  width:300px;
-  text-align:center;
+  margin-bottom:20px;
+  border:1px solid rgba(56,189,248,0.2);
 }
 
-/* INPUT */
-input{
+input, textarea{
   width:100%;
+  margin:8px 0;
   padding:10px;
-  margin:10px 0;
-  border:none;
   border-radius:6px;
+  border:none;
 }
 
-/* BUTTON */
 button{
-  width:100%;
-  padding:10px;
-  background:#38bdf8;
+  padding:10px 15px;
+  margin:5px 0;
   border:none;
   border-radius:6px;
+  background:#38bdf8;
   cursor:pointer;
 }
 
-/* DASHBOARD */
-#dashboard{
-  display:none;
-  width:90%;
-  height:100vh;
-  overflow:auto;
+button:hover{
+  background:#0ea5e9;
 }
 </style>
 </head>
 
 <body>
 
+<div class="container">
+
+<h1>🚀 Admin Panel</h1>
+
 <!-- LOGIN -->
-<div id="loginBox" class="box">
-<h2>Admin Login</h2>
-
-<input id="email" placeholder="Enter email">
-<input id="password" type="password" placeholder="Enter password">
-
+<div class="card" id="loginBox">
+<h2>Login</h2>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
 <button onclick="login()">Login</button>
 </div>
 
 <!-- DASHBOARD -->
-<div id="dashboard">
+<div id="dashboard" style="display:none;">
 
-<h1>🚀 Admin Dashboard</h1>
+<div class="card">
+<h2>Profile</h2>
+<input id="name" placeholder="Name">
+<input id="tagline" placeholder="Tagline">
+<textarea id="about" placeholder="About"></textarea>
+</div>
 
-<textarea id="jsonData" style="width:100%;height:200px;"></textarea>
+<div class="card">
+<h2>Projects</h2>
 
-<button onclick="save()">Save</button>
+<div id="projects"></div>
+
+<button onclick="addProject()">+ Add Project</button>
+</div>
+
+<button onclick="saveData()">💾 Save All</button>
+
 <button onclick="logout()">Logout</button>
 
 </div>
 
-<script>
+</div>
 
-// 🔐 DEFAULT LOGIN
-const ADMIN_EMAIL = "admin@furqan.com";
-const ADMIN_PASS = "1234";
+<!-- FIREBASE -->
+<script type="module">
 
-// LOGIN
-function login(){
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 
-let email = document.getElementById("email").value;
-let pass = document.getElementById("password").value;
+import { getAuth, signInWithEmailAndPassword, signOut } 
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 
-if(email === ADMIN_EMAIL && pass === ADMIN_PASS){
+import { getFirestore, doc, setDoc, getDoc } 
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-  // hide login
-  document.getElementById("loginBox").style.display="none";
+const firebaseConfig = {
+  apiKey: "AIzaSyC_i8vOeQZMdhaKLd32IbwKjUsTlm56Zpc",
+  authDomain: "furqaan-portfolio.firebaseapp.com",
+  projectId: "furqaan-portfolio",
+  storageBucket: "furqaan-portfolio.firebasestorage.app",
+  messagingSenderId: "1004771356492",
+  appId: "1:1004771356492:web:262c4927357bed2ce0e9e9"
+};
 
-  // show dashboard
-  document.getElementById("dashboard").style.display="block";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+const db = getFirestore();
 
-  // load data
-  let data = localStorage.getItem("data");
-  if(data){
-    document.getElementById("jsonData").value = data;
+/* LOGIN */
+window.login = async function(){
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+
+  try{
+    await signInWithEmailAndPassword(auth,email,pass);
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("dashboard").style.display="block";
+    loadData();
+  }catch(e){
+    alert("Login Failed ❌");
   }
-
-}else{
-  alert("Invalid email or password ❌");
 }
 
-}
-
-// SAVE
-function save(){
-  let data = document.getElementById("jsonData").value;
-  localStorage.setItem("data", data);
-  alert("Saved ✅ Refresh site");
-}
-
-// LOGOUT
-function logout(){
+/* LOGOUT */
+window.logout = function(){
+  signOut(auth);
   location.reload();
+}
+
+/* ADD PROJECT */
+window.addProject = function(){
+  const div = document.createElement("div");
+  div.className="card";
+
+  div.innerHTML=`
+  <input placeholder="Title">
+  <input placeholder="Short">
+  <input placeholder="Image (apple.jpg)">
+  <textarea placeholder="Description"></textarea>
+  <button onclick="this.parentElement.remove()">❌ Remove</button>
+  `;
+
+  document.getElementById("projects").appendChild(div);
+}
+
+/* SAVE DATA */
+window.saveData = async function(){
+
+let projects=[];
+
+document.querySelectorAll("#projects .card").forEach(card=>{
+  let inputs=card.querySelectorAll("input,textarea");
+
+  projects.push({
+    title:inputs[0].value,
+    short:inputs[1].value,
+    image:inputs[2].value,
+    description:inputs[3].value
+  });
+});
+
+const data={
+  name:document.getElementById("name").value,
+  tagline:document.getElementById("tagline").value,
+  about:{
+    intro:document.getElementById("about").value
+  },
+  projects:projects
+};
+
+await setDoc(doc(db,"portfolio","data"),data);
+
+alert("Saved to Firebase 🚀");
+}
+
+/* LOAD DATA */
+async function loadData(){
+
+const snap = await getDoc(doc(db,"portfolio","data"));
+
+if(snap.exists()){
+const data = snap.data();
+
+document.getElementById("name").value=data.name || "";
+document.getElementById("tagline").value=data.tagline || "";
+document.getElementById("about").value=data.about?.intro || "";
+
+document.getElementById("projects").innerHTML="";
+
+(data.projects||[]).forEach(p=>{
+addProject();
+
+let last=document.querySelector("#projects .card:last-child");
+let inputs=last.querySelectorAll("input,textarea");
+
+inputs[0].value=p.title || "";
+inputs[1].value=p.short || "";
+inputs[2].value=p.image || "";
+inputs[3].value=p.description || "";
+});
+
+}
+
 }
 
 </script>
