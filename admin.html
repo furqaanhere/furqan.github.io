@@ -14,62 +14,83 @@ body{
   height:100vh;
 }
 
-/* LOGIN */
-#loginBox, #dashboard{
-  background:rgba(15,23,42,0.5);
+/* BOX */
+.box{
+  background:rgba(15,23,42,0.6);
   padding:20px;
   border-radius:10px;
+  width:300px;
 }
 
-input,button{
-  padding:10px;
-  margin:10px 0;
+/* INPUT */
+input,textarea,button{
   width:100%;
+  margin-top:10px;
+  padding:10px;
+  border:none;
+  border-radius:6px;
 }
 
 button{
   background:#38bdf8;
-  border:none;
+  color:black;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div id="loginBox">
+<!-- LOGIN -->
+<div id="loginBox" class="box">
 <h2>Admin Login</h2>
 <input type="password" id="pass" placeholder="Enter password">
 <button onclick="login()">Login</button>
 </div>
 
-<div id="dashboard" style="display:none;">
+<!-- DASHBOARD -->
+<div id="dashboard" class="box" style="display:none;">
 <h2>Dashboard</h2>
 
-<textarea id="jsonData" style="width:100%;height:200px;"></textarea>
+<textarea id="jsonData" rows="10"></textarea>
 
-<button onclick="save()">Save Changes</button>
+<button onclick="save()">Save</button>
 <button onclick="logout()">Logout</button>
 </div>
 
 <script>
 
-const PASSWORD="1234"; // change this
+const PASSWORD = "1234"; // change if needed
 
 function login(){
-  if(document.getElementById("pass").value===PASSWORD){
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("dashboard").style.display="block";
+  let input = document.getElementById("pass").value;
 
-    document.getElementById("jsonData").value=
-      localStorage.getItem("data") || "";
-  } else {
-    alert("Wrong password");
+  if(input === PASSWORD){
+
+    // hide login
+    document.getElementById("loginBox").style.display = "none";
+
+    // show dashboard
+    document.getElementById("dashboard").style.display = "block";
+
+    // load saved data
+    let data = localStorage.getItem("data");
+
+    if(data){
+      document.getElementById("jsonData").value = data;
+    }else{
+      document.getElementById("jsonData").value = "Paste JSON here...";
+    }
+
+  }else{
+    alert("Wrong password ❌");
   }
 }
 
 function save(){
-  localStorage.setItem("data", document.getElementById("jsonData").value);
-  alert("Saved! Refresh main site.");
+  let data = document.getElementById("jsonData").value;
+  localStorage.setItem("data", data);
+  alert("Saved ✅ Refresh main site");
 }
 
 function logout(){
