@@ -1,257 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Admin Panel</title>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#020617;
-  color:white;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #020617;
+      color: white;
+      text-align: center;
+    }
 
-.main{
-  max-width:900px;
-  margin:auto;
-  padding:20px;
-}
+    .container {
+      padding: 80px 20px;
+    }
 
-.card{
-  background:rgba(15,23,42,0.6);
-  padding:20px;
-  border-radius:12px;
-  margin-bottom:20px;
-}
+    h1 {
+      margin-bottom: 30px;
+    }
 
-input,textarea{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border:none;
-  border-radius:6px;
-}
+    .card {
+      background: #0f172a;
+      padding: 25px;
+      border-radius: 12px;
+      display: inline-block;
+      width: 300px;
+    }
 
-button{
-  padding:10px;
-  border:none;
-  border-radius:6px;
-  background:#38bdf8;
-  cursor:pointer;
-}
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: none;
+    }
 
-.tag{
-  display:inline-block;
-  background:#38bdf8;
-  color:black;
-  padding:5px 10px;
-  margin:5px;
-  border-radius:6px;
-  cursor:pointer;
-}
-</style>
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: linear-gradient(45deg, #00f5ff, #7b2ff7);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .danger {
+      background: #ef4444;
+    }
+
+    .status {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="main">
+  <div class="container">
+    <h1>Admin Panel</h1>
 
-<!-- LOGIN -->
-<div id="loginBox" class="card">
-<h2>Login</h2>
-<input id="email" placeholder="Email">
-<input id="password" type="password">
-<button onclick="login()">Login</button>
-</div>
+    <div class="card">
+      <h3>Manage Resume</h3>
 
-<!-- DASHBOARD -->
-<div id="dashboard" style="display:none;">
+      <input type="file" id="resumeInput" accept=".pdf,.doc,.docx">
 
-<!-- PROFILE -->
-<div class="card">
-<h3>Profile</h3>
-<input id="tagline">
-<textarea id="about"></textarea>
-</div>
+      <button onclick="uploadResume()">Upload / Replace Resume</button>
+      <button class="danger" onclick="deleteResume()">Delete Resume</button>
 
-<!-- SKILLS -->
-<div class="card">
-<h3>Skills (click to remove)</h3>
-<div id="skills"></div>
-<input id="newSkill" placeholder="Add skill">
-<button onclick="addTag('skills','newSkill')">+ Add Skill</button>
-</div>
+      <div id="status" class="status"></div>
+    </div>
+  </div>
 
-<!-- TOOLS -->
-<div class="card">
-<h3>Tools & Technologies (click to remove)</h3>
-<div id="tools"></div>
-<input id="newTool" placeholder="Add tool">
-<button onclick="addTag('tools','newTool')">+ Add Tool</button>
-</div>
+  <script>
+    const status = document.getElementById("status");
 
-<!-- STRENGTHS -->
-<div class="card">
-<h3>Strengths (click to remove)</h3>
-<div id="strengths"></div>
-<input id="newStrength" placeholder="Add strength">
-<button onclick="addTag('strengths','newStrength')">+ Add Strength</button>
-</div>
+    function uploadResume() {
+      const fileInput = document.getElementById("resumeInput");
+      const file = fileInput.files[0];
 
-<!-- ACHIEVEMENTS -->
-<div class="card">
-<h3>Achievements (click to remove)</h3>
-<div id="achievements"></div>
-<input id="newAch" placeholder="Add achievement">
-<button onclick="addTag('achievements','newAch')">+ Add</button>
-</div>
+      if (!file) {
+        alert("Select a file first");
+        return;
+      }
 
-<!-- PROJECTS -->
-<div class="card">
-<h3>Projects</h3>
-<div id="projects"></div>
-<button onclick="addProject()">+ Add Project</button>
-</div>
+      const reader = new FileReader();
 
-<button onclick="saveData()">💾 Save All</button>
-<button onclick="logout()">Logout</button>
+      reader.onload = function (e) {
+        localStorage.setItem("resume", e.target.result);
+        status.innerText = "✅ Resume uploaded successfully";
+      };
 
-</div>
+      reader.readAsDataURL(file);
+    }
 
-</div>
+    function deleteResume() {
+      localStorage.removeItem("resume");
+      status.innerText = "❌ Resume deleted";
+    }
 
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } 
-from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC_i8vOeQZMdhaKLd32IbwKjUsTlm56Zpc",
-  authDomain: "furqaan-portfolio.firebaseapp.com",
-  projectId: "furqaan-portfolio"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-/* LOGIN */
-window.login = async function(){
-  try{
-    await signInWithEmailAndPassword(auth,email.value.trim(),password.value.trim());
-    loginBox.style.display="none";
-    dashboard.style.display="block";
-    loadData();
-  }catch(e){
-    alert("Invalid email or password ❌");
-  }
-}
-
-/* LOGOUT */
-window.logout = ()=>location.reload();
-
-/* ADD TAG */
-window.addTag = function(containerId,inputId,value){
-
-let val = value || document.getElementById(inputId).value;
-if(!val) return;
-
-let el = document.createElement("span");
-el.className = "tag";
-el.innerText = val;
-
-el.onclick = ()=>el.remove();
-
-document.getElementById(containerId).appendChild(el);
-document.getElementById(inputId).value="";
-}
-
-/* ADD PROJECT */
-window.addProject = function(){
-let div = document.createElement("div");
-div.className="card";
-
-div.innerHTML=`
-<input placeholder="Title">
-<input placeholder="Short">
-<input placeholder="Image (apple.jpg)">
-<textarea placeholder="Description"></textarea>
-<button onclick="this.parentElement.remove()">❌ Remove</button>
-`;
-
-projects.appendChild(div);
-}
-
-/* SAVE */
-window.saveData = async function(){
-
-function getList(id){
-return [...document.getElementById(id).children].map(e=>e.innerText);
-}
-
-let data = {
-tagline:tagline.value,
-about:{intro:about.value},
-skills:getList("skills"),
-tools:getList("tools"),
-strengths:getList("strengths"),
-achievements:getList("achievements"),
-projects:[]
-};
-
-document.querySelectorAll("#projects .card").forEach(c=>{
-let i=c.querySelectorAll("input,textarea");
-
-data.projects.push({
-title:i[0].value,
-short:i[1].value,
-image:i[2].value,
-description:i[3].value
-});
-});
-
-await setDoc(doc(db,"portfolio","data"),data);
-
-alert("Saved successfully 🚀");
-}
-
-/* LOAD */
-async function loadData(){
-
-let snap = await getDoc(doc(db,"portfolio","data"));
-
-if(snap.exists()){
-let d = snap.data();
-
-tagline.value=d.tagline||"";
-about.value=d.about?.intro||"";
-
-function loadList(id,list){
-document.getElementById(id).innerHTML="";
-(list||[]).forEach(v=>addTag(id,null,v));
-}
-
-loadList("skills",d.skills);
-loadList("tools",d.tools);
-loadList("strengths",d.strengths);
-loadList("achievements",d.achievements);
-
-(d.projects||[]).forEach(p=>{
-addProject();
-let last=projects.lastChild.querySelectorAll("input,textarea");
-
-last[0].value=p.title;
-last[1].value=p.short;
-last[2].value=p.image;
-last[3].value=p.description;
-});
-}
-}
-
-</script>
+    // Show current status
+    if (localStorage.getItem("resume")) {
+      status.innerText = "📄 Resume already uploaded";
+    } else {
+      status.innerText = "No resume uploaded";
+    }
+  </script>
 
 </body>
 </html>
