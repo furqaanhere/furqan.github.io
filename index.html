@@ -23,6 +23,7 @@ body{
   background:url("photo.jpg") center/cover no-repeat;
   filter:brightness(0.5);
   z-index:-3;
+  transition:transform 0.2s ease-out;
 }
 
 /* PARTICLES */
@@ -31,6 +32,18 @@ body{
   width:100%;
   height:100%;
   z-index:-2;
+}
+
+/* CURSOR GLOW */
+#cursorGlow{
+  position:fixed;
+  width:250px;
+  height:250px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(56,189,248,0.25), transparent 70%);
+  pointer-events:none;
+  z-index:-1;
+  transform:translate(-50%,-50%);
 }
 
 /* HEADER */
@@ -49,7 +62,6 @@ header h1{color:#38bdf8;}
   justify-content:center;
   align-items:center;
   flex-direction:column;
-  text-align:center;
 }
 
 /* SECTIONS */
@@ -89,9 +101,10 @@ section{padding:60px 20px;}
   border-radius:12px;
   overflow:hidden;
   cursor:pointer;
-  transition:0.4s;
+  transition:0.3s;
   opacity:0;
   transform:translateY(40px);
+  transform-style:preserve-3d;
 }
 
 .card.show{
@@ -100,8 +113,7 @@ section{padding:60px 20px;}
 }
 
 .card:hover{
-  transform:scale(1.05);
-  box-shadow:0 10px 30px rgba(56,189,248,0.3);
+  box-shadow:0 20px 50px rgba(56,189,248,0.3);
 }
 
 .card img{
@@ -118,6 +130,10 @@ section{padding:60px 20px;}
   margin:3px;
   border-radius:6px;
 }
+
+/* LINKS */
+a{color:#38bdf8;text-decoration:none;}
+a:hover{text-decoration:underline;}
 
 /* MODAL */
 #modal{
@@ -149,12 +165,14 @@ button{
   background:#38bdf8;
   border:none;
   border-radius:6px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
+<div id="cursorGlow"></div>
 <div class="background"></div>
 <canvas id="canvas"></canvas>
 
@@ -184,7 +202,7 @@ button{
 
 <section>
 <h2>Contact</h2>
-<p id="contact"></p>
+<div id="contact"></div>
 </section>
 
 <div id="modal">
@@ -214,7 +232,10 @@ about.innerHTML=`
 <p>${data.about.focus}</p>
 `;
 
-contact.innerHTML=`Email: ${data.contact.email}`;
+contact.innerHTML=`
+<p>Email: <a href="mailto:${data.contact.email}">${data.contact.email}</a></p>
+<p>LinkedIn: <a href="${data.contact.linkedin}" target="_blank">View Profile</a></p>
+`;
 
 skills.innerHTML=data.skills.map(s=>`<span class="skill">${s}</span>`).join("");
 
@@ -222,7 +243,7 @@ let html="";
 data.projects.forEach((p,i)=>{
 html+=`
 <div class="card" data-i="${i}">
-<img src="${p.image}">
+<img src="${p.image}" onerror="this.src='photo.jpg'">
 <div class="card-content">
 <h3>${p.title}</h3>
 <p>${p.short}</p>
@@ -235,8 +256,7 @@ projects.innerHTML=html;
 // CLICK
 document.querySelectorAll(".card").forEach(c=>{
 c.onclick=()=>{
-let p=data.projects[c.dataset.i];
-openModal(p);
+openModal(data.projects[c.dataset.i]);
 };
 });
 
@@ -250,6 +270,24 @@ c.classList.add("show");
 }
 window.addEventListener("scroll",reveal);
 reveal();
+
+// 3D TILT
+document.querySelectorAll(".card").forEach(card=>{
+card.addEventListener("mousemove",e=>{
+let rect=card.getBoundingClientRect();
+let x=e.clientX-rect.left;
+let y=e.clientY-rect.top;
+
+let rx=-(y-rect.height/2)/20;
+let ry=(x-rect.width/2)/20;
+
+card.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) scale(1.05)`;
+});
+
+card.addEventListener("mouseleave",()=>{
+card.style.transform="rotateX(0) rotateY(0)";
+});
+});
 
 });
 
@@ -304,6 +342,19 @@ ctx.stroke();
 requestAnimationFrame(draw);
 }
 draw();
+
+// CURSOR GLOW
+const glow=document.getElementById("cursorGlow");
+document.addEventListener("mousemove",(e)=>{
+glow.style.left=e.clientX+"px";
+glow.style.top=e.clientY+"px";
+});
+
+// PARALLAX
+window.addEventListener("scroll",()=>{
+document.querySelector(".background").style.transform=
+`translateY(${scrollY*0.15}px) scale(1.05)`;
+});
 
 // TYPING
 const words=["AI systems","real-world solutions","innovative tech"];
