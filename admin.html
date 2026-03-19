@@ -74,9 +74,7 @@ button{
 <h3>Profile</h3>
 
 <input id="name" placeholder="Full Name">
-
 <input id="tagline" placeholder="Title">
-
 <textarea id="about" placeholder="Bio"></textarea>
 
 </div>
@@ -128,7 +126,7 @@ button{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } 
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
@@ -143,20 +141,31 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+/* ✅ AUTO LOGIN FIX */
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    loginBox.style.display = "none";
+    dashboard.style.display = "block";
+    loadData();
+  } else {
+    loginBox.style.display = "block";
+    dashboard.style.display = "none";
+  }
+});
+
 /* LOGIN */
 window.login = async function(){
   try{
     await signInWithEmailAndPassword(auth,email.value.trim(),password.value.trim());
-    loginBox.style.display="none";
-    dashboard.style.display="block";
-    loadData();
   }catch(e){
     alert(e.message);
   }
 }
 
 /* LOGOUT */
-window.logout = ()=>location.reload();
+window.logout = ()=>{
+  location.reload();
+}
 
 /* ADD TAG */
 window.addTag = function(section,inputId){
@@ -194,7 +203,7 @@ window.saveData = async function(){
 let getTags = (id)=>[...document.querySelectorAll(`#${id} .tag`)].map(t=>t.innerText);
 
 let data={
-name:name.value,  // ✅ NAME ADDED
+name:name.value,
 tagline:tagline.value,
 about:{intro:about.value},
 skills:getTags("skills"),
@@ -224,21 +233,23 @@ let snap=await getDoc(doc(db,"portfolio","data"));
 if(snap.exists()){
 let d=snap.data();
 
-name.value = d.name || "";   // ✅ LOAD NAME
+name.value = d.name || "";
 tagline.value = d.tagline || "";
 about.value = d.about?.intro || "";
 resume.value = d.resume || "";
 
+/* CLEAR BEFORE LOAD */
 skills.innerHTML="";
-(d.skills||[]).forEach(v=>{newSkill.value=v; addTag("skills","newSkill");});
-
 tools.innerHTML="";
-(d.tools||[]).forEach(v=>{newTool.value=v; addTag("tools","newTool");});
-
 strengths.innerHTML="";
+projects.innerHTML="";
+
+/* LOAD TAGS */
+(d.skills||[]).forEach(v=>{newSkill.value=v; addTag("skills","newSkill");});
+(d.tools||[]).forEach(v=>{newTool.value=v; addTag("tools","newTool");});
 (d.strengths||[]).forEach(v=>{newStrength.value=v; addTag("strengths","newStrength");});
 
-projects.innerHTML="";
+/* LOAD PROJECTS */
 (d.projects||[]).forEach(p=>{
 addProject();
 let last=projects.lastChild.querySelectorAll("input,textarea");
