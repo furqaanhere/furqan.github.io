@@ -364,7 +364,12 @@ let modalOpen=false;
 
 function openModal(p){
 
-  document.getElementById("modal").style.display = "flex";
+  const modal = document.getElementById("modal");
+modal.style.display = "flex";
+
+setTimeout(()=>{
+  modal.classList.add("active");
+},10);
 
   // IMAGE
   const img = document.getElementById("modalImage");
@@ -405,7 +410,13 @@ function openModal(p){
 }
 
 function closeModal(){
-  document.getElementById("modal").style.display = "none";
+  const modal = document.getElementById("modal");
+
+  modal.classList.remove("active");
+
+  setTimeout(()=>{
+    modal.style.display = "none";
+  },300);
 }
 
 // CLOSE ON OUTSIDE CLICK
