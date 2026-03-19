@@ -72,8 +72,13 @@ button{
 <!-- PROFILE -->
 <div class="card">
 <h3>Profile</h3>
+
+<input id="name" placeholder="Full Name">
+
 <input id="tagline" placeholder="Title">
+
 <textarea id="about" placeholder="Bio"></textarea>
+
 </div>
 
 <!-- SKILLS -->
@@ -103,7 +108,7 @@ button{
 <!-- RESUME -->
 <div class="card">
 <h3>Resume</h3>
-<input id="resume" placeholder="Resume link (Google Drive)">
+<input id="resume" placeholder="Resume link (Google Drive / PDF)">
 </div>
 
 <!-- PROJECTS -->
@@ -153,7 +158,7 @@ window.login = async function(){
 /* LOGOUT */
 window.logout = ()=>location.reload();
 
-/* ADD TAG (skills/tools/strengths) */
+/* ADD TAG */
 window.addTag = function(section,inputId){
   let val = document.getElementById(inputId).value;
   if(!val) return;
@@ -175,7 +180,7 @@ div.className="card";
 div.innerHTML=`
 <input placeholder="Title">
 <input placeholder="Short">
-<input placeholder="Image">
+<input placeholder="Image (apple.jpg)">
 <textarea placeholder="Description"></textarea>
 <button onclick="this.parentElement.remove()">❌ Remove</button>
 `;
@@ -189,6 +194,7 @@ window.saveData = async function(){
 let getTags = (id)=>[...document.querySelectorAll(`#${id} .tag`)].map(t=>t.innerText);
 
 let data={
+name:name.value,  // ✅ NAME ADDED
 tagline:tagline.value,
 about:{intro:about.value},
 skills:getTags("skills"),
@@ -207,7 +213,8 @@ description:i[3].value
 };
 
 await setDoc(doc(db,"portfolio","data"),data);
-alert("Saved 🚀");
+
+alert("Saved successfully 🚀");
 }
 
 /* LOAD */
@@ -217,14 +224,21 @@ let snap=await getDoc(doc(db,"portfolio","data"));
 if(snap.exists()){
 let d=snap.data();
 
-tagline.value=d.tagline||"";
-about.value=d.about?.intro||"";
-resume.value=d.resume||"";
+name.value = d.name || "";   // ✅ LOAD NAME
+tagline.value = d.tagline || "";
+about.value = d.about?.intro || "";
+resume.value = d.resume || "";
 
+skills.innerHTML="";
 (d.skills||[]).forEach(v=>{newSkill.value=v; addTag("skills","newSkill");});
+
+tools.innerHTML="";
 (d.tools||[]).forEach(v=>{newTool.value=v; addTag("tools","newTool");});
+
+strengths.innerHTML="";
 (d.strengths||[]).forEach(v=>{newStrength.value=v; addTag("strengths","newStrength");});
 
+projects.innerHTML="";
 (d.projects||[]).forEach(p=>{
 addProject();
 let last=projects.lastChild.querySelectorAll("input,textarea");
