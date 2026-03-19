@@ -70,8 +70,8 @@ button{
 <!-- PROFILE -->
 <div class="card">
 <h3>Profile</h3>
-<input id="tagline" placeholder="Title">
-<textarea id="about" placeholder="Bio"></textarea>
+<input id="tagline">
+<textarea id="about"></textarea>
 </div>
 
 <!-- SKILLS -->
@@ -84,7 +84,7 @@ button{
 
 <!-- TOOLS -->
 <div class="card">
-<h3>Tools & Technologies</h3>
+<h3>Tools & Technologies (click to remove)</h3>
 <div id="tools"></div>
 <input id="newTool" placeholder="Add tool">
 <button onclick="addTag('tools','newTool')">+ Add Tool</button>
@@ -92,7 +92,7 @@ button{
 
 <!-- STRENGTHS -->
 <div class="card">
-<h3>Strengths</h3>
+<h3>Strengths (click to remove)</h3>
 <div id="strengths"></div>
 <input id="newStrength" placeholder="Add strength">
 <button onclick="addTag('strengths','newStrength')">+ Add Strength</button>
@@ -100,10 +100,10 @@ button{
 
 <!-- ACHIEVEMENTS -->
 <div class="card">
-<h3>Achievements</h3>
+<h3>Achievements (click to remove)</h3>
 <div id="achievements"></div>
 <input id="newAch" placeholder="Add achievement">
-<button onclick="addTag('achievements','newAch')">+ Add Achievement</button>
+<button onclick="addTag('achievements','newAch')">+ Add</button>
 </div>
 
 <!-- PROJECTS -->
@@ -146,7 +146,7 @@ window.login = async function(){
     dashboard.style.display="block";
     loadData();
   }catch(e){
-    alert("Login failed ❌");
+    alert("Invalid email or password ❌");
   }
 }
 
