@@ -1,229 +1,123 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Pro Panel</title>
+<title>Admin Login</title>
 
 <style>
 body{
-  margin:0;
   font-family:Arial;
   background:#020617;
   color:white;
   display:flex;
-}
-
-/* SIDEBAR */
-.sidebar{
-  width:220px;
-  background:#0f172a;
+  justify-content:center;
+  align-items:center;
   height:100vh;
-  padding:20px;
 }
 
-.sidebar div{
-  padding:12px;
-  cursor:pointer;
-}
-.sidebar div:hover{
-  background:#38bdf8;
-  color:black;
-}
-
-/* MAIN */
-.main{
-  flex:1;
-  padding:20px;
-}
-
+/* BOX */
 .box{
-  background:rgba(15,23,42,0.6);
-  padding:20px;
-  border-radius:10px;
-  margin-bottom:20px;
+  background:rgba(15,23,42,0.7);
+  padding:25px;
+  border-radius:12px;
+  width:300px;
+  text-align:center;
 }
 
-input,textarea{
+/* INPUT */
+input{
   width:100%;
-  margin:6px 0;
   padding:10px;
+  margin:10px 0;
   border:none;
   border-radius:6px;
 }
 
+/* BUTTON */
 button{
+  width:100%;
   padding:10px;
   background:#38bdf8;
   border:none;
-  margin-top:10px;
-  cursor:pointer;
   border-radius:6px;
+  cursor:pointer;
 }
 
-/* HIDE SECTIONS */
-.section{display:none;}
-.section.active{display:block;}
+/* DASHBOARD */
+#dashboard{
+  display:none;
+  width:90%;
+  height:100vh;
+  overflow:auto;
+}
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-<div onclick="show('profile')">Profile</div>
-<div onclick="show('projects')">Projects</div>
-<div onclick="show('skills')">Skills</div>
-<div onclick="show('achievements')">Achievements</div>
-<div onclick="show('resume')">Resume</div>
-<div onclick="show('settings')">Settings</div>
+<!-- LOGIN -->
+<div id="loginBox" class="box">
+<h2>Admin Login</h2>
+
+<input id="email" placeholder="Enter email">
+<input id="password" type="password" placeholder="Enter password">
+
+<button onclick="login()">Login</button>
 </div>
 
-<!-- MAIN -->
-<div class="main">
+<!-- DASHBOARD -->
+<div id="dashboard">
 
-<!-- PROFILE -->
-<div id="profile" class="section active box">
-<h2>Profile</h2>
-<input id="name">
-<input id="tagline">
-<textarea id="about"></textarea>
-</div>
+<h1>🚀 Admin Dashboard</h1>
 
-<!-- PROJECTS -->
-<div id="projects" class="section box">
-<h2>Projects</h2>
-<div id="projList"></div>
-<button onclick="addProject()">+ Add Project</button>
-</div>
+<textarea id="jsonData" style="width:100%;height:200px;"></textarea>
 
-<!-- SKILLS -->
-<div id="skills" class="section box">
-<h2>Skills</h2>
-<div id="skillList"></div>
-<input id="newSkill" placeholder="Add skill">
-<button onclick="addSkill()">Add Skill</button>
-</div>
-
-<!-- ACHIEVEMENTS -->
-<div id="achievements" class="section box">
-<h2>Achievements</h2>
-<div id="achList"></div>
-<input id="newAch" placeholder="Add achievement">
-<button onclick="addAch()">Add</button>
-</div>
-
-<!-- RESUME -->
-<div id="resume" class="section box">
-<h2>Resume</h2>
-<input id="resumeLink" placeholder="Paste resume link (Google Drive)">
-</div>
-
-<!-- SETTINGS -->
-<div id="settings" class="section box">
-<h2>Settings</h2>
-<input id="newPass" placeholder="New password">
-<button onclick="changePass()">Change Password</button>
-</div>
-
-<button onclick="save()">💾 Save All</button>
+<button onclick="save()">Save</button>
+<button onclick="logout()">Logout</button>
 
 </div>
 
 <script>
 
-let data = JSON.parse(localStorage.getItem("data")) || {
-  name:"",
-  tagline:"",
-  about:{intro:""},
-  projects:[],
-  skills:[],
-  achievements:[],
-  resume:"",
-  password:"1234"
-};
+// 🔐 DEFAULT LOGIN
+const ADMIN_EMAIL = "admin@furqan.com";
+const ADMIN_PASS = "1234";
 
-// NAV
-function show(id){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
+// LOGIN
+function login(){
 
-// LOAD
-function load(){
-  name.value=data.name;
-  tagline.value=data.tagline;
-  about.value=data.about.intro;
-  resumeLink.value=data.resume || "";
+let email = document.getElementById("email").value;
+let pass = document.getElementById("password").value;
 
-  renderProjects();
-  renderSkills();
-  renderAch();
-}
-load();
+if(email === ADMIN_EMAIL && pass === ADMIN_PASS){
 
-// PROJECTS
-function renderProjects(){
-  let html="";
-  data.projects.forEach((p,i)=>{
-    html+=`
-    <div>
-      <input value="${p.title}" onchange="data.projects[${i}].title=this.value">
-      <input value="${p.short}" onchange="data.projects[${i}].short=this.value">
-      <input value="${p.image}" onchange="data.projects[${i}].image=this.value">
-      <textarea onchange="data.projects[${i}].description=this.value">${p.description}</textarea>
-      <button onclick="removeProject(${i})">Remove</button>
-    </div>`;
-  });
-  projList.innerHTML=html;
+  // hide login
+  document.getElementById("loginBox").style.display="none";
+
+  // show dashboard
+  document.getElementById("dashboard").style.display="block";
+
+  // load data
+  let data = localStorage.getItem("data");
+  if(data){
+    document.getElementById("jsonData").value = data;
+  }
+
+}else{
+  alert("Invalid email or password ❌");
 }
 
-function addProject(){
-  data.projects.push({title:"New",short:"",image:"photo.jpg",description:""});
-  renderProjects();
-}
-function removeProject(i){
-  data.projects.splice(i,1);
-  renderProjects();
-}
-
-// SKILLS
-function renderSkills(){
-  skillList.innerHTML=data.skills.map((s,i)=>
-    `<div>${s} <button onclick="data.skills.splice(${i},1);renderSkills()">x</button></div>`
-  ).join("");
-}
-function addSkill(){
-  data.skills.push(newSkill.value);
-  newSkill.value="";
-  renderSkills();
-}
-
-// ACHIEVEMENTS
-function renderAch(){
-  achList.innerHTML=data.achievements.map((a,i)=>
-    `<div>${a} <button onclick="data.achievements.splice(${i},1);renderAch()">x</button></div>`
-  ).join("");
-}
-function addAch(){
-  data.achievements.push(newAch.value);
-  newAch.value="";
-  renderAch();
-}
-
-// PASSWORD
-function changePass(){
-  data.password=newPass.value;
-  alert("Password changed");
 }
 
 // SAVE
 function save(){
-  data.name=name.value;
-  data.tagline=tagline.value;
-  data.about.intro=about.value;
-  data.resume=resumeLink.value;
-
-  localStorage.setItem("data", JSON.stringify(data));
+  let data = document.getElementById("jsonData").value;
+  localStorage.setItem("data", data);
   alert("Saved ✅ Refresh site");
+}
+
+// LOGOUT
+function logout(){
+  location.reload();
 }
 
 </script>
