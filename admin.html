@@ -72,11 +72,9 @@ button{
 <!-- PROFILE -->
 <div class="card">
 <h3>Profile</h3>
-
 <input id="name" placeholder="Full Name">
 <input id="tagline" placeholder="Title">
 <textarea id="about" placeholder="Bio"></textarea>
-
 </div>
 
 <!-- SKILLS -->
@@ -106,7 +104,7 @@ button{
 <!-- RESUME -->
 <div class="card">
 <h3>Resume</h3>
-<input id="resume" placeholder="Resume link (Google Drive / PDF)">
+<input id="resume" placeholder="Resume link">
 </div>
 
 <!-- PROJECTS -->
@@ -126,7 +124,7 @@ button{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } 
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
@@ -141,7 +139,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* ✅ AUTO LOGIN FIX */
+const loginBox = document.getElementById("loginBox");
+const dashboard = document.getElementById("dashboard");
+
+/* AUTO LOGIN */
 onAuthStateChanged(auth, (user) => {
   if (user) {
     loginBox.style.display = "none";
@@ -163,7 +164,8 @@ window.login = async function(){
 }
 
 /* LOGOUT */
-window.logout = ()=>{
+window.logout = async ()=>{
+  await signOut(auth);
   location.reload();
 }
 
@@ -189,7 +191,7 @@ div.className="card";
 div.innerHTML=`
 <input placeholder="Title">
 <input placeholder="Short">
-<input placeholder="Image (apple.jpg)">
+<input placeholder="Image (images/apple.jpg)">
 <textarea placeholder="Description"></textarea>
 <button onclick="this.parentElement.remove()">❌ Remove</button>
 `;
@@ -199,6 +201,8 @@ projects.appendChild(div);
 
 /* SAVE */
 window.saveData = async function(){
+
+try{
 
 let getTags = (id)=>[...document.querySelectorAll(`#${id} .tag`)].map(t=>t.innerText);
 
@@ -221,13 +225,24 @@ description:i[3].value
 })
 };
 
+console.log("Saving:", data);
+
 await setDoc(doc(db,"portfolio","data"),data);
 
-alert("Saved successfully 🚀");
+alert("✅ Saved successfully");
+
+}catch(e){
+console.error(e);
+alert("❌ Error: " + e.message);
+}
+
 }
 
 /* LOAD */
 async function loadData(){
+
+try{
+
 let snap=await getDoc(doc(db,"portfolio","data"));
 
 if(snap.exists()){
@@ -238,18 +253,15 @@ tagline.value = d.tagline || "";
 about.value = d.about?.intro || "";
 resume.value = d.resume || "";
 
-/* CLEAR BEFORE LOAD */
 skills.innerHTML="";
 tools.innerHTML="";
 strengths.innerHTML="";
 projects.innerHTML="";
 
-/* LOAD TAGS */
 (d.skills||[]).forEach(v=>{newSkill.value=v; addTag("skills","newSkill");});
 (d.tools||[]).forEach(v=>{newTool.value=v; addTag("tools","newTool");});
 (d.strengths||[]).forEach(v=>{newStrength.value=v; addTag("strengths","newStrength");});
 
-/* LOAD PROJECTS */
 (d.projects||[]).forEach(p=>{
 addProject();
 let last=projects.lastChild.querySelectorAll("input,textarea");
@@ -260,6 +272,12 @@ last[2].value=p.image;
 last[3].value=p.description;
 });
 }
+
+}catch(e){
+console.error(e);
+alert("Load error: "+e.message);
+}
+
 }
 
 </script>
