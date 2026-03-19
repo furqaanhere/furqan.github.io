@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel</title>
 
 <style>
@@ -26,12 +24,12 @@ body{
   margin-bottom:20px;
 }
 
-input, textarea{
+input,textarea{
   width:100%;
-  margin:8px 0;
   padding:10px;
-  border-radius:6px;
+  margin:8px 0;
   border:none;
+  border-radius:6px;
 }
 
 button{
@@ -42,20 +40,12 @@ button{
   cursor:pointer;
 }
 
-.skill{
+.tag{
   display:inline-block;
   background:#38bdf8;
   color:black;
   padding:5px 10px;
   margin:5px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.ach{
-  background:rgba(56,189,248,0.2);
-  padding:6px;
-  margin:5px 0;
   border-radius:6px;
   cursor:pointer;
 }
@@ -70,7 +60,7 @@ button{
 
 <!-- LOGIN -->
 <div class="card" id="loginBox">
-<h2>Login</h2>
+<h3>Login</h3>
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
 <button onclick="login()">Login</button>
@@ -88,18 +78,32 @@ button{
 
 <!-- SKILLS -->
 <div class="card">
-<h3>Skills (click to remove)</h3>
+<h3>Skills</h3>
 <div id="skills"></div>
 <input id="newSkill" placeholder="Add skill">
-<button onclick="addSkill()">+ Add Skill</button>
+<button onclick="addTag('skills','newSkill')">+ Add</button>
 </div>
 
-<!-- ACHIEVEMENTS -->
+<!-- TOOLS -->
 <div class="card">
-<h3>Achievements (click to remove)</h3>
-<div id="achievements"></div>
-<input id="newAch" placeholder="Add achievement">
-<button onclick="addAch()">+ Add</button>
+<h3>Tools & Technologies</h3>
+<div id="tools"></div>
+<input id="newTool" placeholder="Add tool">
+<button onclick="addTag('tools','newTool')">+ Add</button>
+</div>
+
+<!-- STRENGTHS -->
+<div class="card">
+<h3>Strengths</h3>
+<div id="strengths"></div>
+<input id="newStrength" placeholder="Add strength">
+<button onclick="addTag('strengths','newStrength')">+ Add</button>
+</div>
+
+<!-- RESUME -->
+<div class="card">
+<h3>Resume</h3>
+<input id="resume" placeholder="Resume link (Google Drive)">
 </div>
 
 <!-- PROJECTS -->
@@ -149,32 +153,18 @@ window.login = async function(){
 /* LOGOUT */
 window.logout = ()=>location.reload();
 
-/* ADD SKILL */
-window.addSkill = function(v){
-let val=v||newSkill.value;
-if(!val)return;
+/* ADD TAG (skills/tools/strengths) */
+window.addTag = function(section,inputId){
+  let val = document.getElementById(inputId).value;
+  if(!val) return;
 
-let s=document.createElement("span");
-s.className="skill";
-s.innerText=val;
-s.onclick=()=>s.remove();
+  let el = document.createElement("span");
+  el.className="tag";
+  el.innerText=val;
+  el.onclick=()=>el.remove();
 
-skills.appendChild(s);
-newSkill.value="";
-}
-
-/* ADD ACH */
-window.addAch = function(v){
-let val=v||newAch.value;
-if(!val)return;
-
-let d=document.createElement("div");
-d.className="ach";
-d.innerText=val;
-d.onclick=()=>d.remove();
-
-achievements.appendChild(d);
-newAch.value="";
+  document.getElementById(section).appendChild(el);
+  document.getElementById(inputId).value="";
 }
 
 /* ADD PROJECT */
@@ -185,7 +175,7 @@ div.className="card";
 div.innerHTML=`
 <input placeholder="Title">
 <input placeholder="Short">
-<input placeholder="Image (apple.jpg)">
+<input placeholder="Image">
 <textarea placeholder="Description"></textarea>
 <button onclick="this.parentElement.remove()">❌ Remove</button>
 `;
@@ -196,35 +186,32 @@ projects.appendChild(div);
 /* SAVE */
 window.saveData = async function(){
 
-let skillsArr=[...document.querySelectorAll(".skill")].map(s=>s.innerText);
-let achArr=[...document.querySelectorAll(".ach")].map(a=>a.innerText);
+let getTags = (id)=>[...document.querySelectorAll(`#${id} .tag`)].map(t=>t.innerText);
 
-let projArr=[];
-document.querySelectorAll("#projects .card").forEach(c=>{
+let data={
+tagline:tagline.value,
+about:{intro:about.value},
+skills:getTags("skills"),
+tools:getTags("tools"),
+strengths:getTags("strengths"),
+resume:resume.value,
+projects:[...document.querySelectorAll("#projects .card")].map(c=>{
 let i=c.querySelectorAll("input,textarea");
-
-projArr.push({
+return {
 title:i[0].value,
 short:i[1].value,
 image:i[2].value,
 description:i[3].value
-});
-});
+};
+})
+};
 
-await setDoc(doc(db,"portfolio","data"),{
-tagline:tagline.value,
-about:{intro:about.value},
-skills:skillsArr,
-achievements:achArr,
-projects:projArr
-});
-
+await setDoc(doc(db,"portfolio","data"),data);
 alert("Saved 🚀");
 }
 
 /* LOAD */
 async function loadData(){
-
 let snap=await getDoc(doc(db,"portfolio","data"));
 
 if(snap.exists()){
@@ -232,14 +219,12 @@ let d=snap.data();
 
 tagline.value=d.tagline||"";
 about.value=d.about?.intro||"";
+resume.value=d.resume||"";
 
-skills.innerHTML="";
-(d.skills||[]).forEach(s=>addSkill(s));
+(d.skills||[]).forEach(v=>{newSkill.value=v; addTag("skills","newSkill");});
+(d.tools||[]).forEach(v=>{newTool.value=v; addTag("tools","newTool");});
+(d.strengths||[]).forEach(v=>{newStrength.value=v; addTag("strengths","newStrength");});
 
-achievements.innerHTML="";
-(d.achievements||[]).forEach(a=>addAch(a));
-
-projects.innerHTML="";
 (d.projects||[]).forEach(p=>{
 addProject();
 let last=projects.lastChild.querySelectorAll("input,textarea");
