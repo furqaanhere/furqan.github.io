@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Premium</title>
+<title>Admin Panel</title>
 
 <style>
 body{
@@ -9,40 +9,18 @@ body{
   font-family:Arial;
   background:#020617;
   color:white;
-  display:flex;
-}
-
-/* SIDEBAR */
-.sidebar{
-  width:220px;
-  background:#020617;
-  border-right:1px solid rgba(56,189,248,0.2);
-  height:100vh;
-  padding:20px;
-}
-
-.sidebar h2{color:#38bdf8;}
-
-.nav button{
-  width:100%;
-  margin:10px 0;
-  padding:10px;
-  background:none;
-  border:1px solid rgba(56,189,248,0.2);
-  color:white;
-  cursor:pointer;
-  border-radius:6px;
 }
 
 /* MAIN */
 .main{
-  flex:1;
+  max-width:900px;
+  margin:auto;
   padding:20px;
 }
 
 /* CARD */
 .card{
-  background:rgba(15,23,42,0.5);
+  background:rgba(15,23,42,0.6);
   padding:20px;
   border-radius:12px;
   margin-bottom:20px;
@@ -57,7 +35,16 @@ input,textarea{
   border-radius:6px;
 }
 
-/* TAGS */
+/* BUTTON */
+button{
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  background:#38bdf8;
+  cursor:pointer;
+}
+
+/* SKILLS */
 .skill{
   display:inline-block;
   background:#38bdf8;
@@ -68,19 +55,11 @@ input,textarea{
   cursor:pointer;
 }
 
+/* ACH */
 .ach{
   background:rgba(56,189,248,0.2);
   padding:6px;
   margin:5px 0;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-/* BUTTON */
-button.save{
-  background:#38bdf8;
-  padding:10px;
-  border:none;
   border-radius:6px;
   cursor:pointer;
 }
@@ -89,64 +68,53 @@ button.save{
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-<h2>⚡ Admin</h2>
-
-<div class="nav">
-<button onclick="showTab('profile')">Profile</button>
-<button onclick="showTab('skillsTab')">Skills</button>
-<button onclick="showTab('projectsTab')">Projects</button>
-</div>
-</div>
-
-<!-- MAIN -->
 <div class="main">
 
 <!-- LOGIN -->
 <div id="loginBox" class="card">
-<h3>Login</h3>
+<h2>Login</h2>
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
 <button onclick="login()">Login</button>
 </div>
 
+<!-- DASHBOARD (HIDDEN) -->
+<div id="dashboard" style="display:none;">
+
 <!-- PROFILE -->
-<div id="profile" class="tab" style="display:none;">
 <div class="card">
 <h3>Profile</h3>
 <input id="tagline" placeholder="Title">
 <textarea id="about" placeholder="Bio"></textarea>
 </div>
-</div>
 
 <!-- SKILLS -->
-<div id="skillsTab" class="tab" style="display:none;">
 <div class="card">
-
 <h3>Skills (click to remove)</h3>
 <div id="skills"></div>
 <input id="newSkill" placeholder="Add skill">
 <button onclick="addSkill()">+ Add Skill</button>
+</div>
 
+<!-- ACHIEVEMENTS -->
+<div class="card">
 <h3>Achievements (click to remove)</h3>
 <div id="achievements"></div>
 <input id="newAch" placeholder="Add achievement">
 <button onclick="addAch()">+ Add</button>
-
-</div>
 </div>
 
 <!-- PROJECTS -->
-<div id="projectsTab" class="tab" style="display:none;">
 <div class="card">
 <h3>Projects</h3>
 <div id="projects"></div>
 <button onclick="addProject()">+ Add Project</button>
 </div>
-</div>
 
-<button class="save" onclick="saveData()">💾 Save</button>
+<button onclick="saveData()">💾 Save All</button>
+<button onclick="logout()">Logout</button>
+
+</div>
 
 </div>
 
@@ -172,24 +140,19 @@ const db = getFirestore(app);
 window.login = async function(){
   try{
     await signInWithEmailAndPassword(auth,email.value.trim(),password.value.trim());
-    loginBox.style.display="none";
-    showTab('skillsTab'); // default open skills
+
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("dashboard").style.display="block";
+
     loadData();
+
   }catch(e){
-    alert(e.message);
+    alert("Invalid email or password ❌");
   }
 }
 
-/* NAVIGATION FIXED */
-window.showTab = function(tab){
-
-document.getElementById("profile").style.display="none";
-document.getElementById("skillsTab").style.display="none";
-document.getElementById("projectsTab").style.display="none";
-
-document.getElementById(tab).style.display="block";
-
-}
+/* LOGOUT */
+window.logout = ()=>location.reload();
 
 /* SKILL */
 window.addSkill = function(v){
@@ -205,7 +168,7 @@ skills.appendChild(s);
 newSkill.value="";
 }
 
-/* ACHIEVEMENT */
+/* ACH */
 window.addAch = function(v){
 let val=v||newAch.value;
 if(!val)return;
@@ -261,7 +224,7 @@ achievements:achArr,
 projects:projArr
 });
 
-alert("Saved 🚀");
+alert("Saved successfully 🚀");
 }
 
 /* LOAD */
