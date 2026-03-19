@@ -13,14 +13,12 @@ body{
   color:white;
 }
 
-/* CONTAINER */
 .container{
   max-width:900px;
   margin:auto;
   padding:20px;
 }
 
-/* CARD */
 .card{
   background:rgba(15,23,42,0.6);
   padding:20px;
@@ -29,14 +27,12 @@ body{
   border:1px solid rgba(56,189,248,0.2);
 }
 
-/* GRID */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:15px;
 }
 
-/* INPUTS */
 input, textarea{
   width:100%;
   margin:8px 0;
@@ -45,7 +41,6 @@ input, textarea{
   border:none;
 }
 
-/* BUTTON */
 button{
   padding:10px;
   border:none;
@@ -54,21 +49,20 @@ button{
   cursor:pointer;
 }
 
-/* PROFILE */
-.profile{
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  object-fit:cover;
-}
-
-/* TAG */
 .skill{
+  display:inline-block;
   background:#38bdf8;
   color:black;
   padding:5px 10px;
   margin:5px;
-  display:inline-block;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.ach{
+  background:rgba(56,189,248,0.2);
+  padding:6px;
+  margin:5px 0;
   border-radius:6px;
   cursor:pointer;
 }
@@ -92,13 +86,6 @@ button{
 <!-- DASHBOARD -->
 <div id="dashboard" style="display:none;">
 
-<!-- PROFILE -->
-<div class="card" style="text-align:center;">
-<img id="profilePreview" src="photo.jpg" class="profile">
-<input type="file" id="profileImg">
-</div>
-
-<!-- TITLE + BIO -->
 <div class="grid">
 
 <div class="card">
@@ -115,17 +102,17 @@ button{
 
 <!-- SKILLS -->
 <div class="card">
-<h3>Skills</h3>
+<h3>Skills (click to remove)</h3>
 <div id="skills"></div>
-<input id="newSkill">
+<input id="newSkill" placeholder="Add skill">
 <button onclick="addSkill()">+ Add Skill</button>
 </div>
 
 <!-- ACHIEVEMENTS -->
 <div class="card">
-<h3>Achievements</h3>
+<h3>Achievements (click to remove)</h3>
 <div id="achievements"></div>
-<input id="newAch">
+<input id="newAch" placeholder="Add achievement">
 <button onclick="addAch()">+ Add</button>
 </div>
 
@@ -146,7 +133,7 @@ button{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut } 
+import { getAuth, signInWithEmailAndPassword } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
@@ -176,61 +163,66 @@ window.login = async function(){
 /* LOGOUT */
 window.logout = ()=>location.reload();
 
-/* SKILL */
-window.addSkill = function(){
-  let val=newSkill.value;
-  if(!val)return;
+/* ADD SKILL */
+window.addSkill = function(value){
+  let val = value || newSkill.value;
+  if(!val) return;
 
-  let s=document.createElement("span");
-  s.className="skill";
-  s.innerText=val;
-  s.onclick=()=>s.remove();
+  let el = document.createElement("span");
+  el.className = "skill";
+  el.innerText = val;
 
-  skills.appendChild(s);
+  el.onclick = ()=>el.remove();
+
+  skills.appendChild(el);
   newSkill.value="";
 }
 
-/* ACHIEVEMENT */
-window.addAch = function(){
-  let val=newAch.value;
-  if(!val)return;
+/* ADD ACHIEVEMENT */
+window.addAch = function(value){
+  let val = value || newAch.value;
+  if(!val) return;
 
-  let d=document.createElement("div");
-  d.innerText="• "+val;
-  d.onclick=()=>d.remove();
+  let el = document.createElement("div");
+  el.className = "ach";
+  el.innerText = val;
 
-  achievements.appendChild(d);
+  el.onclick = ()=>el.remove();
+
+  achievements.appendChild(el);
   newAch.value="";
 }
 
-/* PROJECT */
+/* ADD PROJECT */
 window.addProject = function(){
-  let div=document.createElement("div");
-  div.className="card";
+  let div = document.createElement("div");
+  div.className = "card";
 
-  div.innerHTML=`
+  div.innerHTML = `
   <input placeholder="Title">
   <input placeholder="Short">
-  <input placeholder="Image name">
+  <input placeholder="Image name (apple.jpg)">
   <textarea placeholder="Description"></textarea>
-  <button onclick="this.parentElement.remove()">❌</button>
+  <button onclick="this.parentElement.remove()">❌ Remove</button>
   `;
 
   projects.appendChild(div);
 }
 
-/* SAVE */
+/* SAVE DATA */
 window.saveData = async function(){
 
-let skillsArr=[...document.querySelectorAll(".skill")]
-.map(s=>s.innerText);
+let skillsArr = [...document.querySelectorAll("#skills .skill")]
+.map(s => s.innerText);
 
-let achArr=[...document.querySelectorAll("#achievements div")]
-.map(a=>a.innerText.replace("• ",""));
+let achArr = [...document.querySelectorAll("#achievements .ach")]
+.map(a => a.innerText);
 
-let projArr=[];
+let projArr = [];
+
 document.querySelectorAll("#projects .card").forEach(c=>{
-let i=c.querySelectorAll("input,textarea");
+let i = c.querySelectorAll("input,textarea");
+
 projArr.push({
 title:i[0].value,
 short:i[1].value,
@@ -239,7 +231,7 @@ description:i[3].value
 });
 });
 
-let data={
+let data = {
 tagline:tagline.value,
 about:{intro:about.value},
 skills:skillsArr,
@@ -249,37 +241,40 @@ projects:projArr
 
 await setDoc(doc(db,"portfolio","data"),data);
 
-alert("Saved 🚀");
+alert("Saved successfully 🚀");
 }
 
-/* LOAD */
+/* LOAD DATA */
 async function loadData(){
-let snap=await getDoc(doc(db,"portfolio","data"));
+
+let snap = await getDoc(doc(db,"portfolio","data"));
 
 if(snap.exists()){
-let d=snap.data();
 
-tagline.value=d.tagline||"";
-about.value=d.about?.intro||"";
+let d = snap.data();
 
-(d.skills||[]).forEach(s=>{
-newSkill.value=s; addSkill();
-});
+tagline.value = d.tagline || "";
+about.value = d.about?.intro || "";
 
-(d.achievements||[]).forEach(a=>{
-newAch.value=a; addAch();
-});
+skills.innerHTML="";
+(d.skills || []).forEach(s=>addSkill(s));
 
-(d.projects||[]).forEach(p=>{
+achievements.innerHTML="";
+(d.achievements || []).forEach(a=>addAch(a));
+
+projects.innerHTML="";
+(d.projects || []).forEach(p=>{
 addProject();
-let last=projects.lastChild.querySelectorAll("input,textarea");
+let last = projects.lastChild.querySelectorAll("input,textarea");
 
-last[0].value=p.title;
-last[1].value=p.short;
-last[2].value=p.image;
-last[3].value=p.description;
+last[0].value = p.title;
+last[1].value = p.short;
+last[2].value = p.image;
+last[3].value = p.description;
 });
+
 }
+
 }
 
 </script>
