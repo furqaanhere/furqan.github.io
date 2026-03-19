@@ -1,100 +1,143 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Panel</title>
+<title>Admin Dashboard</title>
 
 <style>
 body{
   font-family:Arial;
   background:#020617;
   color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+  padding:20px;
 }
 
-/* BOX */
+/* CARD */
 .box{
   background:rgba(15,23,42,0.6);
   padding:20px;
   border-radius:10px;
-  width:300px;
+  margin-bottom:20px;
 }
 
-/* INPUT */
-input,textarea,button{
+input,textarea{
   width:100%;
-  margin-top:10px;
+  margin:8px 0;
   padding:10px;
-  border:none;
   border-radius:6px;
+  border:none;
 }
 
 button{
+  padding:10px;
   background:#38bdf8;
-  color:black;
+  border:none;
+  margin-top:10px;
   cursor:pointer;
+  border-radius:6px;
+}
+
+/* PROJECT */
+.project{
+  border:1px solid rgba(255,255,255,0.2);
+  padding:10px;
+  margin-top:10px;
+  border-radius:6px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="loginBox" class="box">
-<h2>Admin Login</h2>
-<input type="password" id="pass" placeholder="Enter password">
-<button onclick="login()">Login</button>
+<h1>🚀 Admin Dashboard</h1>
+
+<!-- BASIC INFO -->
+<div class="box">
+<h2>Profile</h2>
+<input id="name" placeholder="Name">
+<input id="tagline" placeholder="Tagline">
+<textarea id="about" placeholder="About"></textarea>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="box" style="display:none;">
-<h2>Dashboard</h2>
+<!-- PROJECTS -->
+<div class="box">
+<h2>Projects</h2>
+<div id="projects"></div>
 
-<textarea id="jsonData" rows="10"></textarea>
-
-<button onclick="save()">Save</button>
-<button onclick="logout()">Logout</button>
+<button onclick="addProject()">➕ Add Project</button>
 </div>
+
+<!-- SAVE -->
+<button onclick="save()">💾 Save All</button>
 
 <script>
 
-const PASSWORD = "1234"; // change if needed
+let data={};
 
-function login(){
-  let input = document.getElementById("pass").value;
+// LOAD DATA
+fetch("content.json")
+.then(r=>r.json())
+.then(d=>{
+  data=d;
 
-  if(input === PASSWORD){
+  document.getElementById("name").value=d.name;
+  document.getElementById("tagline").value=d.tagline;
+  document.getElementById("about").value=d.about.intro;
 
-    // hide login
-    document.getElementById("loginBox").style.display = "none";
+  renderProjects();
+});
 
-    // show dashboard
-    document.getElementById("dashboard").style.display = "block";
+// RENDER PROJECTS
+function renderProjects(){
+  let html="";
+  data.projects.forEach((p,i)=>{
+    html+=`
+    <div class="project">
+      <input value="${p.title}" onchange="update(${i},'title',this.value)">
+      <input value="${p.short}" onchange="update(${i},'short',this.value)">
+      <input value="${p.image}" onchange="update(${i},'image',this.value)">
+      <textarea onchange="update(${i},'description',this.value)">${p.description}</textarea>
 
-    // load saved data
-    let data = localStorage.getItem("data");
+      <button onclick="removeProject(${i})">❌ Remove</button>
+    </div>
+    `;
+  });
 
-    if(data){
-      document.getElementById("jsonData").value = data;
-    }else{
-      document.getElementById("jsonData").value = "Paste JSON here...";
-    }
-
-  }else{
-    alert("Wrong password ❌");
-  }
+  document.getElementById("projects").innerHTML=html;
 }
 
+// UPDATE
+function update(i,key,val){
+  data.projects[i][key]=val;
+}
+
+// ADD PROJECT
+function addProject(){
+  data.projects.push({
+    title:"New Project",
+    short:"Short desc",
+    description:"Details",
+    image:"photo.jpg",
+    tech:[]
+  });
+  renderProjects();
+}
+
+// REMOVE
+function removeProject(i){
+  data.projects.splice(i,1);
+  renderProjects();
+}
+
+// SAVE
 function save(){
-  let data = document.getElementById("jsonData").value;
-  localStorage.setItem("data", data);
-  alert("Saved ✅ Refresh main site");
-}
 
-function logout(){
-  location.reload();
+  data.name=document.getElementById("name").value;
+  data.tagline=document.getElementById("tagline").value;
+  data.about.intro=document.getElementById("about").value;
+
+  localStorage.setItem("data", JSON.stringify(data));
+
+  alert("✅ Saved! Refresh website");
 }
 
 </script>
