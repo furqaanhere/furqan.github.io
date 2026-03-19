@@ -10,20 +10,17 @@ body{
   background:#020617;
   color:white;
 }
-
 .container{
   max-width:900px;
   margin:auto;
   padding:20px;
 }
-
 .card{
   background:rgba(15,23,42,0.6);
   padding:20px;
   border-radius:12px;
   margin-bottom:20px;
 }
-
 input,textarea{
   width:100%;
   padding:10px;
@@ -31,7 +28,6 @@ input,textarea{
   border:none;
   border-radius:6px;
 }
-
 button{
   padding:10px;
   border:none;
@@ -39,7 +35,6 @@ button{
   background:#38bdf8;
   cursor:pointer;
 }
-
 .tag{
   display:inline-block;
   background:#38bdf8;
@@ -58,7 +53,6 @@ button{
 
 <h1>🚀 Admin Panel</h1>
 
-<!-- LOGIN -->
 <div class="card" id="loginBox">
 <h3>Login</h3>
 <input id="email" placeholder="Email">
@@ -66,10 +60,8 @@ button{
 <button onclick="login()">Login</button>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard" style="display:none;">
 
-<!-- PROFILE -->
 <div class="card">
 <h3>Profile</h3>
 <input id="name" placeholder="Full Name">
@@ -77,7 +69,6 @@ button{
 <textarea id="about" placeholder="Bio"></textarea>
 </div>
 
-<!-- SKILLS -->
 <div class="card">
 <h3>Skills</h3>
 <div id="skills"></div>
@@ -85,7 +76,6 @@ button{
 <button onclick="addTag('skills','newSkill')">+ Add</button>
 </div>
 
-<!-- TOOLS -->
 <div class="card">
 <h3>Tools & Technologies</h3>
 <div id="tools"></div>
@@ -93,7 +83,6 @@ button{
 <button onclick="addTag('tools','newTool')">+ Add</button>
 </div>
 
-<!-- STRENGTHS -->
 <div class="card">
 <h3>Strengths</h3>
 <div id="strengths"></div>
@@ -101,13 +90,11 @@ button{
 <button onclick="addTag('strengths','newStrength')">+ Add</button>
 </div>
 
-<!-- RESUME -->
 <div class="card">
 <h3>Resume</h3>
 <input id="resume" placeholder="Resume link">
 </div>
 
-<!-- PROJECTS -->
 <div class="card">
 <h3>Projects</h3>
 <div id="projects"></div>
@@ -118,7 +105,6 @@ button{
 <button onclick="logout()">Logout</button>
 
 </div>
-
 </div>
 
 <script type="module">
@@ -147,10 +133,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     loginBox.style.display = "none";
     dashboard.style.display = "block";
-    loadData();
-  } else {
-    loginBox.style.display = "block";
-    dashboard.style.display = "none";
+    loadData(); // 🔥 FIXED LOAD
   }
 });
 
@@ -191,7 +174,7 @@ div.className="card";
 div.innerHTML=`
 <input placeholder="Title">
 <input placeholder="Short">
-<input placeholder="Image (images/apple.jpg)">
+<input placeholder="Image">
 <textarea placeholder="Description"></textarea>
 <button onclick="this.parentElement.remove()">❌ Remove</button>
 `;
@@ -201,8 +184,6 @@ projects.appendChild(div);
 
 /* SAVE */
 window.saveData = async function(){
-
-try{
 
 let getTags = (id)=>[...document.querySelectorAll(`#${id} .tag`)].map(t=>t.innerText);
 
@@ -225,59 +206,68 @@ description:i[3].value
 })
 };
 
-console.log("Saving:", data);
-
 await setDoc(doc(db,"portfolio","data"),data);
-
-alert("✅ Saved successfully");
-
-}catch(e){
-console.error(e);
-alert("❌ Error: " + e.message);
+alert("Saved successfully 🚀");
 }
 
-}
-
-/* LOAD */
+/* 🔥 FIXED LOAD FUNCTION */
 async function loadData(){
 
-try{
+const snap = await getDoc(doc(db,"portfolio","data"));
 
-let snap=await getDoc(doc(db,"portfolio","data"));
+if(!snap.exists()) return;
 
-if(snap.exists()){
-let d=snap.data();
+const d = snap.data();
 
+// PROFILE
 name.value = d.name || "";
 tagline.value = d.tagline || "";
 about.value = d.about?.intro || "";
 resume.value = d.resume || "";
 
+// CLEAR UI
 skills.innerHTML="";
 tools.innerHTML="";
 strengths.innerHTML="";
 projects.innerHTML="";
 
-(d.skills||[]).forEach(v=>{newSkill.value=v; addTag("skills","newSkill");});
-(d.tools||[]).forEach(v=>{newTool.value=v; addTag("tools","newTool");});
-(d.strengths||[]).forEach(v=>{newStrength.value=v; addTag("strengths","newStrength");});
+// SKILLS
+(d.skills||[]).forEach(v=>{
+let el=document.createElement("span");
+el.className="tag";
+el.innerText=v;
+el.onclick=()=>el.remove();
+skills.appendChild(el);
+});
 
+// TOOLS
+(d.tools||[]).forEach(v=>{
+let el=document.createElement("span");
+el.className="tag";
+el.innerText=v;
+el.onclick=()=>el.remove();
+tools.appendChild(el);
+});
+
+// STRENGTHS
+(d.strengths||[]).forEach(v=>{
+let el=document.createElement("span");
+el.className="tag";
+el.innerText=v;
+el.onclick=()=>el.remove();
+strengths.appendChild(el);
+});
+
+// PROJECTS
 (d.projects||[]).forEach(p=>{
 addProject();
 let last=projects.lastChild.querySelectorAll("input,textarea");
 
-last[0].value=p.title;
-last[1].value=p.short;
-last[2].value=p.image;
-last[3].value=p.description;
+last[0].value=p.title || "";
+last[1].value=p.short || "";
+last[2].value=p.image || "";
+last[3].value=p.description || "";
 });
-}
-
-}catch(e){
-console.error(e);
-alert("Load error: "+e.message);
-}
-
 }
 
 </script>
