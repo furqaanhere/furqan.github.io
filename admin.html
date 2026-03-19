@@ -1,17 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Dashboard</title>
+<title>Admin Pro Panel</title>
 
 <style>
 body{
+  margin:0;
   font-family:Arial;
   background:#020617;
   color:white;
+  display:flex;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:220px;
+  background:#0f172a;
+  height:100vh;
   padding:20px;
 }
 
-/* CARD */
+.sidebar div{
+  padding:12px;
+  cursor:pointer;
+}
+.sidebar div:hover{
+  background:#38bdf8;
+  color:black;
+}
+
+/* MAIN */
+.main{
+  flex:1;
+  padding:20px;
+}
+
 .box{
   background:rgba(15,23,42,0.6);
   padding:20px;
@@ -21,10 +44,10 @@ body{
 
 input,textarea{
   width:100%;
-  margin:8px 0;
+  margin:6px 0;
   padding:10px;
-  border-radius:6px;
   border:none;
+  border-radius:6px;
 }
 
 button{
@@ -36,108 +59,171 @@ button{
   border-radius:6px;
 }
 
-/* PROJECT */
-.project{
-  border:1px solid rgba(255,255,255,0.2);
-  padding:10px;
-  margin-top:10px;
-  border-radius:6px;
-}
+/* HIDE SECTIONS */
+.section{display:none;}
+.section.active{display:block;}
 </style>
 </head>
 
 <body>
 
-<h1>🚀 Admin Dashboard</h1>
+<!-- SIDEBAR -->
+<div class="sidebar">
+<div onclick="show('profile')">Profile</div>
+<div onclick="show('projects')">Projects</div>
+<div onclick="show('skills')">Skills</div>
+<div onclick="show('achievements')">Achievements</div>
+<div onclick="show('resume')">Resume</div>
+<div onclick="show('settings')">Settings</div>
+</div>
 
-<!-- BASIC INFO -->
-<div class="box">
+<!-- MAIN -->
+<div class="main">
+
+<!-- PROFILE -->
+<div id="profile" class="section active box">
 <h2>Profile</h2>
-<input id="name" placeholder="Name">
-<input id="tagline" placeholder="Tagline">
-<textarea id="about" placeholder="About"></textarea>
+<input id="name">
+<input id="tagline">
+<textarea id="about"></textarea>
 </div>
 
 <!-- PROJECTS -->
-<div class="box">
+<div id="projects" class="section box">
 <h2>Projects</h2>
-<div id="projects"></div>
-
-<button onclick="addProject()">➕ Add Project</button>
+<div id="projList"></div>
+<button onclick="addProject()">+ Add Project</button>
 </div>
 
-<!-- SAVE -->
+<!-- SKILLS -->
+<div id="skills" class="section box">
+<h2>Skills</h2>
+<div id="skillList"></div>
+<input id="newSkill" placeholder="Add skill">
+<button onclick="addSkill()">Add Skill</button>
+</div>
+
+<!-- ACHIEVEMENTS -->
+<div id="achievements" class="section box">
+<h2>Achievements</h2>
+<div id="achList"></div>
+<input id="newAch" placeholder="Add achievement">
+<button onclick="addAch()">Add</button>
+</div>
+
+<!-- RESUME -->
+<div id="resume" class="section box">
+<h2>Resume</h2>
+<input id="resumeLink" placeholder="Paste resume link (Google Drive)">
+</div>
+
+<!-- SETTINGS -->
+<div id="settings" class="section box">
+<h2>Settings</h2>
+<input id="newPass" placeholder="New password">
+<button onclick="changePass()">Change Password</button>
+</div>
+
 <button onclick="save()">💾 Save All</button>
+
+</div>
 
 <script>
 
-let data={};
+let data = JSON.parse(localStorage.getItem("data")) || {
+  name:"",
+  tagline:"",
+  about:{intro:""},
+  projects:[],
+  skills:[],
+  achievements:[],
+  resume:"",
+  password:"1234"
+};
 
-// LOAD DATA
-fetch("content.json")
-.then(r=>r.json())
-.then(d=>{
-  data=d;
+// NAV
+function show(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
 
-  document.getElementById("name").value=d.name;
-  document.getElementById("tagline").value=d.tagline;
-  document.getElementById("about").value=d.about.intro;
+// LOAD
+function load(){
+  name.value=data.name;
+  tagline.value=data.tagline;
+  about.value=data.about.intro;
+  resumeLink.value=data.resume || "";
 
   renderProjects();
-});
+  renderSkills();
+  renderAch();
+}
+load();
 
-// RENDER PROJECTS
+// PROJECTS
 function renderProjects(){
   let html="";
   data.projects.forEach((p,i)=>{
     html+=`
-    <div class="project">
-      <input value="${p.title}" onchange="update(${i},'title',this.value)">
-      <input value="${p.short}" onchange="update(${i},'short',this.value)">
-      <input value="${p.image}" onchange="update(${i},'image',this.value)">
-      <textarea onchange="update(${i},'description',this.value)">${p.description}</textarea>
-
-      <button onclick="removeProject(${i})">❌ Remove</button>
-    </div>
-    `;
+    <div>
+      <input value="${p.title}" onchange="data.projects[${i}].title=this.value">
+      <input value="${p.short}" onchange="data.projects[${i}].short=this.value">
+      <input value="${p.image}" onchange="data.projects[${i}].image=this.value">
+      <textarea onchange="data.projects[${i}].description=this.value">${p.description}</textarea>
+      <button onclick="removeProject(${i})">Remove</button>
+    </div>`;
   });
-
-  document.getElementById("projects").innerHTML=html;
+  projList.innerHTML=html;
 }
 
-// UPDATE
-function update(i,key,val){
-  data.projects[i][key]=val;
-}
-
-// ADD PROJECT
 function addProject(){
-  data.projects.push({
-    title:"New Project",
-    short:"Short desc",
-    description:"Details",
-    image:"photo.jpg",
-    tech:[]
-  });
+  data.projects.push({title:"New",short:"",image:"photo.jpg",description:""});
   renderProjects();
 }
-
-// REMOVE
 function removeProject(i){
   data.projects.splice(i,1);
   renderProjects();
 }
 
+// SKILLS
+function renderSkills(){
+  skillList.innerHTML=data.skills.map((s,i)=>
+    `<div>${s} <button onclick="data.skills.splice(${i},1);renderSkills()">x</button></div>`
+  ).join("");
+}
+function addSkill(){
+  data.skills.push(newSkill.value);
+  newSkill.value="";
+  renderSkills();
+}
+
+// ACHIEVEMENTS
+function renderAch(){
+  achList.innerHTML=data.achievements.map((a,i)=>
+    `<div>${a} <button onclick="data.achievements.splice(${i},1);renderAch()">x</button></div>`
+  ).join("");
+}
+function addAch(){
+  data.achievements.push(newAch.value);
+  newAch.value="";
+  renderAch();
+}
+
+// PASSWORD
+function changePass(){
+  data.password=newPass.value;
+  alert("Password changed");
+}
+
 // SAVE
 function save(){
-
-  data.name=document.getElementById("name").value;
-  data.tagline=document.getElementById("tagline").value;
-  data.about.intro=document.getElementById("about").value;
+  data.name=name.value;
+  data.tagline=tagline.value;
+  data.about.intro=about.value;
+  data.resume=resumeLink.value;
 
   localStorage.setItem("data", JSON.stringify(data));
-
-  alert("✅ Saved! Refresh website");
+  alert("Saved ✅ Refresh site");
 }
 
 </script>
