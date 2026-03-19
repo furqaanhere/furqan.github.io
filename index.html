@@ -3,62 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Furqan Portfolio</title>
+<title>Furqan Tech Portfolio</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-  font-family:Arial;
+  font-family: 'Courier New', monospace;
   background:#020617;
-  color:white;
+  color:#e2e8f0;
   overflow-x:hidden;
 }
 
-/* BACKGROUND */
-.background{
-  position:fixed;
-  width:110%;
-  height:110%;
-  top:-5%;
-  left:-5%;
-  background:url("photo.jpg") center/cover no-repeat;
-  filter:brightness(0.5);
-  z-index:-3;
-  transition:transform 0.2s ease-out;
-}
-
-/* PARTICLES */
-#canvas{
+/* GRID BACKGROUND */
+body::before{
+  content:"";
   position:fixed;
   width:100%;
   height:100%;
-  z-index:-2;
+  background-image:
+    linear-gradient(rgba(56,189,248,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,189,248,0.05) 1px, transparent 1px);
+  background-size:40px 40px;
+  z-index:-3;
 }
 
-/* CURSOR */
-#cursorGlow{
+/* SCAN LINE */
+body::after{
+  content:"";
   position:fixed;
-  width:300px;
-  height:300px;
-  border-radius:50%;
-  background:radial-gradient(circle, rgba(56,189,248,0.25), transparent 70%);
-  pointer-events:none;
-  z-index:-1;
-  transform:translate(-50%,-50%);
+  width:100%;
+  height:2px;
+  background:rgba(56,189,248,0.3);
+  animation:scan 4s linear infinite;
+  z-index:-2;
+}
+@keyframes scan{
+  0%{top:0;}
+  100%{top:100%;}
 }
 
 /* HEADER */
 header{
-  padding:20px;
   text-align:center;
-  background:rgba(0,0,0,0.35);
-  backdrop-filter:blur(15px);
+  padding:20px;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
+}
+
+header h1{
+  color:#38bdf8;
+  text-shadow:0 0 10px #38bdf8;
 }
 
 /* HERO */
 .hero{
-  height:80vh;
+  height:70vh;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -66,124 +66,126 @@ header{
   text-align:center;
 }
 
+.hero h2{
+  font-size:2rem;
+  text-shadow:0 0 8px #38bdf8;
+}
+
 /* SECTIONS */
 section{
-  padding:80px 20px;
-  opacity:0;
-  transform:translateY(60px);
-  transition:0.8s;
+  padding:60px 20px;
 }
 
-section.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-/* GLASS */
+/* GLASS PANEL */
 .glass{
-  background:rgba(15,23,42,0.3);
-  backdrop-filter:blur(20px);
-  border-radius:16px;
-  padding:25px;
+  background:rgba(15,23,42,0.4);
   border:1px solid rgba(56,189,248,0.2);
+  backdrop-filter:blur(10px);
+  border-radius:12px;
+  padding:20px;
 }
 
 /* SKILLS */
 .skills{
   display:flex;
   flex-wrap:wrap;
-  justify-content:center;
   gap:10px;
+  justify-content:center;
 }
+
 .skill{
-  background:rgba(56,189,248,0.2);
-  padding:8px 14px;
-  border-radius:10px;
+  padding:6px 12px;
+  border:1px solid #38bdf8;
+  border-radius:8px;
+  box-shadow:0 0 5px #38bdf8;
 }
 
 /* PROJECTS */
 .projects{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:25px;
+  gap:20px;
 }
 
 .card{
-  background:rgba(15,23,42,0.35);
-  backdrop-filter:blur(20px);
-  border-radius:16px;
+  border:1px solid rgba(56,189,248,0.2);
+  border-radius:12px;
   overflow:hidden;
-  cursor:pointer;
+  background:rgba(15,23,42,0.4);
   transition:0.3s;
-  transform-style:preserve-3d;
+  cursor:pointer;
 }
 
 .card:hover{
-  box-shadow:0 25px 60px rgba(56,189,248,0.3);
+  transform:translateY(-5px);
+  box-shadow:0 0 20px #38bdf8;
 }
 
 .card img{
   width:100%;
-  height:200px;
+  height:180px;
   object-fit:cover;
 }
 
 .card-content{padding:15px;}
 
 .tag{
-  background:rgba(56,189,248,0.2);
-  padding:4px 8px;
-  margin:3px;
+  border:1px solid #38bdf8;
+  padding:3px 6px;
+  margin:2px;
   border-radius:6px;
 }
+
+/* LINKS */
+a{color:#38bdf8;text-decoration:none;}
+a:hover{text-shadow:0 0 5px #38bdf8;}
 
 /* MODAL */
 #modal{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.85);
-  backdrop-filter:blur(8px);
+  background:rgba(0,0,0,0.9);
   justify-content:center;
   align-items:center;
 }
 
 #modalContent{
-  width:90%;
-  max-width:600px;
   background:#020617;
   padding:20px;
-  border-radius:14px;
-  animation:fade 0.3s ease;
-}
-
-@keyframes fade{
-  from{opacity:0;transform:scale(0.9);}
-  to{opacity:1;transform:scale(1);}
+  border:1px solid #38bdf8;
+  border-radius:10px;
 }
 
 button{
   margin-top:10px;
-  padding:8px 12px;
+  padding:8px;
   background:#38bdf8;
   border:none;
-  border-radius:6px;
+  cursor:pointer;
 }
+
+/* TYPING CURSOR */
+#typing::after{
+  content:"|";
+  animation:blink 1s infinite;
+}
+@keyframes blink{
+  0%,100%{opacity:1;}
+  50%{opacity:0;}
+}
+
 </style>
 </head>
 
 <body>
-
-<div id="cursorGlow"></div>
-<div class="background"></div>
-<canvas id="canvas"></canvas>
 
 <header>
 <h1 id="name"></h1>
 <p id="tagline"></p>
 </header>
 
-<section class="hero show">
+<section class="hero">
 <h2>I build <span id="typing"></span></h2>
 </section>
 
@@ -209,7 +211,7 @@ button{
 
 <div id="modal">
 <div id="modalContent">
-<img id="modalImage" style="width:100%;height:200px;object-fit:cover;">
+<img id="modalImage" style="width:100%;height:200px;">
 <h2 id="modalTitle"></h2>
 <p id="modalDesc"></p>
 <button onclick="closeModal()">Close</button>
@@ -217,7 +219,7 @@ button{
 </div>
 
 <script>
-// LOAD DATA
+
 document.addEventListener("DOMContentLoaded",()=>{
 
 fetch("content.json")
@@ -241,7 +243,7 @@ contact.innerHTML=`
 skills.innerHTML=data.skills.map(s=>`<span class="skill">${s}</span>`).join("");
 
 projects.innerHTML=data.projects.map((p,i)=>`
-<div class="card" data-i="${i}">
+<div class="card" onclick='openModal(${JSON.stringify(p)})'>
 <img src="${p.image}">
 <div class="card-content">
 <h3>${p.title}</h3>
@@ -250,20 +252,6 @@ ${p.tech.map(t=>`<span class="tag">${t}</span>`).join("")}
 </div>
 </div>
 `).join("");
-
-document.querySelectorAll(".card").forEach(c=>{
-c.onclick=()=>openModal(data.projects[c.dataset.i]);
-});
-
-// SECTION REVEAL
-const sections=document.querySelectorAll("section");
-window.addEventListener("scroll",()=>{
-sections.forEach(s=>{
-if(s.getBoundingClientRect().top<window.innerHeight-100){
-s.classList.add("show");
-}
-});
-});
 
 });
 
@@ -280,49 +268,19 @@ function closeModal(){
 modal.style.display="none";
 }
 
-// CURSOR
-document.addEventListener("mousemove",e=>{
-cursorGlow.style.left=e.clientX+"px";
-cursorGlow.style.top=e.clientY+"px";
-});
-
-// PARALLAX
-window.addEventListener("scroll",()=>{
-document.querySelector(".background").style.transform=
-`translateY(${scrollY*0.2}px) scale(1.05)`;
-});
-
-// PARTICLES
-const c=document.getElementById("canvas");
-const ctx=c.getContext("2d");
-c.width=innerWidth;c.height=innerHeight;
-
-let p=[];
-for(let i=0;i<35;i++){
-p.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-0.5),vy:(Math.random()-0.5)});
-}
-
-function draw(){
-ctx.clearRect(0,0,c.width,c.height);
-p.forEach(a=>{
-a.x+=a.vx;a.y+=a.vy;
-ctx.beginPath();ctx.arc(a.x,a.y,2,0,6.28);
-ctx.fillStyle="#38bdf8";ctx.fill();
-});
-requestAnimationFrame(draw);
-}
-draw();
-
 // TYPING
-const words=["AI systems","real-world solutions","innovative tech"];
+const words=["AI systems","smart solutions","future tech"];
 let i=0,j=0,d=false;
-(function t(){
+
+function type(){
 let w=words[i];
 typing.textContent=d?w.substring(0,j--):w.substring(0,j++);
-if(j===w.length+1){d=true;setTimeout(t,1000);return;}
+if(j===w.length+1){d=true;setTimeout(type,1000);return;}
 if(j===0){d=false;i=(i+1)%words.length;}
-setTimeout(t,d?40:80);
-})();
+setTimeout(type,d?40:80);
+}
+type();
+
 </script>
 
 </body>
