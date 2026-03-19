@@ -78,7 +78,7 @@ button{
 <div class="card">
 <h3>Skills (click to remove)</h3>
 <div id="skills"></div>
-<input id="newSkill">
+<input id="newSkill" placeholder="Add skill">
 <button onclick="addTag('skills','newSkill')">+ Add Skill</button>
 </div>
 
@@ -86,7 +86,7 @@ button{
 <div class="card">
 <h3>Tools & Technologies</h3>
 <div id="tools"></div>
-<input id="newTool">
+<input id="newTool" placeholder="Add tool">
 <button onclick="addTag('tools','newTool')">+ Add Tool</button>
 </div>
 
@@ -94,7 +94,7 @@ button{
 <div class="card">
 <h3>Strengths</h3>
 <div id="strengths"></div>
-<input id="newStrength">
+<input id="newStrength" placeholder="Add strength">
 <button onclick="addTag('strengths','newStrength')">+ Add Strength</button>
 </div>
 
@@ -102,7 +102,7 @@ button{
 <div class="card">
 <h3>Achievements</h3>
 <div id="achievements"></div>
-<input id="newAch">
+<input id="newAch" placeholder="Add achievement">
 <button onclick="addTag('achievements','newAch')">+ Add Achievement</button>
 </div>
 
@@ -113,7 +113,8 @@ button{
 <button onclick="addProject()">+ Add Project</button>
 </div>
 
-<button onclick="saveData()">💾 Save</button>
+<button onclick="saveData()">💾 Save All</button>
+<button onclick="logout()">Logout</button>
 
 </div>
 
@@ -149,7 +150,10 @@ window.login = async function(){
   }
 }
 
-/* ADD TAG FUNCTION (COMMON) */
+/* LOGOUT */
+window.logout = ()=>location.reload();
+
+/* ADD TAG */
 window.addTag = function(containerId,inputId,value){
 
 let val = value || document.getElementById(inputId).value;
@@ -211,7 +215,7 @@ description:i[3].value
 
 await setDoc(doc(db,"portfolio","data"),data);
 
-alert("Saved 🚀");
+alert("Saved successfully 🚀");
 }
 
 /* LOAD */
