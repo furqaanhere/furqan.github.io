@@ -12,6 +12,7 @@ body{
   font-family:Arial;
   background:#020617;
   color:white;
+  overflow-x:hidden;
 }
 
 /* BACKGROUND */
@@ -20,46 +21,55 @@ body{
   width:100%;
   height:100%;
   background:url("photo.jpg") center/cover no-repeat;
+  filter:brightness(0.5);
   z-index:-3;
-  filter:brightness(0.6);
+}
+
+/* PARTICLES */
+#canvas{
+  position:fixed;
+  width:100%;
+  height:100%;
+  z-index:-2;
 }
 
 /* HEADER */
 header{
   padding:20px;
   text-align:center;
-  background:rgba(0,0,0,0.3);
-  backdrop-filter:blur(10px);
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(12px);
 }
 header h1{color:#38bdf8;}
 
 /* HERO */
 .hero{
-  height:60vh;
+  height:70vh;
   display:flex;
   justify-content:center;
   align-items:center;
   flex-direction:column;
+  text-align:center;
 }
 
-/* SECTION */
-section{padding:50px 20px;}
+/* SECTIONS */
+section{padding:60px 20px;}
 
-/* ABOUT */
-details{
+/* GLASS */
+.glass{
   background:rgba(15,23,42,0.3);
-  padding:15px;
-  border-radius:10px;
+  backdrop-filter:blur(15px);
+  border-radius:12px;
+  padding:20px;
 }
 
 /* SKILLS */
 .skills{
   display:flex;
   flex-wrap:wrap;
-  gap:10px;
   justify-content:center;
+  gap:10px;
 }
-
 .skill{
   background:rgba(56,189,248,0.2);
   padding:6px 12px;
@@ -74,15 +84,24 @@ details{
 }
 
 .card{
-  background:rgba(15,23,42,0.3);
+  background:rgba(15,23,42,0.35);
+  backdrop-filter:blur(15px);
   border-radius:12px;
   overflow:hidden;
   cursor:pointer;
-  transition:0.3s;
+  transition:0.4s;
+  opacity:0;
+  transform:translateY(40px);
+}
+
+.card.show{
+  opacity:1;
+  transform:translateY(0);
 }
 
 .card:hover{
-  transform:scale(1.03);
+  transform:scale(1.05);
+  box-shadow:0 10px 30px rgba(56,189,248,0.3);
 }
 
 .card img{
@@ -98,7 +117,6 @@ details{
   padding:4px 8px;
   margin:3px;
   border-radius:6px;
-  display:inline-block;
 }
 
 /* MODAL */
@@ -106,7 +124,7 @@ details{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.8);
+  background:rgba(0,0,0,0.85);
   justify-content:center;
   align-items:center;
 }
@@ -123,17 +141,14 @@ details{
   width:100%;
   height:200px;
   object-fit:cover;
-  margin-bottom:10px;
 }
 
 button{
   margin-top:10px;
   padding:8px 12px;
-  border:none;
   background:#38bdf8;
-  color:black;
+  border:none;
   border-radius:6px;
-  cursor:pointer;
 }
 </style>
 </head>
@@ -141,6 +156,7 @@ button{
 <body>
 
 <div class="background"></div>
+<canvas id="canvas"></canvas>
 
 <header>
 <h1 id="name"></h1>
@@ -151,12 +167,9 @@ button{
 <h2>I build <span id="typing"></span></h2>
 </section>
 
-<section>
+<section class="glass">
 <h2>About</h2>
-<details>
-<summary>Click to expand</summary>
 <div id="about"></div>
-</details>
 </section>
 
 <section>
@@ -174,66 +187,69 @@ button{
 <p id="contact"></p>
 </section>
 
-<!-- MODAL -->
 <div id="modal">
-  <div id="modalContent">
-    <img id="modalImage">
-    <h2 id="modalTitle"></h2>
-    <p id="modalDesc"></p>
-    <button onclick="closeModal()">Close</button>
-  </div>
+<div id="modalContent">
+<img id="modalImage">
+<h2 id="modalTitle"></h2>
+<p id="modalDesc"></p>
+<button onclick="closeModal()">Close</button>
+</div>
 </div>
 
 <script>
 
-document.addEventListener("DOMContentLoaded", ()=>{
+// LOAD DATA
+document.addEventListener("DOMContentLoaded",()=>{
 
 fetch("content.json")
-.then(res=>res.json())
+.then(r=>r.json())
 .then(data=>{
 
-// BASIC
-document.getElementById("name").innerText=data.name;
-document.getElementById("tagline").innerText=data.tagline;
+name.innerText=data.name;
+tagline.innerText=data.tagline;
 
-// ABOUT
-document.getElementById("about").innerHTML=`
+about.innerHTML=`
 <p>${data.about.intro}</p>
 <p>${data.about.approach}</p>
 <p>${data.about.focus}</p>
 `;
 
-// CONTACT
-document.getElementById("contact").innerHTML=
-`Email: <a href="mailto:${data.contact.email}">${data.contact.email}</a>`;
+contact.innerHTML=`Email: ${data.contact.email}`;
 
-// SKILLS
-document.getElementById("skills").innerHTML=
-data.skills.map(s=>`<span class="skill">${s}</span>`).join("");
+skills.innerHTML=data.skills.map(s=>`<span class="skill">${s}</span>`).join("");
 
-// PROJECTS (SAFE)
 let html="";
 data.projects.forEach((p,i)=>{
 html+=`
-<div class="card" data-index="${i}">
-<img src="${p.image}" onerror="this.src='photo.jpg'">
+<div class="card" data-i="${i}">
+<img src="${p.image}">
 <div class="card-content">
 <h3>${p.title}</h3>
 <p>${p.short}</p>
 ${p.tech.map(t=>`<span class="tag">${t}</span>`).join("")}
 </div>
-</div>
-`;
+</div>`;
 });
-document.getElementById("projects").innerHTML=html;
+projects.innerHTML=html;
 
-// CLICK FIX
-document.querySelectorAll(".card").forEach(card=>{
-card.addEventListener("click",()=>{
-let i=card.getAttribute("data-index");
-openModal(data.projects[i]);
+// CLICK
+document.querySelectorAll(".card").forEach(c=>{
+c.onclick=()=>{
+let p=data.projects[c.dataset.i];
+openModal(p);
+};
 });
+
+// SCROLL ANIMATION
+function reveal(){
+document.querySelectorAll(".card").forEach(c=>{
+if(c.getBoundingClientRect().top<window.innerHeight-100){
+c.classList.add("show");
+}
 });
+}
+window.addEventListener("scroll",reveal);
+reveal();
 
 });
 
@@ -241,31 +257,63 @@ openModal(data.projects[i]);
 
 // MODAL
 function openModal(p){
-document.getElementById("modal").style.display="flex";
-document.getElementById("modalImage").src=p.image;
-document.getElementById("modalTitle").innerText=p.title;
-document.getElementById("modalDesc").innerText=p.description;
+modal.style.display="flex";
+modalImage.src=p.image;
+modalTitle.innerText=p.title;
+modalDesc.innerText=p.description;
+}
+function closeModal(){
+modal.style.display="none";
 }
 
-function closeModal(){
-document.getElementById("modal").style.display="none";
+// PARTICLES
+const c=document.getElementById("canvas");
+const ctx=c.getContext("2d");
+c.width=innerWidth;c.height=innerHeight;
+
+let p=[];
+for(let i=0;i<40;i++){
+p.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-0.5),vy:(Math.random()-0.5)});
 }
+
+function draw(){
+ctx.clearRect(0,0,c.width,c.height);
+
+p.forEach(a=>{
+a.x+=a.vx;a.y+=a.vy;
+ctx.beginPath();
+ctx.arc(a.x,a.y,2,0,6.28);
+ctx.fillStyle="#38bdf8";
+ctx.fill();
+});
+
+for(let i=0;i<p.length;i++){
+for(let j=i+1;j<p.length;j++){
+let dx=p[i].x-p[j].x;
+let dy=p[i].y-p[j].y;
+if(Math.sqrt(dx*dx+dy*dy)<100){
+ctx.beginPath();
+ctx.moveTo(p[i].x,p[i].y);
+ctx.lineTo(p[j].x,p[j].y);
+ctx.strokeStyle="rgba(56,189,248,0.1)";
+ctx.stroke();
+}
+}
+}
+
+requestAnimationFrame(draw);
+}
+draw();
 
 // TYPING
 const words=["AI systems","real-world solutions","innovative tech"];
 let i=0,j=0,d=false;
 
 function type(){
-let el=document.getElementById("typing");
-let word=words[i];
-
-if(!d){
-el.textContent=word.substring(0,j++);
-if(j>word.length){d=true;setTimeout(type,1000);return;}
-}else{
-el.textContent=word.substring(0,j--);
+let w=words[i];
+typing.textContent=d?w.substring(0,j--):w.substring(0,j++);
+if(j===w.length+1){d=true;setTimeout(type,1000);return;}
 if(j===0){d=false;i=(i+1)%words.length;}
-}
 setTimeout(type,d?40:80);
 }
 type();
