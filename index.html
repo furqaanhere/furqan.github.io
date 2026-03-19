@@ -360,25 +360,60 @@ card.style.transform="rotateX(0) rotateY(0)";
 let modalOpen=false;
 
 let modalOpen=false;
-function openModal(p){
-if(modalOpen){closeModal();return;}
-modalOpen=true;
+// 🔥 NEW MODAL SYSTEM
 
-document.getElementById("modal").style.display="flex";
-document.getElementById("modalTitle").innerText=p.title;
-document.getElementById("modalDesc").innerText=p.description||"";
-document.getElementById("modalProblem").innerText=p.problem||"";
-document.getElementById("modalSolution").innerText=p.solution||"";
-document.getElementById("modalSystem").innerText=p.system||"";
-document.getElementById("modalImpact").innerText=p.impact||"";
-document.getElementById("modalTech").innerHTML=
-(p.tech||[]).map(t=>`<span class="tag">${t}</span>`).join("");
+function openModal(p){
+
+  document.getElementById("modal").style.display = "flex";
+
+  // IMAGE
+  const img = document.getElementById("modalImage");
+  img.src = p.image || "photo.jpg";
+  img.onerror = () => img.src = "photo.jpg";
+
+  // TEXT
+  document.getElementById("modalTitle").innerText = p.title || "";
+  document.getElementById("modalShort").innerText = p.short || "";
+  document.getElementById("modalDesc").innerText = p.description || "";
+
+  document.getElementById("modalProblem").innerText = p.problem || "";
+  document.getElementById("modalSolution").innerText = p.solution || "";
+  document.getElementById("modalSystem").innerText = p.system || "";
+  document.getElementById("modalImpact").innerText = p.impact || "";
+
+  // TECH TAGS
+  document.getElementById("modalTech").innerHTML =
+    (p.tech || []).map(t => `<span class="tag">${t}</span>`).join("");
+
+  // BUTTONS
+  const github = document.getElementById("modalGithub");
+  const demo = document.getElementById("modalDemo");
+
+  if(p.github){
+    github.href = p.github;
+    github.style.display = "inline-block";
+  } else {
+    github.style.display = "none";
+  }
+
+  if(p.demo){
+    demo.href = p.demo;
+    demo.style.display = "inline-block";
+  } else {
+    demo.style.display = "none";
+  }
 }
 
 function closeModal(){
-modalOpen=false;
-document.getElementById("modal").style.display="none";
+  document.getElementById("modal").style.display = "none";
 }
+
+// CLOSE ON OUTSIDE CLICK
+document.getElementById("modal").addEventListener("click",(e)=>{
+  if(e.target.id==="modal"){
+    closeModal();
+  }
+});
 // CLICK OUTSIDE
 document.getElementById("modal").addEventListener("click",e=>{
 if(e.target.id==="modal") closeModal();
