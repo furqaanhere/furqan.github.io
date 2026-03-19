@@ -21,9 +21,7 @@ body{
   padding:20px;
 }
 
-.sidebar h2{
-  color:#38bdf8;
-}
+.sidebar h2{color:#38bdf8;}
 
 .nav button{
   width:100%;
@@ -36,22 +34,15 @@ body{
   border-radius:6px;
 }
 
-.nav button.active{
-  background:#38bdf8;
-  color:black;
-}
-
 /* MAIN */
 .main{
   flex:1;
   padding:20px;
-  overflow:auto;
 }
 
 /* CARD */
 .card{
   background:rgba(15,23,42,0.5);
-  backdrop-filter:blur(10px);
   padding:20px;
   border-radius:12px;
   margin-bottom:20px;
@@ -103,9 +94,9 @@ button.save{
 <h2>⚡ Admin</h2>
 
 <div class="nav">
-<button onclick="showTab('profile')" class="active">Profile</button>
-<button onclick="showTab('skills')">Skills</button>
-<button onclick="showTab('projects')">Projects</button>
+<button onclick="showTab('profile')">Profile</button>
+<button onclick="showTab('skillsTab')">Skills</button>
+<button onclick="showTab('projectsTab')">Projects</button>
 </div>
 </div>
 
@@ -115,8 +106,8 @@ button.save{
 <!-- LOGIN -->
 <div id="loginBox" class="card">
 <h3>Login</h3>
-<input id="email">
-<input id="password" type="password">
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
 <button onclick="login()">Login</button>
 </div>
 
@@ -124,23 +115,25 @@ button.save{
 <div id="profile" class="tab" style="display:none;">
 <div class="card">
 <h3>Profile</h3>
-<input id="tagline">
-<textarea id="about"></textarea>
+<input id="tagline" placeholder="Title">
+<textarea id="about" placeholder="Bio"></textarea>
 </div>
 </div>
 
 <!-- SKILLS -->
 <div id="skillsTab" class="tab" style="display:none;">
 <div class="card">
-<h3>Skills</h3>
-<div id="skills"></div>
-<input id="newSkill">
-<button onclick="addSkill()">+ Add</button>
 
-<h3>Achievements</h3>
+<h3>Skills (click to remove)</h3>
+<div id="skills"></div>
+<input id="newSkill" placeholder="Add skill">
+<button onclick="addSkill()">+ Add Skill</button>
+
+<h3>Achievements (click to remove)</h3>
 <div id="achievements"></div>
-<input id="newAch">
+<input id="newAch" placeholder="Add achievement">
 <button onclick="addAch()">+ Add</button>
+
 </div>
 </div>
 
@@ -180,21 +173,21 @@ window.login = async function(){
   try{
     await signInWithEmailAndPassword(auth,email.value.trim(),password.value.trim());
     loginBox.style.display="none";
-    showTab('profile');
+    showTab('skillsTab'); // default open skills
     loadData();
   }catch(e){
     alert(e.message);
   }
 }
 
-/* NAV */
+/* NAVIGATION FIXED */
 window.showTab = function(tab){
 
-document.querySelectorAll(".tab").forEach(t=>t.style.display="none");
+document.getElementById("profile").style.display="none";
+document.getElementById("skillsTab").style.display="none";
+document.getElementById("projectsTab").style.display="none";
 
-if(tab==="profile") document.getElementById("profile").style.display="block";
-if(tab==="skills") document.getElementById("skillsTab").style.display="block";
-if(tab==="projects") document.getElementById("projectsTab").style.display="block";
+document.getElementById(tab).style.display="block";
 
 }
 
@@ -212,7 +205,7 @@ skills.appendChild(s);
 newSkill.value="";
 }
 
-/* ACH */
+/* ACHIEVEMENT */
 window.addAch = function(v){
 let val=v||newAch.value;
 if(!val)return;
@@ -234,9 +227,9 @@ div.className="card";
 div.innerHTML=`
 <input placeholder="Title">
 <input placeholder="Short">
-<input placeholder="Image">
+<input placeholder="Image (apple.jpg)">
 <textarea placeholder="Description"></textarea>
-<button onclick="this.parentElement.remove()">❌</button>
+<button onclick="this.parentElement.remove()">❌ Remove</button>
 `;
 
 projects.appendChild(div);
@@ -281,9 +274,13 @@ let d=snap.data();
 tagline.value=d.tagline||"";
 about.value=d.about?.intro||"";
 
+skills.innerHTML="";
 (d.skills||[]).forEach(s=>addSkill(s));
+
+achievements.innerHTML="";
 (d.achievements||[]).forEach(a=>addAch(a));
 
+projects.innerHTML="";
 (d.projects||[]).forEach(p=>{
 addProject();
 let last=projects.lastChild.querySelectorAll("input,textarea");
