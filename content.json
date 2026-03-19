@@ -5,7 +5,7 @@
   "about": {
     "intro": "I am Furqan Ahmad Bhat from Baramulla, pursuing a Bachelor's in Data Science and Physics.",
     "approach": "I build real-world intelligent systems using AI, IoT, and data-driven approaches.",
-    "focus": "My focus is on solving practical problems with scalable and efficient systems."
+    "focus": "My focus is on solving practical problems with scalable, efficient, and intelligent systems."
   },
 
   "skills": [
@@ -13,29 +13,40 @@
     "Machine Learning",
     "Computer Vision",
     "IoT",
-    "Data Science"
+    "Data Science",
+    "Problem Solving",
+    "System Design"
   ],
 
   "projects": [
     {
       "title": "Apple Grading System",
-      "short": "AI-based fruit grading system",
-      "description": "Built using CNN to classify apples based on color, size, and defects. Helps automate agricultural sorting and improves efficiency.",
-      "tech": ["Python", "CNN", "OpenCV"],
+      "short": "AI-powered fruit grading system",
+      "description": "An intelligent grading system using Convolutional Neural Networks (CNN) to classify apples based on color, size, and defects. Designed to automate agricultural sorting and improve accuracy and efficiency.",
+      "problem": "Manual grading of apples is inconsistent, slow, and labor-intensive.",
+      "solution": "Developed a CNN-based system that processes images and classifies apples automatically.",
+      "impact": "Reduces human effort, increases accuracy, and enables scalable agricultural automation.",
+      "tech": ["Python", "CNN", "OpenCV", "Deep Learning"],
       "image": "apple.jpg"
     },
     {
       "title": "Tiwzz",
-      "short": "Hyperlocal delivery startup",
-      "description": "Connects rural restaurants with nearby customers within a 10–15 km radius, helping small businesses grow.",
-      "tech": ["Startup", "Logistics", "App Design"],
+      "short": "Hyperlocal food delivery startup",
+      "description": "A startup focused on connecting rural restaurants with nearby customers within a 10–15 km radius. Designed to improve accessibility and increase income for small businesses.",
+      "problem": "Rural restaurants lack customer reach and digital presence.",
+      "solution": "Built a hyperlocal delivery platform connecting restaurants and nearby users.",
+      "impact": "Boosts local economy and provides food access to remote users.",
+      "tech": ["Startup", "Logistics", "App Design", "Operations"],
       "image": "tiwzz.jpg"
     },
     {
-      "title": "IoT Health Device",
-      "short": "Smart patient alert system",
-      "description": "Predicts patient needs using sensor data and alerts caregivers in advance, improving healthcare efficiency.",
-      "tech": ["IoT", "Sensors", "Prediction"],
+      "title": "IoT Health Monitoring Device",
+      "short": "Smart predictive healthcare system",
+      "description": "An IoT-based system that predicts urination timing using sensor data and alerts caregivers in advance, helping patients with limited mobility.",
+      "problem": "Patients depend heavily on caregivers for basic needs.",
+      "solution": "Developed a predictive system using sensor data and pattern recognition.",
+      "impact": "Improves patient dignity and reduces caregiver workload.",
+      "tech": ["IoT", "Sensors", "Prediction", "Embedded Systems"],
       "image": "IoT.jpg"
     }
   ],
@@ -45,4 +56,3 @@
     "linkedin": "https://www.linkedin.com/in/furqan-bhat-577192269"
   }
 }
-  
