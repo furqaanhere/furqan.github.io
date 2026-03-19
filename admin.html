@@ -13,12 +13,14 @@ body{
   color:white;
 }
 
+/* CONTAINER */
 .container{
   max-width:900px;
   margin:auto;
   padding:20px;
 }
 
+/* CARD */
 .card{
   background:rgba(15,23,42,0.6);
   padding:20px;
@@ -27,6 +29,14 @@ body{
   border:1px solid rgba(56,189,248,0.2);
 }
 
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+/* INPUTS */
 input, textarea{
   width:100%;
   margin:8px 0;
@@ -35,17 +45,32 @@ input, textarea{
   border:none;
 }
 
+/* BUTTON */
 button{
-  padding:10px 15px;
-  margin:5px 0;
+  padding:10px;
   border:none;
   border-radius:6px;
   background:#38bdf8;
   cursor:pointer;
 }
 
-button:hover{
-  background:#0ea5e9;
+/* PROFILE */
+.profile{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+/* TAG */
+.skill{
+  background:#38bdf8;
+  color:black;
+  padding:5px 10px;
+  margin:5px;
+  display:inline-block;
+  border-radius:6px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -67,15 +92,46 @@ button:hover{
 <!-- DASHBOARD -->
 <div id="dashboard" style="display:none;">
 
+<!-- PROFILE -->
+<div class="card" style="text-align:center;">
+<img id="profilePreview" src="photo.jpg" class="profile">
+<input type="file" id="profileImg">
+</div>
+
+<!-- TITLE + BIO -->
+<div class="grid">
+
 <div class="card">
-<h2>Profile</h2>
-<input id="name" placeholder="Name">
-<input id="tagline" placeholder="Tagline">
-<textarea id="about" placeholder="About"></textarea>
+<h3>Title</h3>
+<input id="tagline">
 </div>
 
 <div class="card">
-<h2>Projects</h2>
+<h3>Bio</h3>
+<textarea id="about"></textarea>
+</div>
+
+</div>
+
+<!-- SKILLS -->
+<div class="card">
+<h3>Skills</h3>
+<div id="skills"></div>
+<input id="newSkill">
+<button onclick="addSkill()">+ Add Skill</button>
+</div>
+
+<!-- ACHIEVEMENTS -->
+<div class="card">
+<h3>Achievements</h3>
+<div id="achievements"></div>
+<input id="newAch">
+<button onclick="addAch()">+ Add</button>
+</div>
+
+<!-- PROJECTS -->
+<div class="card">
+<h3>Projects</h3>
 <div id="projects"></div>
 <button onclick="addProject()">+ Add Project</button>
 </div>
@@ -87,25 +143,18 @@ button:hover{
 
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-
 import { getAuth, signInWithEmailAndPassword, signOut } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-
 import { getFirestore, doc, setDoc, getDoc } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-/* CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyC_i8vOeQZMdhaKLd32IbwKjUsTlm56Zpc",
   authDomain: "furqaan-portfolio.firebaseapp.com",
-  projectId: "furqaan-portfolio",
-  storageBucket: "furqaan-portfolio.firebasestorage.app",
-  messagingSenderId: "1004771356492",
-  appId: "1:1004771356492:web:262c4927357bed2ce0e9e9"
+  projectId: "furqaan-portfolio"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -114,109 +163,123 @@ const db = getFirestore(app);
 
 /* LOGIN */
 window.login = async function(){
-  const email = document.getElementById("email").value.trim();
-  const pass = document.getElementById("password").value.trim();
-
   try{
-    const user = await signInWithEmailAndPassword(auth,email,pass);
-
-    console.log("Login success:", user.user.email);
-
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("dashboard").style.display="block";
-
+    await signInWithEmailAndPassword(auth,email.value.trim(),password.value.trim());
+    loginBox.style.display="none";
+    dashboard.style.display="block";
     loadData();
-
-  }catch(error){
-    console.log(error.code);
-    alert(error.message); // shows real reason
+  }catch(e){
+    alert(e.message);
   }
 }
 
 /* LOGOUT */
-window.logout = function(){
-  signOut(auth);
-  location.reload();
+window.logout = ()=>location.reload();
+
+/* SKILL */
+window.addSkill = function(){
+  let val=newSkill.value;
+  if(!val)return;
+
+  let s=document.createElement("span");
+  s.className="skill";
+  s.innerText=val;
+  s.onclick=()=>s.remove();
+
+  skills.appendChild(s);
+  newSkill.value="";
 }
 
-/* ADD PROJECT */
-window.addProject = function(){
+/* ACHIEVEMENT */
+window.addAch = function(){
+  let val=newAch.value;
+  if(!val)return;
 
-  const div = document.createElement("div");
+  let d=document.createElement("div");
+  d.innerText="• "+val;
+  d.onclick=()=>d.remove();
+
+  achievements.appendChild(d);
+  newAch.value="";
+}
+
+/* PROJECT */
+window.addProject = function(){
+  let div=document.createElement("div");
   div.className="card";
 
-  div.innerHTML = `
+  div.innerHTML=`
   <input placeholder="Title">
   <input placeholder="Short">
-  <input placeholder="Image (apple.jpg)">
+  <input placeholder="Image name">
   <textarea placeholder="Description"></textarea>
-  <button onclick="this.parentElement.remove()">❌ Remove</button>
+  <button onclick="this.parentElement.remove()">❌</button>
   `;
 
-  document.getElementById("projects").appendChild(div);
+  projects.appendChild(div);
 }
 
-/* SAVE DATA */
+/* SAVE */
 window.saveData = async function(){
 
-let projects=[];
+let skillsArr=[...document.querySelectorAll(".skill")]
+.map(s=>s.innerText);
 
-document.querySelectorAll("#projects .card").forEach(card=>{
-  let inputs=card.querySelectorAll("input,textarea");
+let achArr=[...document.querySelectorAll("#achievements div")]
+.map(a=>a.innerText.replace("• ",""));
 
-  projects.push({
-    title:inputs[0].value,
-    short:inputs[1].value,
-    image:inputs[2].value,
-    description:inputs[3].value
-  });
+let projArr=[];
+document.querySelectorAll("#projects .card").forEach(c=>{
+let i=c.querySelectorAll("input,textarea");
+projArr.push({
+title:i[0].value,
+short:i[1].value,
+image:i[2].value,
+description:i[3].value
+});
 });
 
-const data={
-  name:document.getElementById("name").value,
-  tagline:document.getElementById("tagline").value,
-  about:{
-    intro:document.getElementById("about").value
-  },
-  projects:projects
+let data={
+tagline:tagline.value,
+about:{intro:about.value},
+skills:skillsArr,
+achievements:achArr,
+projects:projArr
 };
 
 await setDoc(doc(db,"portfolio","data"),data);
 
-alert("Saved to Firebase 🚀");
+alert("Saved 🚀");
 }
 
-/* LOAD DATA */
+/* LOAD */
 async function loadData(){
-
-const snap = await getDoc(doc(db,"portfolio","data"));
+let snap=await getDoc(doc(db,"portfolio","data"));
 
 if(snap.exists()){
+let d=snap.data();
 
-const data = snap.data();
+tagline.value=d.tagline||"";
+about.value=d.about?.intro||"";
 
-document.getElementById("name").value = data.name || "";
-document.getElementById("tagline").value = data.tagline || "";
-document.getElementById("about").value = data.about?.intro || "";
-
-document.getElementById("projects").innerHTML="";
-
-(data.projects||[]).forEach(p=>{
-
-addProject();
-
-let last = document.querySelector("#projects .card:last-child");
-let inputs = last.querySelectorAll("input,textarea");
-
-inputs[0].value = p.title || "";
-inputs[1].value = p.short || "";
-inputs[2].value = p.image || "";
-inputs[3].value = p.description || "";
-
+(d.skills||[]).forEach(s=>{
+newSkill.value=s; addSkill();
 });
 
-}
+(d.achievements||[]).forEach(a=>{
+newAch.value=a; addAch();
+});
 
+(d.projects||[]).forEach(p=>{
+addProject();
+let last=projects.lastChild.querySelectorAll("input,textarea");
+
+last[0].value=p.title;
+last[1].value=p.short;
+last[2].value=p.image;
+last[3].value=p.description;
+});
+}
 }
 
 </script>
