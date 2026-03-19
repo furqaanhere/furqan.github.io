@@ -25,19 +25,12 @@ body{
   filter:brightness(0.6);
 }
 
-#particleCanvas{
-  position:fixed;
-  width:100%;
-  height:100%;
-  z-index:-2;
-}
-
 /* HEADER */
 header{
   padding:20px;
   text-align:center;
   background:rgba(0,0,0,0.3);
-  backdrop-filter:blur(15px);
+  backdrop-filter:blur(10px);
 }
 header h1{color:#38bdf8;}
 
@@ -50,7 +43,7 @@ header h1{color:#38bdf8;}
   flex-direction:column;
 }
 
-/* SECTION */
+/* SECTIONS */
 section{padding:50px 20px;}
 
 /* ABOUT */
@@ -85,8 +78,8 @@ details{
   background:rgba(15,23,42,0.3);
   border-radius:12px;
   overflow:hidden;
-  transition:0.3s;
   cursor:pointer;
+  transition:0.3s;
 }
 
 .card:hover{
@@ -142,6 +135,7 @@ button{
   background:#38bdf8;
   color:black;
   border-radius:6px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -149,7 +143,6 @@ button{
 <body>
 
 <div class="background"></div>
-<canvas id="particleCanvas"></canvas>
 
 <header>
 <h1 id="name"></h1>
@@ -195,45 +188,52 @@ button{
 
 <script>
 
-// ✅ FIXED: Wait for DOM
+// ✅ LOAD DATA AFTER DOM READY
 document.addEventListener("DOMContentLoaded", ()=>{
 
 fetch("content.json")
 .then(res=>res.json())
 .then(data=>{
 
-// BASIC INFO
-document.getElementById("name").innerText=data.name;
-document.getElementById("tagline").innerText=data.tagline;
+// NAME
+document.getElementById("name").innerText = data.name;
+document.getElementById("tagline").innerText = data.tagline;
 
 // ABOUT
-document.getElementById("about").innerHTML=`
+document.getElementById("about").innerHTML = `
 <p>${data.about.intro}</p>
 <p>${data.about.approach}</p>
 <p>${data.about.focus}</p>
 `;
 
 // CONTACT
-document.getElementById("contact").innerHTML=
+document.getElementById("contact").innerHTML =
 `Email: ${data.contact.email}`;
 
 // SKILLS
-document.getElementById("skills").innerHTML=
-data.skills.map(s=>`<span class="skill">${s}</span>`).join("");
+document.getElementById("skills").innerHTML =
+data.skills.map(s => `<span class="skill">${s}</span>`).join("");
 
 // PROJECTS
-document.getElementById("projects").innerHTML=
-data.projects.map(p=>`
-<div class="card" onclick='openModal(${JSON.stringify(p)})'>
-<img src="${p.image}">
-<div class="card-content">
-<h3>${p.title}</h3>
-<p>${p.short}</p>
-${(p.tech||[]).map(t=>`<span class="tag">${t}</span>`).join("")}
-</div>
-</div>
-`).join("");
+let html = "";
+data.projects.forEach(p=>{
+  html += `
+  <div class="card" onclick='openModal(${JSON.stringify(p)})'>
+    <img src="${p.image}" onerror="this.src='photo.jpg'">
+    <div class="card-content">
+      <h3>${p.title}</h3>
+      <p>${p.short}</p>
+      ${(p.tech||[]).map(t=>`<span class="tag">${t}</span>`).join("")}
+    </div>
+  </div>
+  `;
+});
 
+document.getElementById("projects").innerHTML = html;
+
+})
+.catch(err=>{
+  console.log("ERROR:", err);
 });
 
 });
@@ -241,46 +241,33 @@ ${(p.tech||[]).map(t=>`<span class="tag">${t}</span>`).join("")}
 // MODAL
 function openModal(p){
 document.getElementById("modal").style.display="flex";
-modalImage.src=p.image;
-modalTitle.innerText=p.title;
-modalDesc.innerText=p.description;
+document.getElementById("modalImage").src=p.image;
+document.getElementById("modalTitle").innerText=p.title;
+document.getElementById("modalDesc").innerText=p.description;
 }
 
 function closeModal(){
 document.getElementById("modal").style.display="none";
 }
 
-// PARTICLES
-const c=document.getElementById("particleCanvas");
-const ctx=c.getContext("2d");
-c.width=innerWidth;c.height=innerHeight;
-
-let p=[];
-for(let i=0;i<30;i++){
-p.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-0.5),vy:(Math.random()-0.5)});
-}
-
-function draw(){
-ctx.clearRect(0,0,c.width,c.height);
-p.forEach(a=>{
-a.x+=a.vx;a.y+=a.vy;
-ctx.beginPath();ctx.arc(a.x,a.y,2,0,6.28);
-ctx.fillStyle="#38bdf8";ctx.fill();
-});
-requestAnimationFrame(draw);
-}
-draw();
-
 // TYPING
 const words=["AI systems","real-world solutions","innovative tech"];
 let i=0,j=0,d=false;
-(function t(){
-let w=words[i];
-typing.textContent=d?w.substring(0,j--):w.substring(0,j++);
-if(j===w.length+1){d=true;setTimeout(t,1000);return;}
+
+function type(){
+let el=document.getElementById("typing");
+let word=words[i];
+
+if(!d){
+el.textContent=word.substring(0,j++);
+if(j>word.length){d=true;setTimeout(type,1000);return;}
+}else{
+el.textContent=word.substring(0,j--);
 if(j===0){d=false;i=(i+1)%words.length;}
-setTimeout(t,d?40:80);
-})();
+}
+setTimeout(type,d?40:80);
+}
+type();
 
 </script>
 
