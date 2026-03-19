@@ -5,7 +5,7 @@
   "about": {
     "intro": "I am Furqan Ahmad Bhat from Baramulla, pursuing a Bachelor's in Data Science and Physics.",
     "approach": "I build real-world intelligent systems using AI, IoT, and data-driven approaches.",
-    "focus": "My focus is on solving practical problems with scalable systems."
+    "focus": "My focus is on solving practical problems with scalable and efficient systems."
   },
 
   "skills": [
@@ -19,19 +19,30 @@
   "projects": [
     {
       "title": "Apple Grading System",
-      "short": "AI-based fruit grading",
-      "description": "CNN-based system to classify apples.",
-      "problem": "Manual grading is inconsistent.",
-      "solution": "Automated using AI.",
-      "system": "Image → CNN → Sorting",
-      "impact": "Improves efficiency.",
-      "tech": ["Python", "CNN"],
-      "image": "images/apple.jpg"
+      "short": "AI-based fruit grading system",
+      "description": "Built using CNN to classify apples based on color, size, and defects. Helps automate agricultural sorting and improves efficiency.",
+      "tech": ["Python", "CNN", "OpenCV"],
+      "image": "apple.jpg"
+    },
+    {
+      "title": "Tiwzz",
+      "short": "Hyperlocal delivery startup",
+      "description": "Connects rural restaurants with nearby customers within a 10–15 km radius, helping small businesses grow.",
+      "tech": ["Startup", "Logistics", "App Design"],
+      "image": "tiwzz.jpg"
+    },
+    {
+      "title": "IoT Health Device",
+      "short": "Smart patient alert system",
+      "description": "Predicts patient needs using sensor data and alerts caregivers in advance, improving healthcare efficiency.",
+      "tech": ["IoT", "Sensors", "Prediction"],
+      "image": "IoT.jpg"
     }
   ],
 
   "contact": {
     "email": "furqan8191@gmail.com",
-    "linkedin": "https://linkedin.com"
+    "linkedin": "https://www.linkedin.com/in/furqan-bhat-577192269"
   }
 }
+  
