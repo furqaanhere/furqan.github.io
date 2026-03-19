@@ -358,6 +358,8 @@ card.style.transform="rotateX(0) rotateY(0)";
 
 // MODAL
 let modalOpen=false;
+
+let modalOpen=false;
 function openModal(p){
 if(modalOpen){closeModal();return;}
 modalOpen=true;
@@ -377,7 +379,6 @@ function closeModal(){
 modalOpen=false;
 document.getElementById("modal").style.display="none";
 }
-
 // CLICK OUTSIDE
 document.getElementById("modal").addEventListener("click",e=>{
 if(e.target.id==="modal") closeModal();
