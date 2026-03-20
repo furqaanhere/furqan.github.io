@@ -4,12 +4,29 @@
 <title>Admin Panel</title>
 
 <style>
+
+/* 🌌 BASE */
 body{
   margin:0;
   font-family:Arial;
   background:#020617;
   color:white;
-  overflow:hidden;
+}
+
+/* BACKGROUND GLOW */
+body::before{
+  content:"";
+  position:fixed;
+  width:120%;
+  height:120%;
+  background:radial-gradient(circle at 20% 20%, rgba(56,189,248,0.15), transparent 40%),
+             radial-gradient(circle at 80% 80%, rgba(14,165,233,0.15), transparent 40%);
+  z-index:-1;
+  animation:bgMove 10s infinite alternate;
+}
+@keyframes bgMove{
+  0%{transform:translate(0,0);}
+  100%{transform:translate(-30px,-30px);}
 }
 
 /* LOGIN */
@@ -18,7 +35,6 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  background:linear-gradient(135deg,#020617,#0f172a);
 }
 
 .loginBox{
@@ -27,22 +43,25 @@ body{
   padding:30px;
   border-radius:15px;
   width:300px;
-  animation:fadeIn 0.6s ease;
+  animation:fadeIn 0.5s;
 }
 
-input{
+/* INPUT */
+input,textarea{
   width:100%;
-  padding:10px;
+  padding:12px;
   margin:10px 0;
   border:none;
-  border-radius:6px;
+  border-radius:8px;
+  background:rgba(255,255,255,0.08);
+  color:white;
 }
 
+/* BUTTON */
 button{
-  width:100%;
   padding:10px;
   border:none;
-  border-radius:6px;
+  border-radius:8px;
   background:#38bdf8;
   cursor:pointer;
 }
@@ -50,79 +69,65 @@ button{
 /* DASHBOARD */
 .dashboard{
   display:none;
-  display:flex;
 }
 
 /* SIDEBAR */
 .sidebar{
   width:240px;
   height:100vh;
-  background:rgba(15,23,42,0.8);
-  backdrop-filter:blur(20px);
+  position:fixed;
+  background:rgba(15,23,42,0.9);
   padding:20px;
-  border-right:1px solid rgba(255,255,255,0.1);
-}
-
-.sidebar h2{
-  color:#38bdf8;
 }
 
 .sidebar button{
   width:100%;
   margin:10px 0;
   padding:12px;
-  background:rgba(255,255,255,0.05);
   border:none;
-  color:white;
   border-radius:8px;
-  transition:0.3s;
+  background:rgba(255,255,255,0.05);
+  color:white;
 }
 
-.sidebar button:hover{
+.sidebar button.active{
   background:#38bdf8;
   color:black;
-  transform:translateX(5px);
 }
 
 /* MAIN */
 .main{
-  flex:1;
+  margin-left:260px;
   padding:20px;
-  overflow-y:auto;
 }
 
 /* CARD */
 .card{
   background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(12px);
+  backdrop-filter:blur(15px);
   border-radius:12px;
   padding:20px;
   margin-bottom:20px;
-  animation:fadeUp 0.5s ease;
 }
 
+/* TAG */
 .tag{
   display:inline-block;
   background:#38bdf8;
   color:black;
-  padding:6px 10px;
+  padding:6px;
   margin:5px;
   border-radius:6px;
-  cursor:pointer;
 }
 
-.section{display:none;}
-.active{display:block;}
-
-@keyframes fadeUp{
-  from{opacity:0; transform:translateY(20px);}
-  to{opacity:1; transform:translateY(0);}
+/* SECTIONS */
+.section{
+  display:none;
+}
+.section.active{
+  display:block;
 }
 
-@keyframes fadeIn{
-  from{opacity:0;}
-  to{opacity:1;}
-}
 </style>
 </head>
 
@@ -132,8 +137,8 @@ button{
 <div class="loginPage" id="loginPage">
   <div class="loginBox">
     <h2>Admin Login</h2>
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
+    <input id="email">
+    <input id="password" type="password">
     <button onclick="login()">Login</button>
   </div>
 </div>
@@ -141,70 +146,57 @@ button{
 <!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
 
-  <div class="sidebar">
-    <h2>⚡ Admin</h2>
-    <button onclick="show('profile')">Profile</button>
-    <button onclick="show('skills')">Skills</button>
-    <button onclick="show('tools')">Tools</button>
-    <button onclick="show('strengths')">Strengths</button>
-    <button onclick="show('achievements')">Achievements</button>
-    <button onclick="show('projects')">Projects</button>
-    <button onclick="logout()">Logout</button>
-  </div>
+<div class="sidebar">
+<button onclick="show('profile',this)">Profile</button>
+<button onclick="show('skills',this)">Skills</button>
+<button onclick="show('tools',this)">Tools</button>
+<button onclick="show('strengths',this)">Strengths</button>
+<button onclick="show('achievements',this)">Achievements</button>
+<button onclick="show('projects',this)">Projects</button>
+<button onclick="logout()">Logout</button>
+</div>
 
-  <div class="main">
+<div class="main">
 
-    <!-- PROFILE -->
-    <div id="profile" class="section active card">
-      <h3>Profile</h3>
-      <input id="name" placeholder="Name">
-      <input id="tagline" placeholder="Title">
-      <textarea id="about"></textarea>
-      <input id="resume" placeholder="Resume link">
-    </div>
+<div id="profile" class="section active card">
+<input id="name">
+<input id="tagline">
+<textarea id="about"></textarea>
+<input id="resume">
+</div>
 
-    <!-- SKILLS -->
-    <div id="skills" class="section card">
-      <h3>Skills</h3>
-      <div id="skillsList"></div>
-      <input id="newSkill">
-      <button onclick="addTag('skillsList','newSkill')">Add</button>
-    </div>
+<div id="skills" class="section card">
+<div id="skillsList"></div>
+<input id="newSkill">
+<button onclick="addTag('skillsList','newSkill')">Add</button>
+</div>
 
-    <!-- TOOLS -->
-    <div id="tools" class="section card">
-      <h3>Tools & Technologies</h3>
-      <div id="toolsList"></div>
-      <input id="newTool">
-      <button onclick="addTag('toolsList','newTool')">Add</button>
-    </div>
+<div id="tools" class="section card">
+<div id="toolsList"></div>
+<input id="newTool">
+<button onclick="addTag('toolsList','newTool')">Add</button>
+</div>
 
-    <!-- STRENGTHS -->
-    <div id="strengths" class="section card">
-      <h3>Strengths</h3>
-      <div id="strengthsList"></div>
-      <input id="newStrength">
-      <button onclick="addTag('strengthsList','newStrength')">Add</button>
-    </div>
+<div id="strengths" class="section card">
+<div id="strengthsList"></div>
+<input id="newStrength">
+<button onclick="addTag('strengthsList','newStrength')">Add</button>
+</div>
 
-    <!-- ACHIEVEMENTS -->
-    <div id="achievements" class="section card">
-      <h3>Achievements</h3>
-      <div id="achievementsList"></div>
-      <input id="newAchievement">
-      <button onclick="addTag('achievementsList','newAchievement')">Add</button>
-    </div>
+<div id="achievements" class="section card">
+<div id="achievementsList"></div>
+<input id="newAchievement">
+<button onclick="addTag('achievementsList','newAchievement')">Add</button>
+</div>
 
-    <!-- PROJECTS -->
-    <div id="projects" class="section card">
-      <h3>Projects</h3>
-      <div id="projectsList"></div>
-      <button onclick="addProject()">Add Project</button>
-    </div>
+<div id="projects" class="section card">
+<div id="projectsList"></div>
+<button onclick="addProject()">Add Project</button>
+</div>
 
-    <button onclick="saveData()">💾 Save</button>
+<button onclick="saveData()">💾 Save</button>
 
-  </div>
+</div>
 </div>
 
 <script type="module">
@@ -216,7 +208,7 @@ import { getFirestore, doc, setDoc, getDoc }
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC_i8vOeQZMdhaKLd32IbwKjUsTlm56Zpc",
+  apiKey: "AIza...",
   authDomain: "furqaan-portfolio.firebaseapp.com",
   projectId: "furqaan-portfolio"
 };
@@ -225,46 +217,41 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* NAV */
-window.show = function(sec){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(sec).classList.add("active");
-}
-
-/* AUTH */
+/* LOGIN FLOW */
 onAuthStateChanged(auth,user=>{
-  if(user){
-    loginPage.style.display="none";
-    dashboard.style.display="flex";
-    setTimeout(loadData,300);
-  }
+if(user){
+loginPage.style.display="none";
+dashboard.style.display="block";
+setTimeout(loadData,300);
+}
 });
 
-/* LOGIN */
 window.login = async ()=>{
-  try{
-    await signInWithEmailAndPassword(auth,email.value,password.value);
-  }catch{
-    alert("Wrong email/password ❌");
-  }
+await signInWithEmailAndPassword(auth,email.value,password.value);
 };
 
-/* LOGOUT */
 window.logout = async ()=>{
-  await signOut(auth);
-  location.reload();
+await signOut(auth);
+location.reload();
+};
+
+/* NAV */
+window.show = function(sec,btn){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(sec).classList.add("active");
+
+document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
 };
 
 /* TAG */
 window.addTag = function(id,input){
-  let v=document.getElementById(input).value;
-  if(!v) return;
-  let el=document.createElement("span");
-  el.className="tag";
-  el.innerText=v;
-  el.onclick=()=>el.remove();
-  document.getElementById(id).appendChild(el);
-  document.getElementById(input).value="";
+let v=document.getElementById(input).value;
+let el=document.createElement("span");
+el.className="tag";
+el.innerText=v;
+el.onclick=()=>el.remove();
+document.getElementById(id).appendChild(el);
 };
 
 /* PROJECT */
@@ -275,8 +262,7 @@ div.innerHTML=`
 <input placeholder="Title">
 <input placeholder="Short">
 <input placeholder="Image">
-<textarea placeholder="Description"></textarea>
-<button onclick="this.parentElement.remove()">❌</button>
+<textarea></textarea>
 `;
 projectsList.appendChild(div);
 };
@@ -307,7 +293,7 @@ description:i[3].value
 };
 
 await setDoc(doc(db,"portfolio","data"),data);
-alert("Saved 🚀");
+alert("Saved");
 };
 
 /* LOAD */
