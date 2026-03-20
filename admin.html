@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Pro Admin Dashboard</title>
+<title>Admin Panel</title>
 
 <style>
 body{
@@ -9,14 +9,51 @@ body{
   font-family:Arial;
   background:#020617;
   color:white;
+}
+
+/* LOGIN FULL SCREEN */
+.loginPage{
+  height:100vh;
   display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.loginBox{
+  background:rgba(15,23,42,0.8);
+  padding:30px;
+  border-radius:12px;
+  width:300px;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border:none;
+  border-radius:6px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  background:#38bdf8;
+  cursor:pointer;
+}
+
+/* DASHBOARD */
+.dashboard{
+  display:none;
 }
 
 /* SIDEBAR */
 .sidebar{
-  width:240px;
+  width:220px;
   height:100vh;
-  background:rgba(15,23,42,0.9);
+  background:#020617;
+  position:fixed;
   padding:20px;
   border-right:1px solid rgba(255,255,255,0.1);
 }
@@ -27,13 +64,12 @@ body{
 
 .sidebar button{
   width:100%;
-  padding:12px;
   margin:10px 0;
-  border:none;
-  border-radius:8px;
+  padding:10px;
   background:rgba(255,255,255,0.05);
   color:white;
-  cursor:pointer;
+  border:none;
+  border-radius:6px;
 }
 
 .sidebar button:hover{
@@ -43,125 +79,85 @@ body{
 
 /* MAIN */
 .main{
-  flex:1;
+  margin-left:240px;
   padding:20px;
 }
 
-/* CARD */
 .card{
-  background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(12px);
-  border-radius:12px;
+  background:rgba(15,23,42,0.6);
   padding:20px;
+  border-radius:12px;
   margin-bottom:20px;
-  transition:0.3s;
 }
 
-.card:hover{
-  transform:translateY(-5px);
-}
-
-input,textarea{
-  width:100%;
-  padding:10px;
-  margin:8px 0;
-  border:none;
-  border-radius:6px;
-}
-
-button{
-  padding:10px 15px;
-  border:none;
-  border-radius:6px;
-  background:#38bdf8;
-  cursor:pointer;
-}
-
-/* TAG */
 .tag{
   display:inline-block;
   background:#38bdf8;
   color:black;
-  padding:6px 10px;
+  padding:5px 10px;
   margin:5px;
   border-radius:6px;
   cursor:pointer;
 }
 
-/* SECTIONS */
 .section{display:none;}
 .active{display:block;}
-
-img.preview{
-  width:100%;
-  border-radius:10px;
-  margin-top:10px;
-}
 
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-<h2>⚡ Admin</h2>
-<button onclick="show('profile')">Profile</button>
-<button onclick="show('skills')">Skills</button>
-<button onclick="show('projects')">Projects</button>
-<button onclick="logout()">Logout</button>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-<!-- LOGIN -->
-<div id="loginBox" class="card">
-<h3>Login</h3>
-<input id="email" placeholder="Email">
-<input id="password" type="password">
-<button onclick="login()">Login</button>
+<!-- LOGIN PAGE -->
+<div class="loginPage" id="loginPage">
+  <div class="loginBox">
+    <h2>Admin Login</h2>
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
 </div>
 
 <!-- DASHBOARD -->
-<div id="dashboard" style="display:none;">
+<div class="dashboard" id="dashboard">
 
-<!-- PROFILE -->
-<div id="profile" class="section active card">
-<h3>Profile</h3>
+  <div class="sidebar">
+    <h2>⚡ Admin</h2>
+    <button onclick="show('profile')">Profile</button>
+    <button onclick="show('skills')">Skills</button>
+    <button onclick="show('projects')">Projects</button>
+    <button onclick="logout()">Logout</button>
+  </div>
 
-<input id="name" placeholder="Name">
-<input id="tagline" placeholder="Title">
-<textarea id="about"></textarea>
+  <div class="main">
 
-<label>Profile Image</label>
-<input type="file" onchange="uploadImage(event,'profileImg')">
-<img id="profileImg" class="preview">
+    <!-- PROFILE -->
+    <div id="profile" class="section active card">
+      <h3>Profile</h3>
+      <input id="name" placeholder="Name">
+      <input id="tagline" placeholder="Title">
+      <textarea id="about"></textarea>
+      <input id="resume" placeholder="Resume link">
+    </div>
 
-<label>Resume</label>
-<input id="resume">
+    <!-- SKILLS -->
+    <div id="skillsSec" class="section card">
+      <h3>Skills</h3>
+      <div id="skills"></div>
+      <input id="newSkill">
+      <button onclick="addTag('skills','newSkill')">Add</button>
+    </div>
 
-</div>
+    <!-- PROJECTS -->
+    <div id="projectsSec" class="section card">
+      <h3>Projects</h3>
+      <div id="projects"></div>
+      <button onclick="addProject()">Add Project</button>
+    </div>
 
-<!-- SKILLS -->
-<div id="skillsSec" class="section card">
-<h3>Skills</h3>
-<div id="skills"></div>
-<input id="newSkill">
-<button onclick="addTag('skills','newSkill')">Add</button>
-</div>
+    <button onclick="saveData()">💾 Save</button>
 
-<!-- PROJECTS -->
-<div id="projectsSec" class="section card">
-<h3>Projects</h3>
-<div id="projects"></div>
-<button onclick="addProject()">Add Project</button>
-</div>
-
-<button onclick="saveData()">💾 Save</button>
-
-</div>
-
+  </div>
 </div>
 
 <script type="module">
@@ -182,51 +178,46 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const loginBox = document.getElementById("loginBox");
-const dashboard = document.getElementById("dashboard");
-
 /* NAV */
 window.show = function(sec){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   document.getElementById(sec==="skills"?"skillsSec":sec==="projects"?"projectsSec":sec).classList.add("active");
 }
 
-/* AUTH */
-onAuthStateChanged(auth,user=>{
+/* AUTH STATE */
+onAuthStateChanged(auth, user=>{
   if(user){
-    loginBox.style.display="none";
+    loginPage.style.display="none";
     dashboard.style.display="block";
     setTimeout(loadData,300);
   }
 });
 
+/* LOGIN */
 window.login = async ()=>{
-  await signInWithEmailAndPassword(auth,email.value,password.value);
+  try{
+    await signInWithEmailAndPassword(auth,email.value,password.value);
+  }catch(e){
+    alert("Wrong email or password ❌");
+  }
 };
 
+/* LOGOUT */
 window.logout = async ()=>{
   await signOut(auth);
   location.reload();
 };
 
-/* IMAGE PREVIEW */
-window.uploadImage = function(e,id){
-  let file=e.target.files[0];
-  let reader=new FileReader();
-  reader.onload=()=>{
-    document.getElementById(id).src=reader.result;
-  };
-  reader.readAsDataURL(file);
-};
-
 /* TAG */
 window.addTag = function(id,input){
   let v=document.getElementById(input).value;
+  if(!v) return;
   let el=document.createElement("span");
   el.className="tag";
   el.innerText=v;
   el.onclick=()=>el.remove();
   document.getElementById(id).appendChild(el);
+  document.getElementById(input).value="";
 };
 
 /* PROJECT */
@@ -237,7 +228,7 @@ div.className="card";
 div.innerHTML=`
 <input placeholder="Title">
 <input placeholder="Short">
-<input placeholder="Image URL">
+<input placeholder="Image">
 <textarea placeholder="Description"></textarea>
 <button onclick="this.parentElement.remove()">❌</button>
 `;
