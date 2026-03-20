@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Panel</title>
+<title>Admin Dashboard</title>
 
 <style>
 body{
@@ -9,18 +9,52 @@ body{
   font-family:Arial;
   background:#020617;
   color:white;
+  display:flex;
 }
-.container{
-  max-width:900px;
-  margin:auto;
+
+/* SIDEBAR */
+.sidebar{
+  width:220px;
+  height:100vh;
+  background:#020617;
+  border-right:1px solid rgba(255,255,255,0.1);
   padding:20px;
 }
+
+.sidebar h2{
+  color:#38bdf8;
+}
+
+.menu button{
+  width:100%;
+  margin:10px 0;
+  padding:10px;
+  border:none;
+  background:rgba(255,255,255,0.05);
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.menu button:hover{
+  background:#38bdf8;
+  color:black;
+}
+
+/* MAIN */
+.main{
+  flex:1;
+  padding:20px;
+}
+
+/* CARD */
 .card{
   background:rgba(15,23,42,0.6);
   padding:20px;
   border-radius:12px;
   margin-bottom:20px;
 }
+
 input,textarea{
   width:100%;
   padding:10px;
@@ -28,6 +62,7 @@ input,textarea{
   border:none;
   border-radius:6px;
 }
+
 button{
   padding:10px;
   border:none;
@@ -35,6 +70,7 @@ button{
   background:#38bdf8;
   cursor:pointer;
 }
+
 .tag{
   display:inline-block;
   background:#38bdf8;
@@ -44,67 +80,69 @@ button{
   border-radius:6px;
   cursor:pointer;
 }
+
+/* HIDE SECTIONS */
+.section{display:none;}
+.active{display:block;}
+
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar">
+<h2>Admin</h2>
+<div class="menu">
+<button onclick="show('profile')">Profile</button>
+<button onclick="show('skills')">Skills</button>
+<button onclick="show('projects')">Projects</button>
+<button onclick="logout()">Logout</button>
+</div>
+</div>
 
-<h1>🚀 Admin Panel</h1>
+<!-- MAIN -->
+<div class="main">
 
-<div class="card" id="loginBox">
+<!-- LOGIN -->
+<div id="loginBox" class="card">
 <h3>Login</h3>
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
 <button onclick="login()">Login</button>
 </div>
 
+<!-- DASHBOARD -->
 <div id="dashboard" style="display:none;">
 
-<div class="card">
+<!-- PROFILE -->
+<div id="profile" class="section active card">
 <h3>Profile</h3>
-<input id="name" placeholder="Full Name">
+<input id="name" placeholder="Name">
 <input id="tagline" placeholder="Title">
-<textarea id="about" placeholder="Bio"></textarea>
-</div>
-
-<div class="card">
-<h3>Skills</h3>
-<div id="skills"></div>
-<input id="newSkill" placeholder="Add skill">
-<button onclick="addTag('skills','newSkill')">+ Add</button>
-</div>
-
-<div class="card">
-<h3>Tools</h3>
-<div id="tools"></div>
-<input id="newTool" placeholder="Add tool">
-<button onclick="addTag('tools','newTool')">+ Add</button>
-</div>
-
-<div class="card">
-<h3>Strengths</h3>
-<div id="strengths"></div>
-<input id="newStrength" placeholder="Add strength">
-<button onclick="addTag('strengths','newStrength')">+ Add</button>
-</div>
-
-<div class="card">
-<h3>Resume</h3>
+<textarea id="about"></textarea>
 <input id="resume" placeholder="Resume link">
 </div>
 
-<div class="card">
+<!-- SKILLS -->
+<div id="skillsSec" class="section card">
+<h3>Skills</h3>
+<div id="skills"></div>
+<input id="newSkill">
+<button onclick="addTag('skills','newSkill')">Add</button>
+</div>
+
+<!-- PROJECTS -->
+<div id="projectsSec" class="section card">
 <h3>Projects</h3>
 <div id="projects"></div>
-<button onclick="addProject()">+ Add Project</button>
+<button onclick="addProject()">Add Project</button>
 </div>
 
 <button onclick="saveData()">💾 Save</button>
-<button onclick="logout()">Logout</button>
 
 </div>
+
 </div>
 
 <script type="module">
@@ -128,52 +166,44 @@ const db = getFirestore(app);
 const loginBox = document.getElementById("loginBox");
 const dashboard = document.getElementById("dashboard");
 
-/* 🔥 AUTO LOGIN + LOAD FIX */
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    loginBox.style.display = "none";
-    dashboard.style.display = "block";
+/* NAV */
+window.show = function(sec){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(sec==="skills"?"skillsSec":sec==="projects"?"projectsSec":sec).classList.add("active");
+}
 
-    setTimeout(() => {
-      loadData();
-    }, 300);
+/* AUTH */
+onAuthStateChanged(auth, user=>{
+  if(user){
+    loginBox.style.display="none";
+    dashboard.style.display="block";
+    setTimeout(loadData,300);
   }
 });
 
-/* LOGIN */
-window.login = async function(){
-  try{
-    await signInWithEmailAndPassword(auth,email.value.trim(),password.value.trim());
-  }catch(e){
-    alert(e.message);
-  }
-}
+window.login = async ()=>{
+  await signInWithEmailAndPassword(auth,email.value,password.value);
+};
 
-/* LOGOUT */
 window.logout = async ()=>{
   await signOut(auth);
   location.reload();
-}
+};
 
 /* TAG */
-window.addTag = function(section,inputId){
-  let val = document.getElementById(inputId).value;
-  if(!val) return;
-
-  let el = document.createElement("span");
+window.addTag = function(id,input){
+  let v=document.getElementById(input).value;
+  let el=document.createElement("span");
   el.className="tag";
-  el.innerText=val;
+  el.innerText=v;
   el.onclick=()=>el.remove();
+  document.getElementById(id).appendChild(el);
+};
 
-  document.getElementById(section).appendChild(el);
-  document.getElementById(inputId).value="";
-}
-
-/* ADD PROJECT */
+/* PROJECT */
 window.addProject = function(){
 let div=document.createElement("div");
 div.className="card";
-
 div.innerHTML=`
 <input placeholder="Title">
 <input placeholder="Short">
@@ -181,26 +211,23 @@ div.innerHTML=`
 <textarea placeholder="Description"></textarea>
 <button onclick="this.parentElement.remove()">❌</button>
 `;
-
 projects.appendChild(div);
-}
+};
 
 /* SAVE */
 window.saveData = async function(){
 
-let getTags = (id)=>[...document.querySelectorAll(`#${id} .tag`)].map(t=>t.innerText);
+let getTags=id=>[...document.querySelectorAll(`#${id} .tag`)].map(t=>t.innerText);
 
 let data={
 name:name.value,
 tagline:tagline.value,
 about:{intro:about.value},
 skills:getTags("skills"),
-tools:getTags("tools"),
-strengths:getTags("strengths"),
 resume:resume.value,
 projects:[...document.querySelectorAll("#projects .card")].map(c=>{
 let i=c.querySelectorAll("input,textarea");
-return {
+return{
 title:i[0].value,
 short:i[1].value,
 image:i[2].value,
@@ -211,65 +238,36 @@ description:i[3].value
 
 await setDoc(doc(db,"portfolio","data"),data);
 alert("Saved 🚀");
-}
+};
 
-/* 🔥 FINAL FIXED LOAD */
+/* LOAD */
 async function loadData(){
-
-const snap = await getDoc(doc(db,"portfolio","data"));
-
+let snap=await getDoc(doc(db,"portfolio","data"));
 if(!snap.exists()) return;
+let d=snap.data();
 
-const d = snap.data();
+name.value=d.name||"";
+tagline.value=d.tagline||"";
+about.value=d.about?.intro||"";
+resume.value=d.resume||"";
 
-/* PROFILE */
-name.value = d.name || "";
-tagline.value = d.tagline || "";
-about.value = d.about?.intro || "";
-resume.value = d.resume || "";
-
-/* CLEAR */
 skills.innerHTML="";
-tools.innerHTML="";
-strengths.innerHTML="";
-projects.innerHTML="";
-
-/* TAGS */
 (d.skills||[]).forEach(v=>{
 let el=document.createElement("span");
 el.className="tag";
 el.innerText=v;
-el.onclick=()=>el.remove();
 skills.appendChild(el);
 });
 
-(d.tools||[]).forEach(v=>{
-let el=document.createElement("span");
-el.className="tag";
-el.innerText=v;
-el.onclick=()=>el.remove();
-tools.appendChild(el);
-});
-
-(d.strengths||[]).forEach(v=>{
-let el=document.createElement("span");
-el.className="tag";
-el.innerText=v;
-el.onclick=()=>el.remove();
-strengths.appendChild(el);
-});
-
-/* PROJECTS */
+projects.innerHTML="";
 (d.projects||[]).forEach(p=>{
 addProject();
-let last=projects.lastChild.querySelectorAll("input,textarea");
-
-last[0].value=p.title || "";
-last[1].value=p.short || "";
-last[2].value=p.image || "";
-last[3].value=p.description || "";
+let i=projects.lastChild.querySelectorAll("input,textarea");
+i[0].value=p.title;
+i[1].value=p.short;
+i[2].value=p.image;
+i[3].value=p.description;
 });
-
 }
 
 </script>
