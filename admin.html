@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Dashboard</title>
+<title>Pro Admin Dashboard</title>
 
 <style>
 body{
@@ -14,29 +14,29 @@ body{
 
 /* SIDEBAR */
 .sidebar{
-  width:220px;
+  width:240px;
   height:100vh;
-  background:#020617;
-  border-right:1px solid rgba(255,255,255,0.1);
+  background:rgba(15,23,42,0.9);
   padding:20px;
+  border-right:1px solid rgba(255,255,255,0.1);
 }
 
 .sidebar h2{
   color:#38bdf8;
 }
 
-.menu button{
+.sidebar button{
   width:100%;
+  padding:12px;
   margin:10px 0;
-  padding:10px;
   border:none;
+  border-radius:8px;
   background:rgba(255,255,255,0.05);
   color:white;
-  border-radius:6px;
   cursor:pointer;
 }
 
-.menu button:hover{
+.sidebar button:hover{
   background:#38bdf8;
   color:black;
 }
@@ -49,10 +49,16 @@ body{
 
 /* CARD */
 .card{
-  background:rgba(15,23,42,0.6);
-  padding:20px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(12px);
   border-radius:12px;
+  padding:20px;
   margin-bottom:20px;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
 }
 
 input,textarea{
@@ -64,26 +70,33 @@ input,textarea{
 }
 
 button{
-  padding:10px;
+  padding:10px 15px;
   border:none;
   border-radius:6px;
   background:#38bdf8;
   cursor:pointer;
 }
 
+/* TAG */
 .tag{
   display:inline-block;
   background:#38bdf8;
   color:black;
-  padding:5px 10px;
+  padding:6px 10px;
   margin:5px;
   border-radius:6px;
   cursor:pointer;
 }
 
-/* HIDE SECTIONS */
+/* SECTIONS */
 .section{display:none;}
 .active{display:block;}
+
+img.preview{
+  width:100%;
+  border-radius:10px;
+  margin-top:10px;
+}
 
 </style>
 </head>
@@ -92,13 +105,11 @@ button{
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-<h2>Admin</h2>
-<div class="menu">
+<h2>⚡ Admin</h2>
 <button onclick="show('profile')">Profile</button>
 <button onclick="show('skills')">Skills</button>
 <button onclick="show('projects')">Projects</button>
 <button onclick="logout()">Logout</button>
-</div>
 </div>
 
 <!-- MAIN -->
@@ -108,7 +119,7 @@ button{
 <div id="loginBox" class="card">
 <h3>Login</h3>
 <input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
+<input id="password" type="password">
 <button onclick="login()">Login</button>
 </div>
 
@@ -118,10 +129,18 @@ button{
 <!-- PROFILE -->
 <div id="profile" class="section active card">
 <h3>Profile</h3>
+
 <input id="name" placeholder="Name">
 <input id="tagline" placeholder="Title">
 <textarea id="about"></textarea>
-<input id="resume" placeholder="Resume link">
+
+<label>Profile Image</label>
+<input type="file" onchange="uploadImage(event,'profileImg')">
+<img id="profileImg" class="preview">
+
+<label>Resume</label>
+<input id="resume">
+
 </div>
 
 <!-- SKILLS -->
@@ -173,7 +192,7 @@ window.show = function(sec){
 }
 
 /* AUTH */
-onAuthStateChanged(auth, user=>{
+onAuthStateChanged(auth,user=>{
   if(user){
     loginBox.style.display="none";
     dashboard.style.display="block";
@@ -190,6 +209,16 @@ window.logout = async ()=>{
   location.reload();
 };
 
+/* IMAGE PREVIEW */
+window.uploadImage = function(e,id){
+  let file=e.target.files[0];
+  let reader=new FileReader();
+  reader.onload=()=>{
+    document.getElementById(id).src=reader.result;
+  };
+  reader.readAsDataURL(file);
+};
+
 /* TAG */
 window.addTag = function(id,input){
   let v=document.getElementById(input).value;
@@ -204,13 +233,15 @@ window.addTag = function(id,input){
 window.addProject = function(){
 let div=document.createElement("div");
 div.className="card";
+
 div.innerHTML=`
 <input placeholder="Title">
 <input placeholder="Short">
-<input placeholder="Image">
+<input placeholder="Image URL">
 <textarea placeholder="Description"></textarea>
 <button onclick="this.parentElement.remove()">❌</button>
 `;
+
 projects.appendChild(div);
 };
 
