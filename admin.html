@@ -121,10 +121,10 @@ button{
 <div class="main">
 
 <div id="profile" class="section active card">
-<input id="name">
-<input id="tagline">
-<textarea id="about"></textarea>
-<input id="resume">
+<input id="name" placeholder="Name">
+<input id="tagline" placeholder="Title">
+<textarea id="about" placeholder="Bio"></textarea>
+<input id="resume" placeholder="Resume link">
 </div>
 
 <div id="skills" class="section card">
@@ -161,16 +161,16 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* 🔥 LOGIN STATE */
+/* 🔥 AUTO LOGIN */
 onAuthStateChanged(auth, user=>{
   if(user){
     loginPage.style.display="none";
     dashboard.style.display="block";
-    setTimeout(loadData,300);
+    setTimeout(loadData,200);
   }
 });
 
-/* 🔥 LOGIN FIXED */
+/* 🔥 FIXED LOGIN */
 window.login = async ()=>{
   try{
     await signInWithEmailAndPassword(
@@ -178,9 +178,17 @@ window.login = async ()=>{
       email.value.trim(),
       password.value.trim()
     );
+
+    // ✅ FORCE SHOW DASHBOARD
+    loginPage.style.display="none";
+    dashboard.style.display="block";
+
+    // ✅ LOAD DATA
+    loadData();
+
   }catch(e){
     console.error(e);
-    alert(e.message); // 🔥 shows real error
+    alert(e.message);
   }
 };
 
@@ -203,10 +211,12 @@ window.show = function(sec,btn){
 window.addTag = function(id,input){
   let v=document.getElementById(input).value;
   if(!v) return;
+
   let el=document.createElement("span");
   el.className="tag";
   el.innerText=v;
   el.onclick=()=>el.remove();
+
   document.getElementById(id).appendChild(el);
   document.getElementById(input).value="";
 };
@@ -249,12 +259,14 @@ description:i[3].value
 };
 
 await setDoc(doc(db,"portfolio","data"),data);
-alert("Saved 🚀");
+
+alert("Saved successfully 🚀");
 };
 
 /* LOAD */
 async function loadData(){
 let snap=await getDoc(doc(db,"portfolio","data"));
+
 if(!snap.exists()) return;
 
 let d=snap.data();
@@ -264,6 +276,7 @@ tagline.value=d.tagline||"";
 about.value=d.about?.intro||"";
 resume.value=d.resume||"";
 
+/* LOAD SKILLS */
 skillsList.innerHTML="";
 (d.skills||[]).forEach(v=>{
 let el=document.createElement("span");
@@ -272,10 +285,12 @@ el.innerText=v;
 skillsList.appendChild(el);
 });
 
+/* LOAD PROJECTS */
 projectsList.innerHTML="";
 (d.projects||[]).forEach(p=>{
 addProject();
 let i=projectsList.lastChild.querySelectorAll("input,textarea");
+
 i[0].value=p.title;
 i[1].value=p.short;
 i[2].value=p.image;
