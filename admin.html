@@ -1,159 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Furqan Portfolio</title>
+<title>Admin Panel</title>
 
 <style>
-
 body{
   margin:0;
   font-family:Arial;
+  background:#020617;
   color:white;
-  overflow-x:hidden;
 }
 
-/* 🎬 CINEMATIC BACKGROUND */
-body::before{
-  content:"";
-  position:fixed;
-  width:120%;
-  height:120%;
-  background:url("photo.jpg") no-repeat;
-  background-size:cover;
-  background-position:bottom left;
-  z-index:-2;
-  animation:bgMove 30s ease-in-out infinite alternate;
-}
-
-/* DARK GLASS OVERLAY */
-body::after{
-  content:"";
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:linear-gradient(135deg, rgba(2,6,23,0.6), rgba(2,6,23,0.85));
-  backdrop-filter:blur(8px);
-  z-index:-1;
-}
-
-/* 🎥 BACKGROUND ANIMATION */
-@keyframes bgMove{
-  0%{
-    transform:scale(1);
-    background-position:bottom left;
-  }
-  100%{
-    transform:scale(1.2);
-    background-position:top right;
-  }
-}
-
-/* CONTAINER */
 .container{
-  max-width:1000px;
+  max-width:900px;
   margin:auto;
   padding:20px;
-  animation:fadeIn 1s ease;
 }
 
-/* HEADINGS */
-h1,h2{
-  color:#38bdf8;
-  text-shadow:0 0 10px rgba(56,189,248,0.8);
-}
-
-/* GLASS CARD */
 .card{
-  background:rgba(255,255,255,0.07);
-  backdrop-filter:blur(14px);
-  border:1px solid rgba(255,255,255,0.1);
-  padding:20px;
-  border-radius:15px;
-  margin:20px 0;
-  box-shadow:0 0 25px rgba(0,0,0,0.4);
-  transition:0.3s;
-  animation:fadeUp 0.8s ease;
-}
-
-.card:hover{
-  transform:translateY(-6px) scale(1.01);
-}
-
-/* TAGS */
-.tag{
-  display:inline-block;
-  background:rgba(56,189,248,0.15);
-  border:1px solid #38bdf8;
-  color:#38bdf8;
-  padding:6px 10px;
-  margin:5px;
-  border-radius:6px;
-  transition:0.3s;
-}
-
-.tag:hover{
-  background:#38bdf8;
-  color:black;
-  box-shadow:0 0 10px #38bdf8;
-}
-
-/* PROJECT */
-.project{
-  margin-bottom:20px;
-  padding:15px;
-  border-radius:10px;
   background:rgba(15,23,42,0.6);
-  backdrop-filter:blur(10px);
-  animation:fadeUp 1s ease;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:20px;
 }
 
-/* IMAGE */
-img{
+input,textarea{
   width:100%;
-  border-radius:10px;
-  margin:10px 0;
-  transition:0.4s;
-}
-
-img:hover{
-  transform:scale(1.04);
-}
-
-/* BUTTON */
-.btn{
-  background:linear-gradient(45deg,#38bdf8,#0ea5e9);
-  padding:10px 15px;
+  padding:10px;
+  margin:8px 0;
   border:none;
   border-radius:6px;
+}
+
+button{
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  background:#38bdf8;
   cursor:pointer;
+}
+
+.tag{
+  display:inline-block;
+  background:#38bdf8;
   color:black;
-  text-decoration:none;
-  transition:0.3s;
+  padding:5px 10px;
+  margin:5px;
+  border-radius:6px;
+  cursor:pointer;
 }
-
-.btn:hover{
-  box-shadow:0 0 15px #38bdf8;
-}
-
-/* ANIMATIONS */
-@keyframes fadeUp{
-  from{
-    opacity:0;
-    transform:translateY(30px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-}
-
-@keyframes fadeIn{
-  from{opacity:0;}
-  to{opacity:1;}
-}
-
 </style>
 </head>
 
@@ -161,38 +56,66 @@ img:hover{
 
 <div class="container">
 
-<h1 id="name">Furqan Ahmad Bhat</h1>
+<h1>🚀 Admin Panel</h1>
+
+<!-- LOGIN -->
+<div class="card" id="loginBox">
+<h3>Login</h3>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" style="display:none;">
 
 <!-- PROFILE -->
 <div class="card">
-<h2 id="tagline"></h2>
-<p id="about"></p>
-
-<a id="resumeBtn" class="btn" target="_blank">📄 Download Resume</a>
+<h3>Profile</h3>
+<input id="tagline" placeholder="Title">
+<textarea id="about" placeholder="Bio"></textarea>
 </div>
 
 <!-- SKILLS -->
 <div class="card">
-<h2>Skills</h2>
+<h3>Skills</h3>
 <div id="skills"></div>
+<input id="newSkill" placeholder="Add skill">
+<button onclick="addTag('skills','newSkill')">+ Add</button>
 </div>
 
 <!-- TOOLS -->
 <div class="card">
-<h2>Tools & Technologies</h2>
+<h3>Tools & Technologies</h3>
 <div id="tools"></div>
+<input id="newTool" placeholder="Add tool">
+<button onclick="addTag('tools','newTool')">+ Add</button>
 </div>
 
 <!-- STRENGTHS -->
 <div class="card">
-<h2>Strengths</h2>
+<h3>Strengths</h3>
 <div id="strengths"></div>
+<input id="newStrength" placeholder="Add strength">
+<button onclick="addTag('strengths','newStrength')">+ Add</button>
+</div>
+
+<!-- RESUME -->
+<div class="card">
+<h3>Resume</h3>
+<input id="resume" placeholder="Resume link (Google Drive)">
 </div>
 
 <!-- PROJECTS -->
 <div class="card">
-<h2>Projects</h2>
+<h3>Projects</h3>
 <div id="projects"></div>
+<button onclick="addProject()">+ Add Project</button>
+</div>
+
+<button onclick="saveData()">💾 Save All</button>
+<button onclick="logout()">Logout</button>
+
 </div>
 
 </div>
@@ -200,7 +123,9 @@ img:hover{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, doc, onSnapshot } 
+import { getAuth, signInWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -210,62 +135,107 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* 🔥 AUTO SYNC */
-onSnapshot(doc(db,"portfolio","data"), (snap)=>{
-
-if(!snap.exists()) return;
-
-let d = snap.data();
-
-/* PROFILE */
-document.getElementById("name").innerText = d.name || "Furqan Ahmad Bhat";
-document.getElementById("tagline").innerText = d.tagline || "";
-document.getElementById("about").innerText = d.about?.intro || "";
-
-/* RESUME */
-if(d.resume){
-  document.getElementById("resumeBtn").href = d.resume;
-}else{
-  document.getElementById("resumeBtn").style.display="none";
+/* LOGIN */
+window.login = async function(){
+  try{
+    await signInWithEmailAndPassword(auth,email.value.trim(),password.value.trim());
+    loginBox.style.display="none";
+    dashboard.style.display="block";
+    loadData();
+  }catch(e){
+    alert(e.message);
+  }
 }
 
-/* TAGS */
-function renderTags(id, arr){
-  let container = document.getElementById(id);
-  container.innerHTML="";
-  (arr||[]).forEach(v=>{
-    let span=document.createElement("span");
-    span.className="tag";
-    span.innerText=v;
-    container.appendChild(span);
-  });
+/* LOGOUT */
+window.logout = ()=>location.reload();
+
+/* ADD TAG (skills/tools/strengths) */
+window.addTag = function(section,inputId){
+  let val = document.getElementById(inputId).value;
+  if(!val) return;
+
+  let el = document.createElement("span");
+  el.className="tag";
+  el.innerText=val;
+  el.onclick=()=>el.remove();
+
+  document.getElementById(section).appendChild(el);
+  document.getElementById(inputId).value="";
 }
 
-renderTags("skills", d.skills);
-renderTags("tools", d.tools);
-renderTags("strengths", d.strengths);
-
-/* PROJECTS */
-let projDiv = document.getElementById("projects");
-projDiv.innerHTML="";
-
-(d.projects||[]).forEach(p=>{
+/* ADD PROJECT */
+window.addProject = function(){
 let div=document.createElement("div");
-div.className="project";
+div.className="card";
 
 div.innerHTML=`
-<h3>${p.title}</h3>
-<p><b>${p.short}</b></p>
-<img src="${p.image}" alt="">
-<p>${p.description}</p>
+<input placeholder="Title">
+<input placeholder="Short">
+<input placeholder="Image">
+<textarea placeholder="Description"></textarea>
+<button onclick="this.parentElement.remove()">❌ Remove</button>
 `;
 
-projDiv.appendChild(div);
-});
+projects.appendChild(div);
+}
 
+/* SAVE */
+window.saveData = async function(){
+
+let getTags = (id)=>[...document.querySelectorAll(`#${id} .tag`)].map(t=>t.innerText);
+
+let data={
+tagline:tagline.value,
+about:{intro:about.value},
+skills:getTags("skills"),
+tools:getTags("tools"),
+strengths:getTags("strengths"),
+resume:resume.value,
+projects:[...document.querySelectorAll("#projects .card")].map(c=>{
+let i=c.querySelectorAll("input,textarea");
+return {
+title:i[0].value,
+short:i[1].value,
+image:i[2].value,
+description:i[3].value
+};
+})
+};
+
+await setDoc(doc(db,"portfolio","data"),data);
+alert("Saved 🚀");
+}
+
+/* LOAD */
+async function loadData(){
+let snap=await getDoc(doc(db,"portfolio","data"));
+
+if(snap.exists()){
+let d=snap.data();
+
+tagline.value=d.tagline||"";
+about.value=d.about?.intro||"";
+resume.value=d.resume||"";
+
+(d.skills||[]).forEach(v=>{newSkill.value=v; addTag("skills","newSkill");});
+(d.tools||[]).forEach(v=>{newTool.value=v; addTag("tools","newTool");});
+(d.strengths||[]).forEach(v=>{newStrength.value=v; addTag("strengths","newStrength");});
+
+(d.projects||[]).forEach(p=>{
+addProject();
+let last=projects.lastChild.querySelectorAll("input,textarea");
+
+last[0].value=p.title;
+last[1].value=p.short;
+last[2].value=p.image;
+last[3].value=p.description;
 });
+}
+}
 
 </script>
 
