@@ -27,7 +27,7 @@ body{
   width:300px;
 }
 
-input{
+input,textarea{
   width:100%;
   padding:10px;
   margin:10px 0;
@@ -36,12 +36,12 @@ input{
 }
 
 button{
-  width:100%;
   padding:10px;
   border:none;
   border-radius:6px;
   background:#38bdf8;
   cursor:pointer;
+  width:100%;
 }
 
 /* DASHBOARD */
@@ -88,11 +88,11 @@ button{
   padding:5px 10px;
   margin:5px;
   border-radius:6px;
+  cursor:pointer;
 }
 
 .section{display:none;}
 .section.active{display:block;}
-
 </style>
 </head>
 
@@ -114,31 +114,64 @@ button{
 <div class="sidebar">
 <button onclick="show('profile',this)">Profile</button>
 <button onclick="show('skills',this)">Skills</button>
+<button onclick="show('tools',this)">Tools</button>
+<button onclick="show('strengths',this)">Strengths</button>
+<button onclick="show('achievements',this)">Achievements</button>
 <button onclick="show('projects',this)">Projects</button>
 <button onclick="logout()">Logout</button>
 </div>
 
 <div class="main">
 
+<!-- PROFILE -->
 <div id="profile" class="section active card">
+<h3>Profile</h3>
 <input id="name" placeholder="Name">
 <input id="tagline" placeholder="Title">
 <textarea id="about" placeholder="Bio"></textarea>
 <input id="resume" placeholder="Resume link">
 </div>
 
+<!-- SKILLS -->
 <div id="skills" class="section card">
+<h3>Skills</h3>
 <div id="skillsList"></div>
 <input id="newSkill">
 <button onclick="addTag('skillsList','newSkill')">Add</button>
 </div>
 
+<!-- TOOLS -->
+<div id="tools" class="section card">
+<h3>Tools & Technologies</h3>
+<div id="toolsList"></div>
+<input id="newTool">
+<button onclick="addTag('toolsList','newTool')">Add</button>
+</div>
+
+<!-- STRENGTHS -->
+<div id="strengths" class="section card">
+<h3>Strengths</h3>
+<div id="strengthsList"></div>
+<input id="newStrength">
+<button onclick="addTag('strengthsList','newStrength')">Add</button>
+</div>
+
+<!-- ACHIEVEMENTS -->
+<div id="achievements" class="section card">
+<h3>Achievements</h3>
+<div id="achievementsList"></div>
+<input id="newAchievement">
+<button onclick="addTag('achievementsList','newAchievement')">Add</button>
+</div>
+
+<!-- PROJECTS -->
 <div id="projects" class="section card">
+<h3>Projects</h3>
 <div id="projectsList"></div>
 <button onclick="addProject()">Add Project</button>
 </div>
 
-<button onclick="saveData()">💾 Save</button>
+<button onclick="saveData()">💾 Save All</button>
 
 </div>
 </div>
@@ -161,7 +194,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* 🔥 AUTO LOGIN */
+/* AUTH */
 onAuthStateChanged(auth, user=>{
   if(user){
     loginPage.style.display="none";
@@ -170,24 +203,14 @@ onAuthStateChanged(auth, user=>{
   }
 });
 
-/* 🔥 FIXED LOGIN */
+/* LOGIN */
 window.login = async ()=>{
   try{
-    await signInWithEmailAndPassword(
-      auth,
-      email.value.trim(),
-      password.value.trim()
-    );
-
-    // ✅ FORCE SHOW DASHBOARD
+    await signInWithEmailAndPassword(auth,email.value.trim(),password.value.trim());
     loginPage.style.display="none";
     dashboard.style.display="block";
-
-    // ✅ LOAD DATA
     loadData();
-
   }catch(e){
-    console.error(e);
     alert(e.message);
   }
 };
@@ -246,6 +269,9 @@ name:name.value,
 tagline:tagline.value,
 about:{intro:about.value},
 skills:getTags("skillsList"),
+tools:getTags("toolsList"),
+strengths:getTags("strengthsList"),
+achievements:getTags("achievementsList"),
 resume:resume.value,
 projects:[...document.querySelectorAll("#projectsList .card")].map(c=>{
 let i=c.querySelectorAll("input,textarea");
@@ -259,14 +285,12 @@ description:i[3].value
 };
 
 await setDoc(doc(db,"portfolio","data"),data);
-
 alert("Saved successfully 🚀");
 };
 
 /* LOAD */
 async function loadData(){
 let snap=await getDoc(doc(db,"portfolio","data"));
-
 if(!snap.exists()) return;
 
 let d=snap.data();
@@ -276,21 +300,28 @@ tagline.value=d.tagline||"";
 about.value=d.about?.intro||"";
 resume.value=d.resume||"";
 
-/* LOAD SKILLS */
-skillsList.innerHTML="";
-(d.skills||[]).forEach(v=>{
+/* TAGS */
+function loadTags(id,arr){
+document.getElementById(id).innerHTML="";
+(arr||[]).forEach(v=>{
 let el=document.createElement("span");
 el.className="tag";
 el.innerText=v;
-skillsList.appendChild(el);
+el.onclick=()=>el.remove();
+document.getElementById(id).appendChild(el);
 });
+}
 
-/* LOAD PROJECTS */
+loadTags("skillsList",d.skills);
+loadTags("toolsList",d.tools);
+loadTags("strengthsList",d.strengths);
+loadTags("achievementsList",d.achievements);
+
+/* PROJECTS */
 projectsList.innerHTML="";
 (d.projects||[]).forEach(p=>{
 addProject();
 let i=projectsList.lastChild.querySelectorAll("input,textarea");
-
 i[0].value=p.title;
 i[1].value=p.short;
 i[2].value=p.image;
