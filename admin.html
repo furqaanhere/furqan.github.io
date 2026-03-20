@@ -4,29 +4,11 @@
 <title>Admin Panel</title>
 
 <style>
-
-/* 🌌 BASE */
 body{
   margin:0;
   font-family:Arial;
   background:#020617;
   color:white;
-}
-
-/* BACKGROUND GLOW */
-body::before{
-  content:"";
-  position:fixed;
-  width:120%;
-  height:120%;
-  background:radial-gradient(circle at 20% 20%, rgba(56,189,248,0.15), transparent 40%),
-             radial-gradient(circle at 80% 80%, rgba(14,165,233,0.15), transparent 40%);
-  z-index:-1;
-  animation:bgMove 10s infinite alternate;
-}
-@keyframes bgMove{
-  0%{transform:translate(0,0);}
-  100%{transform:translate(-30px,-30px);}
 }
 
 /* LOGIN */
@@ -43,25 +25,21 @@ body::before{
   padding:30px;
   border-radius:15px;
   width:300px;
-  animation:fadeIn 0.5s;
 }
 
-/* INPUT */
-input,textarea{
+input{
   width:100%;
-  padding:12px;
+  padding:10px;
   margin:10px 0;
   border:none;
-  border-radius:8px;
-  background:rgba(255,255,255,0.08);
-  color:white;
+  border-radius:6px;
 }
 
-/* BUTTON */
 button{
+  width:100%;
   padding:10px;
   border:none;
-  border-radius:8px;
+  border-radius:6px;
   background:#38bdf8;
   cursor:pointer;
 }
@@ -73,60 +51,47 @@ button{
 
 /* SIDEBAR */
 .sidebar{
-  width:240px;
+  width:220px;
   height:100vh;
   position:fixed;
-  background:rgba(15,23,42,0.9);
+  background:#020617;
   padding:20px;
 }
 
 .sidebar button{
   width:100%;
   margin:10px 0;
-  padding:12px;
-  border:none;
-  border-radius:8px;
+  padding:10px;
   background:rgba(255,255,255,0.05);
+  border:none;
   color:white;
-}
-
-.sidebar button.active{
-  background:#38bdf8;
-  color:black;
+  border-radius:6px;
 }
 
 /* MAIN */
 .main{
-  margin-left:260px;
+  margin-left:240px;
   padding:20px;
 }
 
-/* CARD */
 .card{
-  background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(15px);
-  border-radius:12px;
+  background:rgba(15,23,42,0.6);
   padding:20px;
+  border-radius:12px;
   margin-bottom:20px;
 }
 
-/* TAG */
 .tag{
   display:inline-block;
   background:#38bdf8;
   color:black;
-  padding:6px;
+  padding:5px 10px;
   margin:5px;
   border-radius:6px;
 }
 
-/* SECTIONS */
-.section{
-  display:none;
-}
-.section.active{
-  display:block;
-}
+.section{display:none;}
+.section.active{display:block;}
 
 </style>
 </head>
@@ -137,8 +102,8 @@ button{
 <div class="loginPage" id="loginPage">
   <div class="loginBox">
     <h2>Admin Login</h2>
-    <input id="email">
-    <input id="password" type="password">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
     <button onclick="login()">Login</button>
   </div>
 </div>
@@ -149,9 +114,6 @@ button{
 <div class="sidebar">
 <button onclick="show('profile',this)">Profile</button>
 <button onclick="show('skills',this)">Skills</button>
-<button onclick="show('tools',this)">Tools</button>
-<button onclick="show('strengths',this)">Strengths</button>
-<button onclick="show('achievements',this)">Achievements</button>
 <button onclick="show('projects',this)">Projects</button>
 <button onclick="logout()">Logout</button>
 </div>
@@ -169,24 +131,6 @@ button{
 <div id="skillsList"></div>
 <input id="newSkill">
 <button onclick="addTag('skillsList','newSkill')">Add</button>
-</div>
-
-<div id="tools" class="section card">
-<div id="toolsList"></div>
-<input id="newTool">
-<button onclick="addTag('toolsList','newTool')">Add</button>
-</div>
-
-<div id="strengths" class="section card">
-<div id="strengthsList"></div>
-<input id="newStrength">
-<button onclick="addTag('strengthsList','newStrength')">Add</button>
-</div>
-
-<div id="achievements" class="section card">
-<div id="achievementsList"></div>
-<input id="newAchievement">
-<button onclick="addTag('achievementsList','newAchievement')">Add</button>
 </div>
 
 <div id="projects" class="section card">
@@ -208,7 +152,7 @@ import { getFirestore, doc, setDoc, getDoc }
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIza...",
+  apiKey: "AIzaSyC_i8vOeQZMdhaKLd32IbwKjUsTlm56Zpc",
   authDomain: "furqaan-portfolio.firebaseapp.com",
   projectId: "furqaan-portfolio"
 };
@@ -217,53 +161,68 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* LOGIN FLOW */
-onAuthStateChanged(auth,user=>{
-if(user){
-loginPage.style.display="none";
-dashboard.style.display="block";
-setTimeout(loadData,300);
-}
+/* 🔥 LOGIN STATE */
+onAuthStateChanged(auth, user=>{
+  if(user){
+    loginPage.style.display="none";
+    dashboard.style.display="block";
+    setTimeout(loadData,300);
+  }
 });
 
+/* 🔥 LOGIN FIXED */
 window.login = async ()=>{
-await signInWithEmailAndPassword(auth,email.value,password.value);
+  try{
+    await signInWithEmailAndPassword(
+      auth,
+      email.value.trim(),
+      password.value.trim()
+    );
+  }catch(e){
+    console.error(e);
+    alert(e.message); // 🔥 shows real error
+  }
 };
 
+/* LOGOUT */
 window.logout = async ()=>{
-await signOut(auth);
-location.reload();
+  await signOut(auth);
+  location.reload();
 };
 
 /* NAV */
 window.show = function(sec,btn){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.getElementById(sec).classList.add("active");
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(sec).classList.add("active");
 
-document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
-btn.classList.add("active");
+  document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
 };
 
 /* TAG */
 window.addTag = function(id,input){
-let v=document.getElementById(input).value;
-let el=document.createElement("span");
-el.className="tag";
-el.innerText=v;
-el.onclick=()=>el.remove();
-document.getElementById(id).appendChild(el);
+  let v=document.getElementById(input).value;
+  if(!v) return;
+  let el=document.createElement("span");
+  el.className="tag";
+  el.innerText=v;
+  el.onclick=()=>el.remove();
+  document.getElementById(id).appendChild(el);
+  document.getElementById(input).value="";
 };
 
 /* PROJECT */
 window.addProject = function(){
 let div=document.createElement("div");
 div.className="card";
+
 div.innerHTML=`
 <input placeholder="Title">
 <input placeholder="Short">
 <input placeholder="Image">
-<textarea></textarea>
+<textarea placeholder="Description"></textarea>
 `;
+
 projectsList.appendChild(div);
 };
 
@@ -277,9 +236,6 @@ name:name.value,
 tagline:tagline.value,
 about:{intro:about.value},
 skills:getTags("skillsList"),
-tools:getTags("toolsList"),
-strengths:getTags("strengthsList"),
-achievements:getTags("achievementsList"),
 resume:resume.value,
 projects:[...document.querySelectorAll("#projectsList .card")].map(c=>{
 let i=c.querySelectorAll("input,textarea");
@@ -293,13 +249,14 @@ description:i[3].value
 };
 
 await setDoc(doc(db,"portfolio","data"),data);
-alert("Saved");
+alert("Saved 🚀");
 };
 
 /* LOAD */
 async function loadData(){
 let snap=await getDoc(doc(db,"portfolio","data"));
 if(!snap.exists()) return;
+
 let d=snap.data();
 
 name.value=d.name||"";
@@ -307,20 +264,13 @@ tagline.value=d.tagline||"";
 about.value=d.about?.intro||"";
 resume.value=d.resume||"";
 
-function loadTags(id,arr){
-document.getElementById(id).innerHTML="";
-(arr||[]).forEach(v=>{
+skillsList.innerHTML="";
+(d.skills||[]).forEach(v=>{
 let el=document.createElement("span");
 el.className="tag";
 el.innerText=v;
-document.getElementById(id).appendChild(el);
+skillsList.appendChild(el);
 });
-}
-
-loadTags("skillsList",d.skills);
-loadTags("toolsList",d.tools);
-loadTags("strengthsList",d.strengths);
-loadTags("achievementsList",d.achievements);
 
 projectsList.innerHTML="";
 (d.projects||[]).forEach(p=>{
