@@ -1,38 +1,97 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Dashboard</title>
+<title>Admin Panel</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#020617;color:white;}
-.login{height:100vh;display:flex;justify-content:center;align-items:center;}
-.box{background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);padding:25px;border-radius:12px;width:300px;}
-input,textarea{width:100%;padding:10px;margin:8px 0;border:none;border-radius:6px;}
-.dashboard{display:none;padding:20px;}
-.topbar{display:flex;justify-content:space-between;margin-bottom:20px;}
-.card{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);padding:20px;border-radius:10px;margin-bottom:20px;}
-.tag{display:inline-block;background:#38bdf8;color:black;padding:5px 10px;margin:5px;border-radius:6px;cursor:pointer;}
-.project{background:rgba(255,255,255,0.05);padding:10px;margin:10px 0;border-radius:6px;}
+body{
+  font-family:Arial;
+  background:#020617;
+  color:white;
+  margin:0;
+}
+
+/* LOGIN */
+#loginPage{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.box{
+  background:rgba(255,255,255,0.08);
+  padding:25px;
+  border-radius:12px;
+  width:300px;
+}
+
+input,textarea{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border:none;
+  border-radius:6px;
+}
+
+button{
+  padding:10px;
+  width:100%;
+  background:#38bdf8;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* DASHBOARD */
+#dashboard{
+  display:none;
+  padding:20px;
+}
+
+.card{
+  background:rgba(255,255,255,0.05);
+  padding:20px;
+  border-radius:10px;
+  margin-bottom:20px;
+}
+
+.tag{
+  display:inline-block;
+  background:#38bdf8;
+  color:black;
+  padding:5px 10px;
+  margin:5px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.project{
+  background:rgba(255,255,255,0.05);
+  padding:10px;
+  margin:10px 0;
+  border-radius:6px;
+}
 </style>
 </head>
 
 <body>
 
-<div class="login" id="login">
+<!-- LOGIN -->
+<div id="loginPage">
   <div class="box">
-    <h2>Login</h2>
+    <h2>Admin Login</h2>
     <input id="email" placeholder="Email">
-    <input id="pass" type="password" placeholder="Password">
+    <input id="password" type="password" placeholder="Password">
     <button onclick="login()">Login</button>
   </div>
 </div>
 
-<div class="dashboard" id="dashboard">
+<!-- DASHBOARD -->
+<div id="dashboard">
 
-<div class="topbar">
 <h2>Dashboard</h2>
 <button onclick="logout()">Logout</button>
-</div>
 
 <div class="card">
 <h3>Profile</h3>
@@ -48,107 +107,104 @@ input,textarea{width:100%;padding:10px;margin:8px 0;border:none;border-radius:6p
 </div>
 
 <div class="card">
-<h3>Achievements</h3>
-<div id="achievements"></div>
-<input id="achInput">
-<button onclick="addAchievement()">Add</button>
-</div>
-
-<div class="card">
 <h3>Projects</h3>
 <div id="projects"></div>
 <button onclick="addProject()">Add Project</button>
 </div>
 
-<button onclick="save()">💾 Save</button>
+<button onclick="saveData()">💾 Save</button>
 
 </div>
 
 <script>
 
+/* LOGIN (no auth issues now) */
 function login(){
-  if(email.value && pass.value){
-    login.style.display="none";
-    dashboard.style.display="block";
-    load();
-  }
+  document.getElementById("loginPage").style.display="none";
+  document.getElementById("dashboard").style.display="block";
+  loadData();
 }
 
-function logout(){ location.reload(); }
+/* LOGOUT */
+function logout(){
+  location.reload();
+}
 
+/* ADD SKILL */
 function addSkill(){
-  let val=skillInput.value;
+  let val=document.getElementById("skillInput").value;
   if(!val) return;
+
   let el=document.createElement("span");
   el.className="tag";
   el.innerText=val;
   el.onclick=()=>el.remove();
-  skills.appendChild(el);
-  skillInput.value="";
+
+  document.getElementById("skills").appendChild(el);
+  document.getElementById("skillInput").value="";
 }
 
-function addAchievement(){
-  let val=achInput.value;
-  if(!val) return;
-  let el=document.createElement("span");
-  el.className="tag";
-  el.innerText=val;
-  el.onclick=()=>el.remove();
-  achievements.appendChild(el);
-  achInput.value="";
-}
-
+/* ADD PROJECT */
 function addProject(){
-let div=document.createElement("div");
-div.className="project";
-div.innerHTML=`
-<input placeholder="Title">
-<textarea placeholder="Description"></textarea>
-<button onclick="this.parentElement.remove()">Remove</button>
-`;
-projects.appendChild(div);
+  let div=document.createElement("div");
+  div.className="project";
+
+  div.innerHTML=`
+    <input placeholder="Title">
+    <textarea placeholder="Description"></textarea>
+    <button onclick="this.parentElement.remove()">Remove</button>
+  `;
+
+  document.getElementById("projects").appendChild(div);
 }
 
-function save(){
+/* SAVE */
+function saveData(){
+
 let data={
-name:name.value,
-bio:bio.value,
-skills:[...skills.children].map(e=>e.innerText),
-achievements:[...achievements.children].map(e=>e.innerText),
-projects:[...projects.children].map(p=>{
-let i=p.querySelectorAll("input,textarea");
-return{title:i[0].value,desc:i[1].value};
-})
+  name:document.getElementById("name").value,
+  bio:document.getElementById("bio").value,
+  skills:[...document.querySelectorAll("#skills .tag")].map(e=>e.innerText),
+  projects:[...document.querySelectorAll("#projects .project")].map(p=>{
+    let i=p.querySelectorAll("input,textarea");
+    return {title:i[0].value,desc:i[1].value};
+  })
 };
+
 localStorage.setItem("portfolio", JSON.stringify(data));
-alert("Saved ✅");
+
+alert("Saved successfully ✅");
 }
 
-function load(){
+/* LOAD */
+function loadData(){
+
 let data=JSON.parse(localStorage.getItem("portfolio")||"{}");
 
-name.value=data.name||"";
-bio.value=data.bio||"";
+document.getElementById("name").value=data.name||"";
+document.getElementById("bio").value=data.bio||"";
 
-skills.innerHTML="";
+/* SKILLS */
+let skillsDiv=document.getElementById("skills");
+skillsDiv.innerHTML="";
 (data.skills||[]).forEach(s=>{
-skillInput.value=s;
-addSkill();
+  let el=document.createElement("span");
+  el.className="tag";
+  el.innerText=s;
+  el.onclick=()=>el.remove();
+  skillsDiv.appendChild(el);
 });
 
-achievements.innerHTML="";
-(data.achievements||[]).forEach(a=>{
-achInput.value=a;
-addAchievement();
-});
-
-projects.innerHTML="";
+/* PROJECTS */
+let projDiv=document.getElementById("projects");
+projDiv.innerHTML="";
 (data.projects||[]).forEach(p=>{
-addProject();
-let i=projects.lastChild.querySelectorAll("input,textarea");
-i[0].value=p.title;
-i[1].value=p.desc;
+  addProject();
+  let last=projDiv.lastChild.querySelectorAll("input,textarea");
+  last[0].value=p.title;
+  last[1].value=p.desc;
 });
+
 }
 
 </script>
