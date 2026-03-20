@@ -9,21 +9,25 @@ body{
   font-family:Arial;
   background:#020617;
   color:white;
+  overflow:hidden;
 }
 
-/* LOGIN FULL SCREEN */
+/* LOGIN */
 .loginPage{
   height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
+  background:linear-gradient(135deg,#020617,#0f172a);
 }
 
 .loginBox{
-  background:rgba(15,23,42,0.8);
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(15px);
   padding:30px;
-  border-radius:12px;
+  border-radius:15px;
   width:300px;
+  animation:fadeIn 0.6s ease;
 }
 
 input{
@@ -46,14 +50,15 @@ button{
 /* DASHBOARD */
 .dashboard{
   display:none;
+  display:flex;
 }
 
 /* SIDEBAR */
 .sidebar{
-  width:220px;
+  width:240px;
   height:100vh;
-  background:#020617;
-  position:fixed;
+  background:rgba(15,23,42,0.8);
+  backdrop-filter:blur(20px);
   padding:20px;
   border-right:1px solid rgba(255,255,255,0.1);
 }
@@ -65,36 +70,42 @@ button{
 .sidebar button{
   width:100%;
   margin:10px 0;
-  padding:10px;
+  padding:12px;
   background:rgba(255,255,255,0.05);
-  color:white;
   border:none;
-  border-radius:6px;
+  color:white;
+  border-radius:8px;
+  transition:0.3s;
 }
 
 .sidebar button:hover{
   background:#38bdf8;
   color:black;
+  transform:translateX(5px);
 }
 
 /* MAIN */
 .main{
-  margin-left:240px;
+  flex:1;
   padding:20px;
+  overflow-y:auto;
 }
 
+/* CARD */
 .card{
-  background:rgba(15,23,42,0.6);
-  padding:20px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(12px);
   border-radius:12px;
+  padding:20px;
   margin-bottom:20px;
+  animation:fadeUp 0.5s ease;
 }
 
 .tag{
   display:inline-block;
   background:#38bdf8;
   color:black;
-  padding:5px 10px;
+  padding:6px 10px;
   margin:5px;
   border-radius:6px;
   cursor:pointer;
@@ -103,12 +114,21 @@ button{
 .section{display:none;}
 .active{display:block;}
 
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- LOGIN -->
 <div class="loginPage" id="loginPage">
   <div class="loginBox">
     <h2>Admin Login</h2>
@@ -125,6 +145,9 @@ button{
     <h2>⚡ Admin</h2>
     <button onclick="show('profile')">Profile</button>
     <button onclick="show('skills')">Skills</button>
+    <button onclick="show('tools')">Tools</button>
+    <button onclick="show('strengths')">Strengths</button>
+    <button onclick="show('achievements')">Achievements</button>
     <button onclick="show('projects')">Projects</button>
     <button onclick="logout()">Logout</button>
   </div>
@@ -141,17 +164,41 @@ button{
     </div>
 
     <!-- SKILLS -->
-    <div id="skillsSec" class="section card">
+    <div id="skills" class="section card">
       <h3>Skills</h3>
-      <div id="skills"></div>
+      <div id="skillsList"></div>
       <input id="newSkill">
-      <button onclick="addTag('skills','newSkill')">Add</button>
+      <button onclick="addTag('skillsList','newSkill')">Add</button>
+    </div>
+
+    <!-- TOOLS -->
+    <div id="tools" class="section card">
+      <h3>Tools & Technologies</h3>
+      <div id="toolsList"></div>
+      <input id="newTool">
+      <button onclick="addTag('toolsList','newTool')">Add</button>
+    </div>
+
+    <!-- STRENGTHS -->
+    <div id="strengths" class="section card">
+      <h3>Strengths</h3>
+      <div id="strengthsList"></div>
+      <input id="newStrength">
+      <button onclick="addTag('strengthsList','newStrength')">Add</button>
+    </div>
+
+    <!-- ACHIEVEMENTS -->
+    <div id="achievements" class="section card">
+      <h3>Achievements</h3>
+      <div id="achievementsList"></div>
+      <input id="newAchievement">
+      <button onclick="addTag('achievementsList','newAchievement')">Add</button>
     </div>
 
     <!-- PROJECTS -->
-    <div id="projectsSec" class="section card">
+    <div id="projects" class="section card">
       <h3>Projects</h3>
-      <div id="projects"></div>
+      <div id="projectsList"></div>
       <button onclick="addProject()">Add Project</button>
     </div>
 
@@ -181,14 +228,14 @@ const db = getFirestore(app);
 /* NAV */
 window.show = function(sec){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(sec==="skills"?"skillsSec":sec==="projects"?"projectsSec":sec).classList.add("active");
+  document.getElementById(sec).classList.add("active");
 }
 
-/* AUTH STATE */
-onAuthStateChanged(auth, user=>{
+/* AUTH */
+onAuthStateChanged(auth,user=>{
   if(user){
     loginPage.style.display="none";
-    dashboard.style.display="block";
+    dashboard.style.display="flex";
     setTimeout(loadData,300);
   }
 });
@@ -197,8 +244,8 @@ onAuthStateChanged(auth, user=>{
 window.login = async ()=>{
   try{
     await signInWithEmailAndPassword(auth,email.value,password.value);
-  }catch(e){
-    alert("Wrong email or password ❌");
+  }catch{
+    alert("Wrong email/password ❌");
   }
 };
 
@@ -224,7 +271,6 @@ window.addTag = function(id,input){
 window.addProject = function(){
 let div=document.createElement("div");
 div.className="card";
-
 div.innerHTML=`
 <input placeholder="Title">
 <input placeholder="Short">
@@ -232,8 +278,7 @@ div.innerHTML=`
 <textarea placeholder="Description"></textarea>
 <button onclick="this.parentElement.remove()">❌</button>
 `;
-
-projects.appendChild(div);
+projectsList.appendChild(div);
 };
 
 /* SAVE */
@@ -245,9 +290,12 @@ let data={
 name:name.value,
 tagline:tagline.value,
 about:{intro:about.value},
-skills:getTags("skills"),
+skills:getTags("skillsList"),
+tools:getTags("toolsList"),
+strengths:getTags("strengthsList"),
+achievements:getTags("achievementsList"),
 resume:resume.value,
-projects:[...document.querySelectorAll("#projects .card")].map(c=>{
+projects:[...document.querySelectorAll("#projectsList .card")].map(c=>{
 let i=c.querySelectorAll("input,textarea");
 return{
 title:i[0].value,
@@ -273,18 +321,25 @@ tagline.value=d.tagline||"";
 about.value=d.about?.intro||"";
 resume.value=d.resume||"";
 
-skills.innerHTML="";
-(d.skills||[]).forEach(v=>{
+function loadTags(id,arr){
+document.getElementById(id).innerHTML="";
+(arr||[]).forEach(v=>{
 let el=document.createElement("span");
 el.className="tag";
 el.innerText=v;
-skills.appendChild(el);
+document.getElementById(id).appendChild(el);
 });
+}
 
-projects.innerHTML="";
+loadTags("skillsList",d.skills);
+loadTags("toolsList",d.tools);
+loadTags("strengthsList",d.strengths);
+loadTags("achievementsList",d.achievements);
+
+projectsList.innerHTML="";
 (d.projects||[]).forEach(p=>{
 addProject();
-let i=projects.lastChild.querySelectorAll("input,textarea");
+let i=projectsList.lastChild.querySelectorAll("input,textarea");
 i[0].value=p.title;
 i[1].value=p.short;
 i[2].value=p.image;
